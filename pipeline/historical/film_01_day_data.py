@@ -75,5 +75,6 @@ for f in g["features"]:
             pts=rdp(pts,1.2)
             paths.append("M"+"L".join(f"{p[0]:.0f} {p[1]:.0f}" for p in pts)+"Z")
 path="".join(paths)
-json.dump({"stations":stations,"stats":stats,"hourly":[int(x) for x in hourly],"moving":[int(x) for x in moving[::10]],"districts":path},open(f"{OUT}/map.json","w"),separators=(",",":"))
+json.dump({"stations":stations,"stats":stats,"hourly":[int(x) for x in hourly],"moving":[int(x) for x in moving[::10]],"districts":path,
+           "proj":{"cx_lon":cx_lon,"k":k,"s":s,"lat_max":float(pos.lat.max()),"x0":1250,"top":top}},open(f"{OUT}/map.json","w"),separators=(",",":"))
 print("barrio paths",len(paths),"map.json bytes",len(open(f"{OUT}/map.json").read()))

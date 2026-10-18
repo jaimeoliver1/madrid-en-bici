@@ -16,7 +16,7 @@
   const T = {
     es: {
       nav_bicimad: "BiciMAD", nav_barrios: "Barrios", nav_cuestas: "Cuestas", nav_carriles: "Carriles", nav_seguridad: "Seguridad", nav_mejorar: "Qué mejorar",
-      hero_kicker: "BiciMAD · Madrid · datos abiertos", pl_date: "Jueves 12 de enero de 2023", pl_moving: "bicis circulando ahora", pl_flow: "Calles más oscuras: más bicis en la última hora", pl_scrub: "Arrastra para moverte por el día", pl_play: "Reproducir", pl_pause: "Pausa", pl_note: "Cada punto es una bici real de BiciMAD, por la ruta ciclista más probable entre sus dos estaciones. <a href=\"https://claude.ai/artifact/GJbZpaqHckxf79TpvRCdbR\" target=\"_blank\" rel=\"noopener\">Ver el vídeo</a>.", pl_hour_trips: "viajes que empiezan cada hora", zoom_hint: "Usa Ctrl + rueda (o pellizca) para hacer zoom", zoom_in: "Acercar", zoom_out: "Alejar", zoom_reset: "Ver todo", hero_h1: "¿Es fácil moverse en bici por Madrid?",
+      hero_kicker: "BiciMAD · Madrid · datos abiertos", pl_date: "Jueves 12 de enero de 2023", pl_moving: "bicis circulando ahora", pl_flow: "El rastro azul se acumula: al final del día, las calles más usadas brillan más", pl_day: "Ver el día completo", pl_scrub: "Arrastra para moverte por el día", pl_play: "Reproducir", pl_pause: "Pausa", pl_note: "Cada punto es una bici real de BiciMAD, por la ruta ciclista más probable entre sus dos estaciones. <a href=\"https://claude.ai/artifact/GJbZpaqHckxf79TpvRCdbR\" target=\"_blank\" rel=\"noopener\">Ver el vídeo</a>.", pl_hour_trips: "viajes que empiezan cada hora", zoom_hint: "Usa Ctrl + rueda (o pellizca) para hacer zoom", zoom_in: "Acercar", zoom_out: "Alejar", zoom_reset: "Ver todo", hero_h1: "¿Es fácil moverse en bici por Madrid?",
       hero_lede: "Cada vez más gente usa la bici, pero la red tiene <b>huecos, cuestas y cruces peligrosos</b>. Aquí lo contamos con datos, en un vistazo.",
       score_h: "La nota de Madrid", score_sub: "Cada tarjeta compara Madrid con lo que recomiendan las guías de planificación o con otras ciudades. La franja verde es el objetivo.",
       good: "Bien", mid: "A medias", bad: "Mal", target: "objetivo",
@@ -64,10 +64,25 @@
       s7_k: "7 · Qué mejorar", s7_h: "Seis cambios que harían Madrid más ciclable", s7_lede: "Basados en lo que han hecho otras ciudades y en lo que dice la investigación. Cada uno ataca un número de esta página.",
       lever_lanes: "Palanca: carriles bici", lever_bicimad: "Palanca: BiciMAD", lever_both: "Palanca: datos y gestión", now: "Hoy:", goal: "Objetivo:",
       m_h: "Cómo lo hemos calculado", src_h: "Fuentes",
+      live_k: "BiciMAD en directo", live_ago: "actualizado a las {t} · se refresca cada minuto", live_off: "sin conexión con BiciMAD: mostrando la foto del {snap}",
+      lv_bikes: "bicis listas para coger ahora (de {fleet})", lv_empty: "estaciones vacías ahora mismo", lv_full: "estaciones llenas: no hay dónde dejar la bici",
+      lv_out: "bicis han salido de su estación desde que abriste esta página<sup><a href=\"#datos\">1</a></sup>",
+      fr_h: "¿Cada cuánto se actualizan los datos?", fr_what: "Dato", fr_when: "Frecuencia", fr_upto: "Datos hasta", fr_src: "Fuente",
+      fr_live: "En directo", fr_month: "Cada mes", fr_frozen: "Congelado",
+      fr_r_live: "Bicis y anclajes libres en cada estación", fr_c_live: "Cada minuto, directamente desde tu navegador", fr_u_live: "Ahora",
+      fr_r_trips: "Viajes diarios y usuarios de BiciMAD", fr_c_trips: "La EMT publica el mes anterior hacia el día 10",
+      fr_r_acc: "Accidentes con bicicleta", fr_c_acc: "Registros de la Policía Municipal",
+      fr_r_city: "Carriles bici, aparcabicis, población y barrios", fr_c_city: "Cuando el Ayuntamiento los cambia; lo revisamos cada mes", fr_u_city: "Revisado el {refreshed}",
+      fr_r_wx: "Lluvia y temperatura (El Retiro)", fr_c_wx: "Diaria; la incorporamos cada mes",
+      fr_r_2023: "Viajes uno a uno: rutas, cuestas, horas y la animación de 24 h", fr_c_2023: "La EMT no publica viajes individuales desde febrero de 2023", fr_u_2023: "18 feb 2023",
+      fr_r_cnt: "Contadores automáticos de bicis", fr_c_cnt: "Último año completo publicado", fr_u_cnt: "2023",
+      fr_auto: "La web se actualiza sola el día 10 de cada mes. Última actualización: {refreshed}.",
+      fr_fn1: "Contamos cuántas bicis desaparecen de cada estación entre una lectura y la siguiente (cada minuto). Es una estimación: si alguien coge y deja una bici en la misma estación en ese minuto no se ve, y las furgonetas que redistribuyen bicis también cuentan.",
+      fc_bicimad: "Se actualiza cada mes · datos hasta {dlast}", fc_barrios: "Revisado cada mes", fc_cuestas: "Mapa en directo · flujos de 2023", fc_carriles: "Carriles revisados cada mes · rutas de 2023", fc_seguridad: "Se actualiza cada mes · datos hasta {accend}", fc_tiempo: "Se actualiza cada mes",
     },
     en: {
       nav_bicimad: "BiciMAD", nav_barrios: "Neighbourhoods", nav_cuestas: "Hills", nav_carriles: "Bike lanes", nav_seguridad: "Safety", nav_mejorar: "What to fix",
-      hero_kicker: "BiciMAD · Madrid · open data", pl_date: "Thursday 12 January 2023", pl_moving: "bikes riding right now", pl_flow: "Darker streets: more bikes in the last hour", pl_scrub: "Drag to move through the day", pl_play: "Play", pl_pause: "Pause", pl_note: "Each dot is a real BiciMAD bike, on the most likely bike route between its two stations. <a href=\"https://claude.ai/artifact/GJbZpaqHckxf79TpvRCdbR\" target=\"_blank\" rel=\"noopener\">Watch the video</a>.", pl_hour_trips: "trips starting each hour", zoom_hint: "Use Ctrl + scroll (or pinch) to zoom", zoom_in: "Zoom in", zoom_out: "Zoom out", zoom_reset: "Show all", hero_h1: "Is it easy to get around Madrid by bike?",
+      hero_kicker: "BiciMAD · Madrid · open data", pl_date: "Thursday 12 January 2023", pl_moving: "bikes riding right now", pl_flow: "The blue trail builds up: by midnight, the busiest streets glow brightest", pl_day: "Show the whole day", pl_scrub: "Drag to move through the day", pl_play: "Play", pl_pause: "Pause", pl_note: "Each dot is a real BiciMAD bike, on the most likely bike route between its two stations. <a href=\"https://claude.ai/artifact/GJbZpaqHckxf79TpvRCdbR\" target=\"_blank\" rel=\"noopener\">Watch the video</a>.", pl_hour_trips: "trips starting each hour", zoom_hint: "Use Ctrl + scroll (or pinch) to zoom", zoom_in: "Zoom in", zoom_out: "Zoom out", zoom_reset: "Show all", hero_h1: "Is it easy to get around Madrid by bike?",
       hero_lede: "More and more people ride, but the network has <b>gaps, hills and dangerous junctions</b>. Here it is in data, at a glance.",
       score_h: "Madrid's report card", score_sub: "Each card compares Madrid with what planning guides recommend or with other cities. The green band is the target.",
       good: "Good", mid: "So-so", bad: "Poor", target: "target",
@@ -115,6 +130,21 @@
       s7_k: "7 · What to fix", s7_h: "Six changes that would make Madrid more bikeable", s7_lede: "Based on what other cities have done and what research shows. Each one moves a number on this page.",
       lever_lanes: "Lever: bike lanes", lever_bicimad: "Lever: BiciMAD", lever_both: "Lever: data and management", now: "Today:", goal: "Goal:",
       m_h: "How we worked it out", src_h: "Sources",
+      live_k: "BiciMAD live", live_ago: "updated at {t} · refreshes every minute", live_off: "can't reach BiciMAD: showing the snapshot from {snap}",
+      lv_bikes: "bikes ready to take right now (out of {fleet})", lv_empty: "stations empty right now", lv_full: "stations full: nowhere to drop a bike",
+      lv_out: "bikes have left their station since you opened this page<sup><a href=\"#datos\">1</a></sup>",
+      fr_h: "How often is the data updated?", fr_what: "Data", fr_when: "How often", fr_upto: "Data up to", fr_src: "Source",
+      fr_live: "Live", fr_month: "Monthly", fr_frozen: "Frozen",
+      fr_r_live: "Bikes and free docks at every station", fr_c_live: "Every minute, straight from your browser", fr_u_live: "Now",
+      fr_r_trips: "BiciMAD daily trips and users", fr_c_trips: "EMT publishes the previous month around the 10th",
+      fr_r_acc: "Bike accidents", fr_c_acc: "Municipal police records",
+      fr_r_city: "Bike lanes, bike racks, population and barrios", fr_c_city: "When the City Council changes them; we check every month", fr_u_city: "Checked on {refreshed}",
+      fr_r_wx: "Rain and temperature (El Retiro)", fr_c_wx: "Daily; we add it every month",
+      fr_r_2023: "Trip-by-trip data: routes, hills, hours and the 24-hour animation", fr_c_2023: "EMT has not published individual trips since February 2023", fr_u_2023: "18 Feb 2023",
+      fr_r_cnt: "Automatic bike counters", fr_c_cnt: "Latest full year published", fr_u_cnt: "2023",
+      fr_auto: "The site updates itself on the 10th of every month. Last update: {refreshed}.",
+      fr_fn1: "We count how many bikes disappear from each station between one reading and the next (every minute). It's an estimate: a bike taken and returned to the same station within that minute isn't seen, and the vans that rebalance bikes are counted too.",
+      fc_bicimad: "Updated monthly · data up to {dlast}", fc_barrios: "Checked monthly", fc_cuestas: "Live map · 2023 flows", fc_carriles: "Lanes checked monthly · 2023 routes", fc_seguridad: "Updated monthly · data up to {accend}", fc_tiempo: "Updated monthly",
     },
   };
   let L = "es";
@@ -220,6 +250,7 @@
         const k = ev.transform.k;
         g.selectAll("circle").each(function () { if (this.__r0 == null) this.__r0 = +this.getAttribute("r"); this.setAttribute("r", this.__r0 / Math.pow(k, 0.7)); });
         g.selectAll("text").each(function () { if (this.__f0 == null) this.__f0 = 12; this.style.fontSize = (this.__f0 / k) + "px"; });
+        g.selectAll("text.t2").attr("display", k < 1.8 ? "none" : null);
       });
     svg.call(zoom).on("dblclick.zoom", null).style("touch-action", "pan-y");
     svg.on("wheel.hint", ev => { if (!ev.ctrlKey && !ev.metaKey) showHint(); });
@@ -231,6 +262,24 @@
     box.append(ui);
   }
   const ringsPath = (F, rings) => rings.split("|").map(r => F.path(r) + "Z").join("");
+  // context from OpenStreetMap (basemap.js): parks, the Manzanares and main roads over the barrio fill; landmark names go on top of the data
+  function context(g, F, o = {}) {
+    const B = window.BASE; if (!B) return;
+    const c = g.append("g").attr("class", "ctx").style("pointer-events", "none");
+    if (!o.faint) c.selectAll("path.pk").data(B.parks).join("path").attr("class", "pk").attr("d", r => F.path(r) + "Z").attr("fill", css("--park"));
+    c.selectAll("path.w").data(B.water).join("path").attr("class", "w").attr("d", r => F.path(r)).attr("fill", "none").attr("stroke", css("--water")).attr("stroke-width", 2.6).attr("vector-effect", "non-scaling-stroke");
+    if (o.roads === false) return;
+    const W_ = { m: 1.8, p: 1, s: 0.55 };
+    c.selectAll("path.rd").data(B.roads).join("path").attr("class", "rd").attr("d", r => F.path(r[1])).attr("fill", "none").attr("stroke", o.faint ? css("--card") : css("--road"))
+      .attr("stroke-opacity", o.faint ? 0.6 : 1).attr("stroke-width", r => W_[r[0]]).attr("stroke-linecap", "round").attr("vector-effect", "non-scaling-stroke");
+  }
+  function places(g, F) {
+    const B = window.BASE; if (!B) return;
+    g.append("g").attr("class", "places").style("pointer-events", "none").selectAll("text").data(B.places).join("text")
+      .attr("class", p => "place" + (p[4] > 1 ? " t2" : "")).attr("x", p => F.P(p[3], p[2])[0]).attr("y", p => F.P(p[3], p[2])[1]).attr("text-anchor", "middle").attr("dy", ".35em")
+      .attr("display", p => p[4] > 1 ? "none" : null).text(p => L === "es" ? p[0] : p[1])
+      .each(function (p) { this.__f0 = p[4] > 1 ? 10.5 : 11.5; this.style.fontSize = this.__f0 + "px"; });
+  }
 
   // ---------- 0 · report card ----------
   function scorecard() {
@@ -304,6 +353,7 @@
     const tp = tip(box);
     g.selectAll("path").data(M.barrios).join("path").attr("d", b => ringsPath(F, b[5])).attr("fill", b => ramp(b[4] / b[3])).attr("stroke", css("--card")).attr("stroke-width", 0.8)
       .on("pointermove", (ev, b) => { const [a, c] = d3.pointer(ev, box); tp.show(a, c, `${b[0]} (${b[1]})`, [`${b[4]} ${t("stations")} · ${n1(b[4] / b[3])} ${t("per_km2")}`, `${nf(b[2])} ${t("people")}`]); }).on("pointerleave", () => tp.hide());
+    context(g, F, { faint: true }); places(g, F);
     const lg = document.getElementById("lg-barrios"); lg.replaceChildren();
     [[0, t("cov_none")], [0.5, t("cov_low")], [5, t("cov_mid")], [12, t("cov_ok")]].forEach(([v, l]) => { const s = el("span"); const i = el("i", "sw"); i.style.background = ramp(v); i.style.height = "10px"; s.append(i, document.createTextNode(l)); lg.append(s); });
     const P = d3.sum(M.barrios, b => b[2]), share = f => d3.sum(M.barrios.filter(f), b => b[2]) / P * 100;
@@ -324,6 +374,7 @@
     hbars(document.getElementById("ch-slope"), rows, { zero: true, rh: 40, mr: 50 });
     const box = document.getElementById("ch-empty"), { g, F } = mapBase(box, 520);
     g.selectAll("path").data(M.barrios).join("path").attr("d", b => ringsPath(F, b[5])).attr("fill", css("--grey-map")).attr("stroke", css("--card")).attr("stroke-width", 0.8);
+    context(g, F);
     const st = M.stations.slice().sort((a, b) => (a[2] === 0) - (b[2] === 0));
     const tp = tip(box);
     g.selectAll("circle").data(st).join("circle").attr("cx", s => F.P(s[1], s[0])[0]).attr("cy", s => F.P(s[1], s[0])[1]).attr("r", s => s[2] === 0 ? 4.6 : 2.6)
@@ -331,6 +382,7 @@
       .on("pointermove", (ev, s) => { const [a, c] = d3.pointer(ev, box); tp.show(a, c, `${s[2]} ${L === "es" ? "bicis" : "bikes"} · ${s[3]} ${L === "es" ? "anclajes libres" : "free docks"}`, [`${s[4]} m`]); }).on("pointerleave", () => tp.hide());
     g.selectAll("circle.pulse").data(st.filter(s => s[2] === 0)).join("circle").attr("class", "pulse").attr("cx", s => F.P(s[1], s[0])[0]).attr("cy", s => F.P(s[1], s[0])[1]).attr("r", 4.6)
       .attr("fill", "none").attr("stroke", css("--bad")).attr("stroke-width", 1.5).style("animation-delay", (s, i) => (i % 12) * 0.2 + "s").style("pointer-events", "none");
+    places(g, F);
     const hi = M.elev_live[M.elev_live.length - 1], lo = M.elev_live[0], tot = d3.sum(M.elev_live, r => r[4]);
     document.getElementById("cuestas-callout").innerHTML = t("cuestas_callout", { e: hi[4], t: tot, ho: n1(hi[3]), lo: n1(lo[3]) });
   }
@@ -342,9 +394,11 @@
     const C = { x: css("--lane"), v: d3.interpolateRgb(css("--sky"), css("--paper"))(0.5), p: css("--mid"), s: css("--muted") };
     const box = document.getElementById("ch-lanes"), { g, F } = mapBase(box, 600);
     g.selectAll("path.b").data(M.barrios).join("path").attr("d", b => ringsPath(F, b[5])).attr("fill", css("--grey-map")).attr("stroke", css("--card")).attr("stroke-width", 0.8);
+    context(g, F, { roads: false });
     const order = { s: 0, p: 1, v: 2, x: 3 };
     g.selectAll("path.l").data(M.lanes.slice().sort((a, b) => order[a[0]] - order[b[0]])).join("path").attr("d", r => F.path(r[1])).attr("fill", "none").attr("stroke", r => C[r[0]]).attr("stroke-width", r => r[0] === "s" ? 1.3 : 2.4).attr("stroke-linecap", "round").attr("stroke-opacity", r => r[0] === "s" ? 0.7 : 1);
     g.selectAll("circle").data(M.stations).join("circle").attr("cx", s => F.P(s[1], s[0])[0]).attr("cy", s => F.P(s[1], s[0])[1]).attr("r", 1.8).attr("fill", css("--ink")).attr("fill-opacity", 0.7);
+    places(g, F);
     const lg = document.getElementById("lg-lanes"); lg.replaceChildren();
     [["x", "lane_x"], ["v", "lane_v"], ["p", "lane_p"], ["s", "lane_s"]].forEach(([k, l]) => { const s = el("span"); const i = el("i", "sw"); i.style.background = C[k]; s.append(i, document.createTextNode(t(l))); lg.append(s); });
     { const s = el("span"); const i = el("i", "dot"); i.style.background = css("--ink"); s.append(i, document.createTextNode(t("lane_st"))); lg.append(s); }
@@ -352,10 +406,12 @@
     if (!M.routes) { rb.replaceChildren(el("p", "muted", t("routes_pending"))); rs.replaceChildren(); return; }
     const { g: g2, F: F2 } = mapBase(rb, 460);
     g2.selectAll("path.b").data(M.barrios).join("path").attr("d", b => ringsPath(F2, b[5])).attr("fill", css("--grey-map")).attr("stroke", css("--card")).attr("stroke-width", 0.8);
+    context(g2, F2);
     const col = d3.scaleLinear([0, 50, 100], [css("--brick"), css("--mid"), css("--lane")]);
     const wmax = d3.max(M.routes.paths, p => p[0]);
     g2.selectAll("path.r").data(M.routes.paths.slice().sort((a, b) => a[0] - b[0])).join("path").attr("d", p => F2.path(p[2])).attr("fill", "none")
       .attr("stroke", p => col(p[1])).attr("stroke-width", p => 1 + 4 * p[0] / wmax).attr("stroke-opacity", 0.8).attr("stroke-linecap", "round");
+    places(g2, F2);
     const labels = L === "es" ? ["Menos del 10 %", "10–25 %", "25–50 %", "50–75 %", "Más del 75 %"] : ["Under 10%", "10–25%", "25–50%", "50–75%", "Over 75%"];
     const tot = d3.sum(M.routes.hist);
     rs.replaceChildren(el("p", "small muted", t("route_share_h")));
@@ -368,6 +424,7 @@
     const at = document.getElementById("acc-total"); if (at) at.textContent = nf(M.acc_points.length);
     const box = document.getElementById("ch-accmap"), { g, F } = mapBase(box, 640);
     g.selectAll("path.b").data(M.barrios).join("path").attr("d", b => ringsPath(F, b[5])).attr("fill", css("--grey-map")).attr("stroke", css("--card")).attr("stroke-width", 0.8);
+    context(g, F);
     const pts = M.acc_points.slice().sort((a, b) => a[2] - b[2]);
     g.selectAll("circle.a").data(pts).join("circle").attr("cx", p => F.P(p[1], p[0])[0]).attr("cy", p => F.P(p[1], p[0])[1]).attr("r", p => p[2] ? 3.2 : 1.5)
       .attr("fill", p => p[2] ? css("--bad") : css("--brick")).attr("fill-opacity", p => p[2] ? 0.95 : 0.35);
@@ -375,6 +432,7 @@
     g.selectAll("circle.hp").data(hs).join("circle").attr("class", "pulse").attr("cx", h => F.P(h[3], h[2])[0]).attr("cy", h => F.P(h[3], h[2])[1]).attr("r", 8).attr("fill", "none").attr("stroke", css("--bad")).attr("stroke-width", 2).style("animation-delay", (h, i) => i * 0.35 + "s").style("pointer-events", "none");
     g.selectAll("circle.h").data(hs).join("circle").attr("cx", h => F.P(h[3], h[2])[0]).attr("cy", h => F.P(h[3], h[2])[1]).attr("r", 15).attr("fill", "none").attr("stroke", css("--ink")).attr("stroke-width", 2);
     g.selectAll("text.h").data(hs).join("text").attr("class", "lbl").attr("x", h => F.P(h[3], h[2])[0] + 18).attr("y", h => F.P(h[3], h[2])[1] + 4).text((h, i) => i + 1);
+    places(g, F);
     const yrs = M.acc_year;
     vbars(document.getElementById("ch-accyear"), yrs.map(r => ({ label: String(r[0]), value: r[1], color: r[3] < 12 ? css("--muted") : r[0] >= 2024 ? css("--brick") : css("--sky"), title: String(r[0]) + (r[3] < 12 ? ` (${r[3]} ${L === "es" ? "meses" : "months"})` : ""), lines: [`${nf(r[1])} ${t("accidents")}`, `${pct(r[2])} ${t("ebike_share")}`] })), { h: 200, allLabels: true, labelW: 30, valueLabels: r => nf(r.value) });
     hbars(document.getElementById("ch-hotspots"), M.hotspots.slice(0, 5).map((h, i) => ({ label: `${i + 1}. ${h[0].replace(/^(Call|Calle|Paseo|Plaza|Gta|Avda|Custa|Ronda)\.?\s*/i, "")}`.slice(0, 34), value: h[1], text: `${h[1]}`, color: css("--brick") })), { rh: 28, mr: 30 });
@@ -472,10 +530,12 @@
       n: nf(M.acc_points.length),
       snap: snapD.toLocaleString(loc_, { weekday: "long", day: "numeric", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit" }),
       accend: fmonth(K.acc_last.slice(0, 7)),
+      dlast: fdate(K.daily_last), refreshed: K.refreshed ? fdate(K.refreshed) : "", fleet: nf(K.fleet),
       partial: part ? (L === "es" ? `${part[0]} solo incluye enero a ${new Date(K.acc_last + "T12:00:00Z").toLocaleDateString(loc_, { month: "long" })}.` : `${part[0]} covers January to ${new Date(K.acc_last + "T12:00:00Z").toLocaleDateString(loc_, { month: "long" })} only.`) : "",
     };
     document.querySelectorAll("[data-i18n]").forEach(e => { e.textContent = t(e.dataset.i18n, V); });
     document.querySelectorAll("[data-i18n-html]").forEach(e => { e.innerHTML = t(e.dataset.i18nHtml, V); });
+    freshness(V); liveShow();
     document.getElementById("lang-es").setAttribute("aria-pressed", String(L === "es"));
     document.getElementById("lang-en").setAttribute("aria-pressed", String(L === "en"));
   }
@@ -522,12 +582,56 @@
     window.MCI = { t, nf, lang: () => L };
     window.dispatchEvent(new Event("mc-render"));
   }
-  // ---------- live: station availability straight from BiciMAD's public feed (open to browsers), every 5 minutes ----------
+  // ---------- data freshness: a chip per section and a table in the footer ----------
+  const FRESH = { bicimad: "f-month", barrios: "f-month", cuestas: "f-live", carriles: "f-month", seguridad: "f-month", tiempo: "f-month" };
+  function freshness(V) {
+    document.querySelectorAll("[data-fresh]").forEach(sec => {
+      const k = sec.dataset.fresh, h2 = sec.querySelector("h2"); if (!h2) return;
+      let a = sec.querySelector(".fresh"); if (!a) { a = el("a", "fresh " + FRESH[k]); a.href = "#datos"; h2.after(a); }
+      a.replaceChildren(el("i"), document.createTextNode(t("fc_" + k, V)));
+    });
+    const rows = [["live", "f-live", "fr_u_live", "BiciMAD GBFS"], ["trips", "f-month", fdate(K.daily_last), "EMT Madrid"], ["acc", "f-month", fdate(K.acc_last), "datos.madrid.es"],
+      ["city", "f-month", "fr_u_city", "datos.madrid.es"], ["wx", "f-month", fdate(K.daily_last), "NOAA GHCN-Daily"], ["2023", "f-frozen", "fr_u_2023", "EMT Madrid"], ["cnt", "f-frozen", "fr_u_cnt", "datos.madrid.es"]];
+    const tab = el("table", "freshtab"), th = el("tr");
+    ["fr_what", "fr_when", "fr_upto", "fr_src"].forEach(k => th.append(el("th", null, t(k))));
+    const thead = el("thead"); thead.append(th); const tb = el("tbody");
+    rows.forEach(([k, c, u, src]) => {
+      const tr = el("tr"), when = el("td"), chip = el("span", "fresh " + c);
+      chip.style.margin = "0 8px 4px 0"; chip.append(el("i"), document.createTextNode(t(c === "f-live" ? "fr_live" : c === "f-month" ? "fr_month" : "fr_frozen")));
+      when.append(chip, document.createTextNode(t("fr_c_" + k)));
+      tr.append(el("td", null, t("fr_r_" + k)), when, el("td", null, u.startsWith("fr_") ? t(u, V) : u), el("td", null, src)); tb.append(tr);
+    });
+    tab.append(thead, tb);
+    const ol = el("ol", "footnotes"); ol.append(el("li", null, t("fr_fn1")));
+    document.getElementById("fresh").replaceChildren(el("p", "small muted", t("fr_auto", V)), tab, ol);
+  }
+  // ---------- live: station availability straight from BiciMAD's public feed (open to browsers), every minute ----------
   const GBFS = "https://madrid.publicbikesystem.net/customer/gbfs/v2/en/station_status";
+  const LV = { ok: false, at: null, bikes: null, empty: null, full: null, out: 0, prev: null, mapAt: 0 };
+  function liveShow() {
+    const box = document.getElementById("live"); if (!box) return;
+    box.classList.toggle("off", !LV.ok);
+    document.getElementById("lv-bikes-l").textContent = t("lv_bikes", { fleet: nf(K.fleet) });
+    const set = (id, v) => { const e = document.getElementById(id); const s = v == null ? "–" : nf(v); if (e.textContent !== s) { e.textContent = s; e.classList.add("flash"); setTimeout(() => e.classList.remove("flash"), 900); } };
+    if (LV.ok) { set("lv-bikes", LV.bikes); set("lv-empty", LV.empty); set("lv-full", LV.full); set("lv-out", LV.out); }
+    else { set("lv-bikes", d3.sum(M.stations, s => s[2])); set("lv-empty", K.empty_now); set("lv-full", M.stations.filter(s => s[3] === 0).length); set("lv-out", null); }
+    const loc_ = L === "es" ? "es-ES" : "en-GB";
+    document.getElementById("live-ago").textContent = LV.ok ? t("live_ago", { t: LV.at.toLocaleTimeString(loc_, { hour: "2-digit", minute: "2-digit", timeZone: "Europe/Madrid" }) })
+      : t("live_off", { snap: new Date(K.snapshot.replace(" ", "T") + ":00").toLocaleString(loc_, { day: "numeric", month: "long", hour: "2-digit", minute: "2-digit" }) });
+  }
   async function live() {
     try {
-      const r = await fetch(GBFS, { cache: "no-store" }); if (!r.ok) return;
-      const j = await r.json(), byId = new Map(j.data.stations.map(s => [+s.station_id, s]));
+      const r = await fetch(GBFS, { cache: "no-store" }); if (!r.ok) throw 0;
+      const j = await r.json(), ss = j.data.stations.filter(s => s.is_installed && s.is_renting);
+      const now = new Map(ss.map(s => [s.station_id, s.num_bikes_available]));
+      if (LV.prev) for (const [id, b] of now) { const p = LV.prev.get(id); if (p != null && b < p) LV.out += p - b; }
+      LV.prev = now; LV.ok = true; LV.at = new Date(j.last_updated * 1000);
+      LV.bikes = d3.sum(ss, s => s.num_bikes_available); LV.empty = ss.filter(s => s.num_bikes_available === 0).length; LV.full = ss.filter(s => s.num_docks_available === 0).length;
+      liveShow();
+      // the empty-stations map and its texts follow the feed every 5 minutes
+      if (Date.now() - LV.mapAt < 5 * 60 * 1000) return;
+      LV.mapAt = Date.now();
+      const byId = new Map(j.data.stations.map(s => [+s.station_id, s]));
       let n = 0;
       for (const s of M.stations) { const x = byId.get(s[6]); if (x) { s[2] = x.num_bikes_available; s[3] = x.num_docks_available; n++; } }
       if (!n) return;
@@ -536,12 +640,12 @@
         return [lo, hi, rs.length, Math.round(d3.mean(occ) * 1000) / 10, rs.filter(s => s[2] === 0).length];
       });
       K.empty_now = M.stations.filter(s => s[2] === 0).length;
-      K.snapshot = new Date(j.last_updated * 1000).toLocaleString("sv-SE", { timeZone: "Europe/Madrid" }).slice(0, 16);
+      K.snapshot = LV.at.toLocaleString("sv-SE", { timeZone: "Europe/Madrid" }).slice(0, 16);
       texts(); hills();
-    } catch (e) { /* offline or feed down: keep the last published snapshot */ }
+    } catch (e) { LV.ok = false; liveShow(); /* offline or feed down: keep the last published snapshot */ }
   }
   live();
-  setInterval(() => { if (!document.hidden) live(); }, 5 * 60 * 1000);
+  setInterval(() => { if (!document.hidden) live(); }, 60 * 1000);
   ["es", "en"].forEach(l => document.getElementById("lang-" + l).addEventListener("click", () => { L = l; try { localStorage.setItem("mc-lang", l); } catch (e) {} render(); }));
   let w = window.innerWidth;
   window.addEventListener("resize", () => { if (Math.abs(window.innerWidth - w) > 40) { w = window.innerWidth; render(); } });

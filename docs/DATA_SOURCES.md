@@ -5,14 +5,14 @@
 | BiciMAD daily trips | EMT Madrid (datos.emtmadrid.es) | Feb 2024 onwards | Monthly | `refresh.py` |
 | BiciMAD monthly active users | EMT Madrid | Feb 2024 onwards | Monthly | `refresh.py` |
 | BiciMAD trip-by-trip records | EMT Madrid (yearly archives 2017–2023) | 1 Jan – 18 Feb 2023 | No release since Feb 2023 | manual (`pipeline/historical/`) |
-| BiciMAD live stations (GBFS) | EMT (madrid.publicbikesystem.net) | One snapshot per refresh | Real time | `refresh.py` |
+| BiciMAD live stations (GBFS) | EMT (madrid.publicbikesystem.net) | Live in the browser (polled every minute); one snapshot per refresh as fallback | Real time | `site/app.js`, `refresh.py` |
 | Bicycle accidents | Policía Municipal (datos.madrid.es 300110) | 2019 onwards | About monthly, 1–2 month lag | `refresh.py` |
 | Cycling infrastructure | Ayuntamiento geoportal (205107) | Latest layer | A few times a year | `refresh.py` |
 | Bike racks | datos.madrid.es (205099) | Latest | Daily | `refresh.py` |
 | Population by barrio | Padrón (300557) | Latest 1 January | Yearly | `refresh.py` |
 | Bike counters | datos.madrid.es (300321) | 2019 – Jun 2024 | Half-yearly files | manual (`pipeline/historical/`) |
 | District and barrio boundaries | Ayuntamiento geoportal | Current | Rarely | manual |
-| Street network, bike shops | OpenStreetMap (BBBike extract, Overpass) | Oct 2026 | Continuous | manual |
+| Street network, bike shops, map background | OpenStreetMap (BBBike extract, Overpass) | Oct 2026 | Continuous | manual (`13_basemap.py`) |
 | Weather | NOAA GHCN-Daily, Madrid Retiro | Feb 2024 onwards | Daily | `refresh.py` |
 | Elevation | EU-DEM 25 m (OpenTopoData) | Stations | Static | new stations only, in `refresh.py` |
 | Benchmarks | ITDP, CRTM EDM 2018, Barcelona, Paris, Copenhagenize | — | Irregular | manual |

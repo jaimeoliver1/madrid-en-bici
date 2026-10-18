@@ -119,7 +119,7 @@ B["k"] = {
     "excl_km": round(float(dist.exclusive_km.sum())), "all_infra_km": round(float(dist.all_infra_km.sum())),
     "excl_km_per_100k": round(float(dist.exclusive_km.sum()) / pop * 1e5, 1),
     "stations_near_excl_pct": round(float((on.m_to_exclusive_lane <= 50).mean() * 100)),
-    "empty_now": int((on.bikes_available == 0).sum()), "snapshot": meta.get("snapshot", "2026-10-17 15:49"), "acc_last": meta.get("accidents_latest", "2026-08-31"),
+    "empty_now": int((on.bikes_available == 0).sum()), "snapshot": meta.get("snapshot", "2026-10-17 15:49"), "refreshed": meta.get("refreshed_at", "")[:10], "acc_last": meta.get("accidents_latest", "2026-08-31"),
     "daily_first": daily.date.min().strftime("%Y-%m-%d"), "daily_last": daily.date.max().strftime("%Y-%m-%d"),
     "racks": int(len(R("madrid_bike_parking.csv"))), "users_last": int(users.active_users.iloc[-1]), "users_last_month": users.month.iloc[-1],
 }

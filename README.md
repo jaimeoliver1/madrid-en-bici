@@ -11,10 +11,11 @@
 ```
 site/        the website: plain HTML + JS (d3), no build step
   index.html   page and styles
-  app.js       charts, maps, texts (ES/EN), live station updates
+  app.js       charts, maps, texts (ES/EN), live strip (polls BiciMAD every minute)
   player.js    the 24-hour animation player
   data.js      generated data bundle (pipeline/build_site.py)
   film-data.js generated animation data (pipeline/historical/)
+  basemap.js   generated map context: main roads, river, parks, landmarks (pipeline/historical/13_basemap.py)
 data/        processed open data, small CSVs, the single source for data.js
 pipeline/
   refresh.py      monthly refresh: download sources -> data/ -> site/data.js
