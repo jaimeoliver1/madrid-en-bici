@@ -1,0 +1,388 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#F5F3EE">
+<meta property="og:title" content="Madrid en bici">
+<meta property="og:description" content="¿Es fácil moverse en bici por Madrid? BiciMAD, carriles bici, cuestas y seguridad, con datos abiertos.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cg fill='none' stroke='%232747D6' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='8' cy='21' r='6'/%3E%3Ccircle cx='24' cy='21' r='6'/%3E%3Cpath d='M8 21 L13 11 H21 L24 21 M13 11 L17 21 H8'/%3E%3C/g%3E%3C/svg%3E">
+<title>Madrid en bici</title>
+<meta name="description" content="El estado de la bici en Madrid: BiciMAD, carriles bici, seguridad y qué se puede mejorar, explicado con datos abiertos.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;700;800&family=Public+Sans:wght@400;600;700&family=DM+Mono:wght@500&display=swap">
+<style>
+:root { padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); color-scheme: light }
+img { max-width: 100% }
+[hidden] { display: none !important }
+/* Layout: the "24h of BiciMAD" film's paper-street look carried into a page: a paper ground, quiet district outlines,
+   cobalt bikes, an orange accent for what needs attention, condensed street-sign headlines and mono figures. */
+:root {
+  --paper: #F5F3EE;      /* film ground */
+  --card: #FFFFFF;
+  --ink: #1A1D24;        /* film ink */
+  --muted: #5F636C;
+  --line: #E1DED6;
+  --map: #EEECE6;        /* district fill, like the film */
+  --map-edge: #D3D0C8;   /* district outline */
+  --sky: #2747D6;        /* film main: bikes, BiciMAD */
+  --lane: #16297F;       /* deeper cobalt: protected / positive */
+  --lane-soft: #DCE2F7;
+  --brick: #F07B1D;      /* film accent: needs attention */
+  --brick-soft: #FCE6D2;
+  --good: #1F8A4C; --mid: #B7810B; --bad: #C8321E;
+  --grey-map: #EEECE6;
+  --display: "Barlow Condensed", "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
+  --body: "Public Sans", "Helvetica Neue", Arial, sans-serif;
+  --mono: "DM Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --paper: #13161D; --card: #1B1F28; --ink: #ECEEF2; --muted: #A2A7B3; --line: #2C313C; --map: #1F232D; --map-edge: #343A47;
+  --sky: #7C97FF; --lane: #A9BBFF; --lane-soft: #23305E; --brick: #FF9A4D; --brick-soft: #45291A;
+  --good: #46C07A; --mid: #E2B23C; --bad: #FF6B57; --grey-map: #1F232D; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --paper: #13161D; --card: #1B1F28; --ink: #ECEEF2; --muted: #A2A7B3; --line: #2C313C; --map: #1F232D; --map-edge: #343A47;
+  --sky: #7C97FF; --lane: #A9BBFF; --lane-soft: #23305E; --brick: #FF9A4D; --brick-soft: #45291A;
+  --good: #46C07A; --mid: #E2B23C; --bad: #FF6B57; --grey-map: #1F232D; color-scheme: dark }
+
+* { box-sizing: border-box }
+body { background: var(--paper); color: var(--ink); font-family: var(--body); font-size: 17px; line-height: 1.55; margin: 0 }
+.wrap { max-width: 1120px; margin-inline: auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)) }
+a { color: var(--sky) }
+:focus-visible { outline: 3px solid var(--brick); outline-offset: 2px }
+h1, h2, h3 { font-family: var(--display); line-height: .98; text-wrap: balance; margin: 0; font-weight: 700; letter-spacing: -.005em }
+h1 { font-size: clamp(2.8rem, 7.2vw, 5.4rem) }
+h2 { font-size: clamp(2.1rem, 4.4vw, 3.3rem) }
+h3 { font-size: 1.45rem }
+p { margin: 0; max-width: 64ch }
+.num { font-family: var(--mono); font-variant-numeric: tabular-nums }
+.muted { color: var(--muted) }
+.small { font-size: .85rem }
+
+/* top bar */
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--paper) }
+.top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: color-mix(in srgb, var(--paper) 92%, transparent); backdrop-filter: blur(6px); border-bottom: 1px solid var(--line) }
+.top .wrap { display: flex; align-items: center; gap: 16px; padding-block: 10px; flex-wrap: wrap }
+.brand { font-family: var(--display); font-weight: 800; font-size: 1.4rem; letter-spacing: .02em; display: flex; align-items: center; gap: 8px; text-decoration: none; color: var(--ink) }
+.brand svg { width: 30px; height: 30px; color: var(--sky) }
+.nav { display: flex; gap: 16px; flex-wrap: wrap; margin-left: auto }
+.nav a { color: var(--muted); text-decoration: none; font: 500 .95rem var(--display); letter-spacing: .12em; text-transform: uppercase }
+.nav a:hover { color: var(--sky) }
+.lang { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; overflow: hidden }
+.lang button { font: 500 .8rem var(--mono); background: transparent; color: var(--muted); border: 0; padding: 5px 10px; cursor: pointer }
+.lang button[aria-pressed="true"] { background: var(--ink); color: var(--paper) }
+
+/* section structure */
+.stop { position: relative; padding-block: 72px; border-top: 1px solid var(--line) }
+.kicker { font: 500 1rem var(--display); letter-spacing: .16em; text-transform: uppercase; color: var(--sky); margin-bottom: 12px; display: flex; align-items: center; gap: 10px }
+.kicker i { width: 28px; height: 6px; border-radius: 3px; background: currentColor; display: inline-block; transform-origin: 0 50% }
+.stop.problem .kicker { color: var(--brick) }
+.lede { font-size: 1.2rem; margin-top: 16px; color: var(--muted) }
+.lede b { color: var(--ink) }
+
+/* hero + film player */
+.hero { padding-block: 48px 30px }
+.hero .lede { font-size: 1.28rem; max-width: 54ch }
+.player { margin-top: 30px; display: grid; grid-template-columns: minmax(0, 330px) minmax(0, 1fr); gap: 28px; align-items: stretch }
+@media (max-width: 820px) { .player { grid-template-columns: 1fr } }
+.hud { display: flex; flex-direction: column; gap: 14px; min-width: 0 }
+.hud .clock { font: 500 clamp(4rem, 9vw, 6.6rem)/.86 var(--mono); letter-spacing: -.04em }
+.hud .count { font: 500 2.6rem/1 var(--mono) }
+.hud .lab { font-size: .92rem; color: var(--muted); line-height: 1.35 }
+.hud .flow { display: flex; align-items: center; gap: 8px; font-size: .85rem; color: var(--muted) }
+.hud .flow i { width: 26px; height: 6px; border-radius: 3px; background: linear-gradient(90deg, color-mix(in srgb, var(--sky) 15%, transparent), var(--sky)) }
+.controls { display: flex; align-items: center; gap: 10px; flex-wrap: wrap }
+.btn { font: 700 .9rem var(--body); border: 1px solid var(--ink); background: var(--ink); color: var(--paper); border-radius: 999px; padding: 8px 16px; cursor: pointer; display: inline-flex; gap: 8px; align-items: center }
+.btn.ghost { background: transparent; color: var(--ink); border-color: var(--line) }
+.btn svg { width: 14px; height: 14px }
+input[type=range] { width: 100%; accent-color: var(--sky) }
+.stage { position: relative; background: var(--card); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; min-height: 420px; touch-action: none }
+.stage canvas { display: block; width: 100%; height: 100%; cursor: grab }
+.stage canvas:active { cursor: grabbing }
+.filmlink { font-size: .85rem }
+
+/* map zoom controls (shared by every map) */
+.zoomui { position: absolute; top: 10px; right: 10px; display: flex; flex-direction: column; gap: 6px; z-index: 3 }
+.zoomui button { width: 34px; height: 34px; border-radius: 10px; border: 1px solid var(--line); background: var(--card); color: var(--ink); font: 700 1.1rem var(--body); cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,.08) }
+.zoomhint { position: absolute; left: 50%; bottom: 12px; transform: translateX(-50%); background: var(--ink); color: var(--paper); font-size: .8rem; padding: 6px 12px; border-radius: 999px; z-index: 3; pointer-events: none; white-space: nowrap }
+.mapbox { position: relative; touch-action: pan-y }
+.mapbox svg { cursor: grab }
+.mapbox svg path, .mapbox svg circle { vector-effect: non-scaling-stroke }
+
+/* scorecard */
+.score { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 14px; margin-top: 26px }
+.tile { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 18px; display: flex; flex-direction: column; gap: 10px; min-width: 0 }
+.tile .q { font: 700 1.3rem/1.05 var(--display) }
+.tile .v { font: 500 2.4rem/1 var(--mono); letter-spacing: -.03em }
+.tile .u { font-size: .86rem; color: var(--muted); line-height: 1.38 }
+.grade { align-self: flex-start; font: 500 .72rem var(--mono); letter-spacing: .08em; text-transform: uppercase; padding: 4px 9px; border-radius: 999px; display: inline-flex; gap: 6px; align-items: center }
+.grade::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: currentColor }
+.g-good { color: var(--good); background: color-mix(in srgb, var(--good) 14%, transparent) }
+.g-mid { color: var(--mid); background: color-mix(in srgb, var(--mid) 16%, transparent) }
+.g-bad { color: var(--bad); background: color-mix(in srgb, var(--bad) 14%, transparent) }
+.meter { position: relative; height: 10px; border-radius: 5px; background: var(--map) }
+.meter .tgt { position: absolute; top: 0; bottom: 0; background: color-mix(in srgb, var(--good) 32%, transparent); border-radius: 5px }
+.meter .me { position: absolute; top: -4px; width: 4px; height: 18px; border-radius: 2px; background: var(--ink); transition: left .9s cubic-bezier(.2,.8,.2,1) }
+.meter-l { display: flex; justify-content: space-between; font-size: .72rem; color: var(--muted); font-family: var(--mono) }
+
+/* generic layout */
+.cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 430px), 1fr)); gap: 28px; margin-top: 30px; align-items: start }
+.cols > * { min-width: 0 }
+.panel { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 18px; min-width: 0 }
+.panel h3 { margin-bottom: 4px }
+.panel .note { font-size: .88rem; color: var(--muted); margin-bottom: 10px }
+.big3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap: 18px; margin-top: 28px }
+.bign { display: flex; flex-direction: column; gap: 4px }
+.bign .v { font: 500 clamp(2.2rem, 5vw, 3.2rem)/1 var(--mono); letter-spacing: -.04em }
+.bign .l { color: var(--muted); font-size: .95rem; line-height: 1.35 }
+.chart { position: relative; width: 100% }
+.chart svg { display: block; width: 100%; height: auto; overflow: visible }
+.chart text { fill: var(--muted); font-family: var(--mono); font-size: 11px }
+.chart .lbl { fill: var(--ink); font-family: var(--body); font-weight: 700; font-size: 12px }
+.tip { position: absolute; pointer-events: none; background: var(--card); color: var(--ink); border: 1px solid var(--line); border-radius: 8px; padding: 6px 9px; font-size: .8rem; line-height: 1.35; box-shadow: 0 6px 18px rgba(0,0,0,.14); z-index: 4; max-width: 240px }
+.tip b { display: block }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: .82rem; color: var(--muted); margin-block: 8px }
+.legend span { display: inline-flex; align-items: center; gap: 6px }
+.sw { width: 14px; height: 6px; border-radius: 3px; display: inline-block }
+.dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block }
+.callout { border-left: 6px solid var(--brick); background: var(--brick-soft); padding: 14px 16px; border-radius: 0 12px 12px 0; margin-top: 22px; max-width: 70ch }
+
+/* fixes */
+.fixes { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: 16px; margin-top: 30px }
+.fix { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 20px; display: flex; flex-direction: column; gap: 10px }
+.fix .now { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; font-size: .9rem }
+.fix .now b { font-family: var(--mono); font-weight: 500 }
+.fix .src { font-size: .78rem; color: var(--muted) }
+.lever { font: 500 .85rem var(--display); text-transform: uppercase; letter-spacing: .14em; color: var(--sky) }
+
+footer { border-top: 1px solid var(--line); padding-block: 40px 60px; font-size: .88rem; color: var(--muted) }
+footer ul { padding-left: 18px; margin: 8px 0 0 }
+footer li { margin-bottom: 4px }
+.method { columns: 2 320px; column-gap: 32px }
+.method p { margin-bottom: 10px; break-inside: avoid }
+
+/* motion: pulses on things that need attention; everything is readable without it */
+@media (prefers-reduced-motion: no-preference) {
+  .pulse { animation: pulse 2.4s ease-out infinite; transform-box: fill-box; transform-origin: center }
+  @keyframes pulse { 0% { opacity: .9; transform: scale(1) } 80%, 100% { opacity: 0; transform: scale(3.2) } }
+  .stop.inview .kicker i { animation: grow .7s cubic-bezier(.2,.8,.2,1) both }
+  @keyframes grow { from { transform: scaleX(0) } to { transform: scaleX(1) } }
+}
+</style>
+
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#inicio" aria-label="Madrid en bici">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="8" cy="21" r="6" fill="none" stroke="currentColor" stroke-width="2.6"/><circle cx="24" cy="21" r="6" fill="none" stroke="currentColor" stroke-width="2.6"/><path d="M8 21 L13 11 H21 L24 21 M13 11 L17 21 H8 M19 7 H23" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span>MADRID EN BICI</span>
+    </a>
+    <nav class="nav" aria-label="Secciones">
+      <a href="#bicimad" data-i18n="nav_bicimad">BiciMAD</a>
+      <a href="#barrios" data-i18n="nav_barrios">Barrios</a>
+      <a href="#cuestas" data-i18n="nav_cuestas">Cuestas</a>
+      <a href="#carriles" data-i18n="nav_carriles">Carriles</a>
+      <a href="#seguridad" data-i18n="nav_seguridad">Seguridad</a>
+      <a href="#mejorar" data-i18n="nav_mejorar">Qué mejorar</a>
+    </nav>
+    <div class="lang" role="group" aria-label="Idioma / Language">
+      <button type="button" id="lang-es" aria-pressed="true">ES</button>
+      <button type="button" id="lang-en" aria-pressed="false">EN</button>
+    </div>
+  </div>
+</header>
+
+<main id="inicio">
+  <section class="wrap hero">
+    <div class="kicker"><i></i><span data-i18n="hero_kicker">BiciMAD · Madrid</span></div>
+    <h1 data-i18n="hero_h1">¿Es fácil moverse en bici por Madrid?</h1>
+    <p class="lede" data-i18n-html="hero_lede">Cada vez más gente usa la bici, pero la red tiene <b>huecos, cuestas y cruces peligrosos</b>. Aquí lo contamos con datos, en un vistazo.</p>
+
+    <div class="player" id="player">
+      <div class="hud">
+        <p class="small muted" id="pl-date" data-i18n="pl_date">Jueves 12 de enero de 2023</p>
+        <div class="clock" id="pl-clock">08:30</div>
+        <div><div class="count" id="pl-count">0</div><div class="lab" data-i18n="pl_moving">bicis circulando ahora</div></div>
+        <div class="chart" id="pl-bars"></div>
+        <div class="flow"><i></i><span data-i18n="pl_flow">Calles más oscuras: más bicis en la última hora</span></div>
+        <div class="controls">
+          <button type="button" class="btn" id="pl-play" aria-pressed="false"></button>
+          <button type="button" class="btn ghost" id="pl-speed">1×</button>
+        </div>
+        <label class="small muted" for="pl-time" data-i18n="pl_scrub">Arrastra para moverte por el día</label>
+        <input type="range" id="pl-time" min="0" max="1440" step="1" value="510">
+        <p class="filmlink small muted" data-i18n-html="pl_note">Cada punto es una bici real de BiciMAD, por la ruta ciclista más probable entre sus dos estaciones.</p>
+      </div>
+      <div class="stage" id="pl-stage"><canvas id="pl-canvas" aria-label="Animación de 24 horas de BiciMAD" role="img"></canvas></div>
+    </div>
+
+    <h2 style="margin-top:56px;font-size:clamp(1.8rem,3.4vw,2.6rem)" data-i18n="score_h">La nota de Madrid</h2>
+    <p class="muted small" style="margin-top:6px" data-i18n="score_sub">Cada tarjeta compara Madrid con lo que recomiendan las guías de planificación o con otras ciudades. La franja verde es el objetivo.</p>
+    <div class="score" id="score"></div>
+  </section>
+
+  <section class="stop" id="bicimad">
+    <div class="wrap">
+      <div class="kicker"><i></i><span data-i18n="s1_k">1 · BiciMAD</span></div>
+      <h2 data-i18n="s1_h">BiciMAD funciona y no para de crecer</h2>
+      <p class="lede" data-i18n-html="s1_lede">La bici pública de Madrid bate récords. Ya es una forma normal de moverse por el centro.</p>
+      <div class="big3" id="bicimad-nums"></div>
+      <div class="cols">
+        <div class="panel">
+          <h3 data-i18n="s1_c1">Viajes al día, mes a mes</h3>
+          <p class="note" data-i18n="s1_c1n">Media de viajes diarios cada mes. Septiembre es siempre el mes estrella; agosto, el más flojo.</p>
+          <div class="chart" id="ch-monthly"></div>
+        </div>
+        <div class="panel">
+          <h3 data-i18n="s1_c2">Se usa para ir a trabajar</h3>
+          <p class="note" data-i18n="s1_c2n">Viajes que empiezan cada hora (datos de 2023). Entre semana hay dos picos: ir y volver del trabajo.</p>
+          <div class="chart" id="ch-hourly"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="stop problem" id="barrios">
+    <div class="wrap">
+      <div class="kicker"><i></i><span data-i18n="s2_k">2 · Cobertura</span></div>
+      <h2 data-i18n="s2_h">Casi todos tienen una estación cerca… pero no las suficientes</h2>
+      <p class="lede" data-i18n-html="s2_lede"></p>
+      <div class="cols">
+        <div class="panel">
+          <h3 data-i18n="s2_c1">Estaciones por km², barrio a barrio</h3>
+          <p class="note" data-i18n="s2_c1n"></p>
+          <div class="legend" id="lg-barrios"></div>
+          <div class="chart mapbox" id="ch-barrios"></div>
+        </div>
+        <div class="panel">
+          <h3 data-i18n="s2_c2">¿Dónde vive la gente?</h3>
+          <p class="note" data-i18n="s2_c2n"></p>
+          <div class="chart" id="ch-coverage"></div>
+          <h3 style="margin-top:22px" data-i18n="s2_c3">Distrito a distrito</h3>
+          <p class="note" data-i18n="s2_c3n"></p>
+          <div class="chart" id="ch-districts"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="stop problem" id="cuestas">
+    <div class="wrap">
+      <div class="kicker"><i></i><span data-i18n="s3_k">3 · Cuestas</span></div>
+      <h2 data-i18n="s3_h">Las bicis bajan solas… y alguien tiene que subirlas</h2>
+      <p class="lede" data-i18n-html="s3_lede"></p>
+      <div class="cols">
+        <div class="panel">
+          <h3 data-i18n="s3_c1"></h3>
+          <p class="note" data-i18n="s3_c1n"></p>
+          <div class="chart" id="ch-slope"></div>
+        </div>
+        <div class="panel">
+          <h3 data-i18n="s3_c2"></h3>
+          <p class="note" data-i18n="s3_c2n"></p>
+          <div class="legend"><span><i class="dot" style="background:var(--bad)"></i><span data-i18n="empty">Vacía</span></span><span><i class="dot" style="background:var(--sky)"></i><span data-i18n="hasbikes">Con bicis</span></span></div>
+          <div class="chart mapbox" id="ch-empty"></div>
+        </div>
+      </div>
+      <div class="callout" id="cuestas-callout"></div>
+    </div>
+  </section>
+
+  <section class="stop problem" id="carriles">
+    <div class="wrap">
+      <div class="kicker"><i></i><span data-i18n="s4_k">4 · Carriles bici</span></div>
+      <h2 data-i18n="s4_h">Muchos kilómetros, poca protección</h2>
+      <p class="lede" data-i18n-html="s4_lede"></p>
+      <div class="big3" id="lane-nums"></div>
+      <div class="cols">
+        <div class="panel">
+          <h3 data-i18n="s4_c1"></h3>
+          <div class="legend" id="lg-lanes"></div>
+          <div class="chart mapbox" id="ch-lanes"></div>
+        </div>
+        <div class="panel">
+          <h3 data-i18n="s4_c2"></h3>
+          <p class="note" id="routes-note" data-i18n="s4_c2n"></p>
+          <div class="chart mapbox" id="ch-routes"></div>
+          <div class="chart" id="ch-routeshare" style="margin-top:14px"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="stop problem" id="seguridad">
+    <div class="wrap">
+      <div class="kicker"><i></i><span data-i18n="s5_k">5 · Seguridad</span></div>
+      <h2 data-i18n="s5_h">Más bicis, más accidentes: hay que proteger el crecimiento</h2>
+      <p class="lede" data-i18n-html="s5_lede"></p>
+      <div class="cols">
+        <div class="panel">
+          <h3 data-i18n="s5_c1"></h3>
+          <p class="note" data-i18n="s5_c1n"></p>
+          <div class="chart mapbox" id="ch-accmap"></div>
+        </div>
+        <div>
+          <div class="panel">
+            <h3 data-i18n="s5_c2"></h3>
+            <p class="note" data-i18n="s5_c2n"></p>
+            <div class="chart" id="ch-accyear"></div>
+          </div>
+          <div class="panel" style="margin-top:18px">
+            <h3 data-i18n="s5_c3"></h3>
+            <div class="chart" id="ch-hotspots"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="stop" id="tiempo">
+    <div class="wrap">
+      <div class="kicker"><i></i><span data-i18n="s6_k">6 · Calles y tiempo</span></div>
+      <h2 data-i18n="s6_h">La lluvia frena, el calor casi no</h2>
+      <p class="lede" data-i18n-html="s6_lede"></p>
+      <div class="cols">
+        <div class="panel">
+          <h3 data-i18n="s6_c1"></h3>
+          <p class="note" data-i18n="s6_c1n"></p>
+          <div class="chart" id="ch-rain"></div>
+          <div class="chart" id="ch-heat" style="margin-top:16px"></div>
+        </div>
+        <div class="panel">
+          <h3 data-i18n="s6_c2"></h3>
+          <p class="note" data-i18n="s6_c2n"></p>
+          <div class="chart" id="ch-counters"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="stop" id="mejorar">
+    <div class="wrap">
+      <div class="kicker"><i></i><span data-i18n="s7_k">7 · Qué mejorar</span></div>
+      <h2 data-i18n="s7_h">Seis cambios que harían Madrid más ciclable</h2>
+      <p class="lede" data-i18n="s7_lede"></p>
+      <div class="fixes" id="fixes"></div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <h3 data-i18n="m_h">Cómo lo hemos calculado</h3>
+    <div class="method" id="method" style="margin-top:12px"></div>
+    <h3 style="margin-top:22px" data-i18n="src_h">Fuentes</h3>
+    <ul id="sources"></ul>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<script src="data.js"></script>
+<script src="film-data.js"></script>
+<script src="app.js"></script>
+<script src="player.js"></script>
+</body>
+</html>

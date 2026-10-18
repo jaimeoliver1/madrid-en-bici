@@ -1,0 +1,20 @@
+metric,label,value
+records,Trip records (non-blank rows),464417
+bounces,"Excluded: under 1 min, or back at the same station within 2 min",119186
+over_3h,Trips over 3 hours,2338
+nonpositive,Zero or negative duration,19
+dur_mismatch,trip_minutes disagrees with timestamps by >2 min,17466
+dockless,Trips ending outside a station (fleet 2),1440
+valid,Trips kept for analysis,342874
+days,Days covered,49
+avg_daily,Average trips per day,6997
+weekday_avg,Average trips per weekday,7737
+weekend_avg,Average trips per weekend day,5147
+dur_median,Median duration (min),11.6
+dur_p90,90th percentile duration (min),24.1
+km_median,Median straight-line distance (km),1.96
+speed_median,Median straight-line speed (km/h),10.7
+same_station_share,Round trips to the same station (%),5.1
+bikes,Distinct bikes used,3270
+stations,Stations with trips,261
+trips_per_bike_day,Median trips per bike per day,2.04

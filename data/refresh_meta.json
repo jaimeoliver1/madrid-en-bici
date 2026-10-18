@@ -1,0 +1,16 @@
+{
+ "refreshed_at": "2026-10-18T20:39",
+ "daily_trips": "2024-02-01 to 2026-09-30 (973 days)",
+ "active_users": "2024-02 to 2026-09",
+ "weather_days_missing": 0,
+ "bike_infrastructure_segments": 1786,
+ "stations": 678,
+ "stations_in_service": 676,
+ "new_station_elevations": 0,
+ "fleet": 9421,
+ "snapshot": "2026-10-18 22:39",
+ "accidents": "6988 located accidents, latest 2026-08-31",
+ "accidents_latest": "2026-08-31",
+ "bike_racks": 7431,
+ "population": "3497277 (1 de enero de 2026)"
+}
