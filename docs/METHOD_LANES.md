@@ -33,7 +33,7 @@ Inputs for Madrid:
 
 Demand is every station-to-station BiciMAD trip of 1 January – 18 February 2023 (about 324,000 trips), the last trip-by-trip data EMT has published. Each trip is routed on the OpenStreetMap street network with Dijkstra's algorithm (SciPy), one run per origin station.
 
-When a corridor is protected, its segments become separated paths and **every trip is routed again**. Riders who now find the protected street cheaper switch to it. Routing is all-or-nothing: each trip takes its single best route.
+When a corridor is protected, its segments become separated paths, usable in **both directions** even where the street is one-way for cars (a two-way protected lane, or one on each side), and **every trip is routed again**. Riders who now find the protected street cheaper switch to it. Routing is all-or-nothing: each trip takes its single best route.
 
 BiciMAD is only part of Madrid's cycling. To value effects for all cyclists, modelled BiciMAD flows are compared with the city's automatic bike counters (2023 average daily bikes) at the 35 counters on streets with modelled BiciMAD traffic: the median ratio is **2.7**.
 
@@ -62,7 +62,7 @@ That is about **€24,800 per recorded bike accident** on average. For compariso
 
 **What a protected lane does.** A newly protected segment's injury rate is multiplied by **0.72**, the relative risk of injury on cycle tracks against comparable streets found by **Lusk et al. (2011)** in Montreal (95% CI 0.60–0.85). **Teschke et al. (2012)** found a much larger effect (odds ratio 0.11 against major streets with parked cars); we use the more conservative value.
 
-Expected injury cost on a street = bike-km ridden on it × its injury rate × cost per accident. Because re-routing moves riders between streets, the safety effect includes riders leaving dangerous streets as well as the protected street becoming safer.
+**What is counted: protection only.** The safety benefit is the injury cost avoided by riders on the newly protected streets: their bike-km × the street's injury rate × (1 − 0.72) × cost per accident. Changes in risk when riders switch route are **not** counted. Comparing risk between street types needs exposure for all cyclists by street type, and with BiciMAD-only exposure Madrid's existing separated lanes come out at 160 accidents per million BiciMAD-km, above residential streets (131): accidents at junctions get attached to the lane, and private cyclists use these lanes in different proportions. Until this can be measured properly, the route-switching part is left out rather than counted with a biased rate.
 
 ## 5. Cost of building
 
@@ -74,10 +74,12 @@ All prices are moved to 2025 euros with Eurostat's harmonised consumer price ind
 
 ## 6. Choosing the network
 
-1. Candidates are the most promising corridors from `14_lane_priority.py`: named street pieces of about 1 km, ranked by bikes, stress and accidents per km, by total score, and by accidents.
-2. Each candidate is valued on its own (re-routing everything).
-3. Corridors are added one at a time, always the one with the highest **benefit-cost ratio** for the network built so far. After each addition, corridors that touch it are re-valued at once, because connections can make them worth more; others are re-valued lazily when they reach the top.
-4. It stops when the budget is spent or when no addition returns more than it costs (benefit-cost ratio below 1).
+1. **Streets, not carriageways.** OpenStreetMap stores each side of a boulevard as a separate one-way road. All road segments with the same street name within 60 m of each other (both carriageways and the side roads of Castellana, for example) are merged into one street, then cut into pieces of about 1 km along the street. A piece costs its length of street once, at the avenue price if any of it is a trunk, primary or secondary road.
+2. **Three kinds of candidates.** The most promising pieces (ranked by stress-weighted bike-km and accidents, per km and in total), whole streets (when two or more of their pieces are promising), and three axes that cross several street names: Atocha – Prado – Recoletos – Castellana (to Nuevos Ministerios), Bailén – Plaza de España – Princesa, and the southern Rondas. An option only pays for the pieces not yet built.
+3. Each candidate is valued on its own (re-routing everything).
+4. Options are added one at a time, always the one with the highest **benefit-cost ratio** for the network built so far. After each addition, options that touch it are re-valued at once, because connections can make them worth more; others are re-valued lazily when they reach the top.
+5. It stops when the budget is spent or when no addition returns more than it costs (benefit-cost ratio below 1).
+6. **Two plans are built and compared**: best-first from an empty network, and the same procedure starting with the Atocha – Castellana axis. A step-by-step method depends on its first choices, so comparing whole plans checks whether a network built around the main axis does better. The headline plan is the one with the larger **net benefit** (yearly benefit minus yearly cost).
 
 ## What this leaves out
 
