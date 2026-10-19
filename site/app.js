@@ -15,6 +15,8 @@
   // ---------- language ----------
   const T = {
     es: {
+      theme_light: "Modo claro",
+      theme_dark: "Modo oscuro",
       b_pick: "Elige tu barrio",
       v_hill: " Sus estaciones están altas ({e} m de media), así que <b>a menudo se vacían</b>.",
       v_ok: "<b>Buena cobertura</b>: tienes estaciones cerca de casa.",
@@ -98,13 +100,15 @@
       fr_r_acc: "Accidentes con bicicleta", fr_c_acc: "Registros de la Policía Municipal",
       fr_r_city: "Carriles bici, aparcabicis, población y barrios", fr_c_city: "Cuando el Ayuntamiento los cambia; lo revisamos cada mes", fr_u_city: "Revisado el {refreshed}",
       fr_r_wx: "Lluvia y temperatura (El Retiro)", fr_c_wx: "Diaria; la incorporamos cada mes",
-      fr_r_2023: "Viajes uno a uno: rutas, cuestas, horas y la animación de 24 h", fr_c_2023: "La EMT no publica viajes individuales desde febrero de 2023", fr_u_2023: "18 feb 2023",
+      fr_r_2023: "Viajes uno a uno: rutas, cuestas, horas y la animación de 24 h", fr_c_2023: "La EMT no publica viajes individuales desde febrero de 2023. Los hemos pedido: solicitud al Portal de Transparencia y correo a la EMT (octubre de 2026).", fr_u_2023: "18 feb 2023",
       fr_r_cnt: "Contadores automáticos de bicis", fr_c_cnt: "Último año completo publicado", fr_u_cnt: "2023",
       fr_auto: "La web se actualiza sola el día 10 de cada mes. Última actualización: {refreshed}.",
       fr_fn1: "Contamos cuántas bicis desaparecen de cada estación entre una lectura y la siguiente (cada minuto). Es una estimación: si alguien coge y deja una bici en la misma estación en ese minuto no se ve, y las furgonetas que redistribuyen bicis también cuentan.",
       fc_bicimad: "Se actualiza cada mes · datos hasta {dlast}", fc_barrios: "Bicis en directo · estaciones revisadas cada mes", fc_cuestas: "Mapa en directo · flujos de 2023", fc_carriles: "Carriles revisados cada mes · rutas de 2023", fc_seguridad: "Se actualiza cada mes · datos hasta {accend}", fc_tiempo: "Se actualiza cada mes",
     },
     en: {
+      theme_light: "Light mode",
+      theme_dark: "Dark mode",
       b_pick: "Pick your barrio",
       v_hill: " Its stations sit high ({e} m on average), so <b>they often run empty</b>.",
       v_ok: "<b>Good coverage</b>: there are stations close to home.",
@@ -188,7 +192,7 @@
       fr_r_acc: "Bike accidents", fr_c_acc: "Municipal police records",
       fr_r_city: "Bike lanes, bike racks, population and barrios", fr_c_city: "When the City Council changes them; we check every month", fr_u_city: "Checked on {refreshed}",
       fr_r_wx: "Rain and temperature (El Retiro)", fr_c_wx: "Daily; we add it every month",
-      fr_r_2023: "Trip-by-trip data: routes, hills, hours and the 24-hour animation", fr_c_2023: "EMT has not published individual trips since February 2023", fr_u_2023: "18 Feb 2023",
+      fr_r_2023: "Trip-by-trip data: routes, hills, hours and the 24-hour animation", fr_c_2023: "EMT has not published individual trips since February 2023. We have asked for them: a request through the Transparency Portal and an email to EMT (October 2026).", fr_u_2023: "18 Feb 2023",
       fr_r_cnt: "Automatic bike counters", fr_c_cnt: "Latest full year published", fr_u_cnt: "2023",
       fr_auto: "The site updates itself on the 10th of every month. Last update: {refreshed}.",
       fr_fn1: "We count how many bikes disappear from each station between one reading and the next (every minute). It's an estimate: a bike taken and returned to the same station within that minute isn't seen, and the vans that rebalance bikes are counted too.",
@@ -757,6 +761,20 @@
   ["es", "en"].forEach(l => document.getElementById("lang-" + l).addEventListener("click", () => { L = l; try { localStorage.setItem("mc-lang", l); } catch (e) {} render(); }));
   let w = window.innerWidth;
   window.addEventListener("resize", () => { if (Math.abs(window.innerWidth - w) > 40) { w = window.innerWidth; render(); } });
-  matchMedia("(prefers-color-scheme: dark)").addEventListener?.("change", render);
+  // light by default; dark only when the visitor picks it (remembered on this device)
+  const themeBtn = document.getElementById("theme");
+  function themeLabel() {
+    const dark = document.documentElement.dataset.theme === "dark";
+    themeBtn.textContent = dark ? "☀" : "☾"; themeBtn.setAttribute("aria-pressed", String(dark));
+    themeBtn.title = t(dark ? "theme_light" : "theme_dark"); themeBtn.setAttribute("aria-label", themeBtn.title);
+    document.querySelector('meta[name="theme-color"]').content = css("--paper");
+  }
+  themeBtn.addEventListener("click", () => {
+    const dark = document.documentElement.dataset.theme !== "dark";
+    if (dark) document.documentElement.dataset.theme = "dark"; else delete document.documentElement.dataset.theme;
+    try { localStorage.setItem("mc-theme", dark ? "dark" : "light"); } catch (e) {}
+    render();
+  });
+  window.addEventListener("mc-render", themeLabel);
   render();
 })();

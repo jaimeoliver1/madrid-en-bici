@@ -211,6 +211,5 @@
 
   function setup() { readColors(); size(); buildBars(); labelPlay(); document.getElementById("pl-day").textContent = T("pl_day"); ui.querySelectorAll("button").forEach(b => { b.title = T(b.dataset.k); b.setAttribute("aria-label", T(b.dataset.k)); }); draw(); }
   window.addEventListener("mc-render", setup);
-  matchMedia("(prefers-color-scheme: dark)").addEventListener?.("change", setup);
   setup();
 })();
