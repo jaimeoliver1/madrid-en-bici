@@ -17,6 +17,7 @@ They only need to run again if EMT publishes new trip data, or to reproduce the 
 | `08_barrios.py` | barrio shapefile, padrón | `data/madrid_barrios_bicimad.csv` |
 | `11_all_routes.py` | BBBike `Madrid.osm.pbf`, 2023 trips, infrastructure shapefile | `data/bicimad_2023_routes_all.csv.gz`, `bicimad_2023_top_routes_routed.csv` |
 | `film_01_day_data.py` → `10_film_routes.py` → `12_build_film_data.py` | 2023 trips, OSM extract | `site/film-data.js` (animation data) |
+| `14_lane_priority.py` | OSM extract, 2023 trips, infrastructure shapefile, `data/madrid_bike_accidents.csv` | `data/lane_priority.csv` (street corridors ranked for a new protected lane: bikes riding unprotected × traffic stress, plus accidents; `--w-bikes` sets the balance) |
 | `13_basemap.py` | OSM extract (BBBike Madrid `.osm.pbf`) | `site/basemap.js` (main roads, Manzanares, parks, landmarks under every map) |
 
 Where the raw files come from is listed in `docs/DATA_SOURCES.md`.
