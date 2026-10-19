@@ -14,9 +14,10 @@ Method (approach A, a static ranking):
   5. Score = w * (share of the city's stress-weighted unprotected bike-km) + (1 - w) * (share of weighted accidents),
      and rank corridors by score per km of street.
 Stress is a proxy for the level of traffic stress (Mekuria et al. 2012) from road class and lane count:
-residential 0.2, tertiary 0.5, secondary 0.85, primary 1.
+residential 0.2, tertiary 0.5, secondary 0.85, primary and trunk 1; the side roads of a big boulevard (same name
+as a trunk or primary carriageway) count 0.5.
 """
-import sys, os, ast, math, heapq, argparse, numpy as np, pandas as pd, osmium, shapefile
+import sys, os, ast, math, heapq, argparse, zlib, numpy as np, pandas as pd, osmium, shapefile
 from pyproj import Transformer
 from shapely.geometry import LineString, Point
 from shapely.ops import unary_union
@@ -27,13 +28,16 @@ from scipy.spatial import cKDTree
 ap = argparse.ArgumentParser()
 ap.add_argument("pbf"); ap.add_argument("trips"); ap.add_argument("shp"); ap.add_argument("data")
 ap.add_argument("--w-bikes", type=float, default=0.5)
+ap.add_argument("--what-if", default="", help="';'-separated street names to treat as already protected when routing (latent demand test)")
 A = ap.parse_args()
+WHATIF = set(filter(None, A.what_if.split(";")))
 CACHE = os.path.join(os.path.dirname(os.path.abspath(A.data)), ".cache"); os.makedirs(CACHE, exist_ok=True)
 
 COST = {"cycleway": 0.6, "living_street": 0.9, "residential": 1.0, "unclassified": 1.0, "service": 1.15, "busway": 1.1,
         "tertiary": 1.15, "tertiary_link": 1.15, "secondary": 1.35, "secondary_link": 1.35, "primary": 1.6, "primary_link": 1.6,
-        "pedestrian": 1.3, "path": 1.0, "track": 1.2, "footway": 1.6, "steps": 12.0}
-CANDIDATE = {"primary": 1.0, "secondary": 0.85, "tertiary": 0.5, "residential": 0.2, "unclassified": 0.2}
+        "trunk": 1.9, "trunk_link": 1.9, "pedestrian": 1.3, "path": 1.0, "track": 1.2, "footway": 1.6, "steps": 12.0}
+# Madrid's big boulevards (Castellana, Recoletos, Prado) are "trunk" in OSM: urban, 50 km/h, bikes allowed
+CANDIDATE = {"trunk": 1.0, "primary": 1.0, "secondary": 0.85, "tertiary": 0.5, "residential": 0.2, "unclassified": 0.2}
 BBOX = (40.37, 40.50, -3.76, -3.61)
 DAYS = 49  # 1 Jan - 18 Feb 2023
 
@@ -48,6 +52,7 @@ class H(osmium.SimpleHandler):
         except osmium.InvalidLocationError: return
         if not any(BBOX[0] <= la <= BBOX[1] and BBOX[2] <= lo <= BBOX[3] for _, lo, la in pts): return
         f = COST[hw]
+        if t.get("name") in WHATIF: f = COST["cycleway"]
         if hw != "cycleway" and (t.get("bicycle") == "designated" or any(t.get(k, "").startswith(("track", "lane", "separate"))
                                                                      for k in ("cycleway", "cycleway:left", "cycleway:right", "cycleway:both"))):
             f = min(f, 0.75)
@@ -75,7 +80,7 @@ EK = list(edge_way); EIDX = {k: i for i, k in enumerate(EK)}
 print("graph", len(coord), "edges", len(EK), flush=True)
 
 # ---------- trips per edge (cached: routing takes a few minutes) ----------
-cache = os.path.join(CACHE, "edge_trips.npz")
+cache = os.path.join(CACHE, "edge_trips.npz" if not WHATIF else "edge_trips_whatif_%08x.npz" % zlib.crc32(A.what_if.encode()))
 if os.path.exists(cache) and np.load(cache)["n"] == len(EK):
     etrips = np.load(cache)["t"]; print("edge trips from cache", flush=True)
 else:
@@ -137,6 +142,9 @@ for i, (a, b) in enumerate(EK):
     if stress is not None and hw == "tertiary" and lanes >= 3: stress = 0.85
     rows.append((i, a, b, hw, name, L, mx, my, etrips[i], stress))
 E = pd.DataFrame(rows, columns=["i", "a", "b", "hw", "name", "len", "mx", "my", "trips", "stress"])
+# side roads of a boulevard: tagged residential but they run beside 3-6 lanes of traffic
+big = set(E.loc[E.hw.isin(["trunk", "primary"]), "name"]) - {""}
+E.loc[E.hw.isin(["residential", "unclassified"]) & E.name.isin(big), "stress"] = 0.5
 E["protected"] = [EXB.contains(Point(x, y)) for x, y in zip(E.mx, E.my)]
 E["cand"] = E.stress.notna() & ~E.protected & (E.name != "")
 E["bkm"] = E.trips * E.len / 1000 / DAYS                     # bike-km per day
@@ -147,7 +155,7 @@ print("candidate edges", int(E.cand.sum()), "of", len(E), flush=True)
 acc = pd.read_csv(os.path.join(A.data, "madrid_bike_accidents.csv"))
 acc = acc.dropna(subset=["lat", "lon"])
 acc["w"] = 1 + 4 * ((acc.serious > 0) | (acc.killed > 0))
-road = E[E.hw.isin(list(CANDIDATE) + ["living_street", "service", "busway", "tertiary_link", "secondary_link", "primary_link", "cycleway"])]
+road = E[E.hw.isin(list(CANDIDATE) + ["living_street", "service", "busway", "tertiary_link", "secondary_link", "primary_link", "trunk_link", "cycleway"])]
 lines = [LineString([xy[a], xy[b]]) for a, b in zip(road.a, road.b)]
 tree = STRtree(lines)
 AX, AY = fw.transform(acc.lon.values, acc.lat.values)
@@ -158,6 +166,7 @@ ridx = road.index.values
 for q, t_ in zip(qi, ti):
     j = ridx[t_]; E.at[j, "acc"] += 1; E.at[j, "acc_w"] += acc.w.iat[q]; E.at[j, "acc_sev"] += acc.w.iat[q] > 1
 years = (pd.Timestamp(acc.year.max(), 8, 31) - pd.Timestamp(acc.year.min(), 1, 1)).days / 365.25
+E.to_pickle(os.path.join(CACHE, "edges.pkl"))  # for diagnostics
 print("accidents", len(acc), "snapped", len(qi), "years", round(years, 2), flush=True)
 
 # ---------- corridors: same name + connected, cut into ~1 km pieces along the street's main axis ----------
@@ -185,13 +194,14 @@ for comp, g in C.groupby("comp"):
     for j in range(k):
         gg = g[cut == j]
         if gg.empty: continue
-        # street length, not lane length: a dual carriageway counts once (sum/2), a winding street keeps its length
-        ss = s[cut == j]; tot = gg.len.sum(); km = min(tot, max(ss.max() - ss.min(), tot / 2)) / 1000
+        # street length, not lane length: parallel carriageways (a boulevard can have 4) count once, a winding street keeps its length
+        ss = s[cut == j]; tot = gg.len.sum(); span = ss.max() - ss.min()
+        km = (span if tot > 1.6 * span else tot) / 1000
         pieces.append({"name": gg.name.iat[0], "hw": gg.hw.mode().iat[0], "km": km, "edges": gg.i.tolist(),
                        "bkm": gg.bkm.sum(), "sbkm": gg.sbkm.sum(), "acc": gg.acc.sum(), "acc_w": gg.acc_w.sum(), "acc_sev": gg.acc_sev.sum(),
                        "trips_day": (gg.trips * gg.len).sum() / max(gg.len.sum(), 1) / DAYS})
 Pc = pd.DataFrame(pieces)
-Pc = Pc[Pc.km >= 0.25]
+Pc["km"] = Pc.km.clip(lower=0.25)  # roundabouts and short blocks compete as if 250 m long
 tot_s, tot_a = E.loc[~E.protected, "sbkm"].sum(), E.acc_w.sum()
 w = A.w_bikes
 Pc["score"] = w * Pc.sbkm / tot_s + (1 - w) * Pc.acc_w / tot_a
