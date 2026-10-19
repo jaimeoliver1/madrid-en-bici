@@ -199,6 +199,8 @@ tot_s, tot_a = E.loc[~E.protected, "sbkm"].sum(), E.acc_w.sum()
 w = A.w_bikes
 Pc["score"] = w * Pc.sbkm / tot_s + (1 - w) * Pc.acc_w / tot_a
 Pc["score_km"] = Pc.score / Pc.km
+# every corridor piece, with its street segments, for 15_lane_network.py
+Pc.assign(keys=[[EK[i] for i in e] for e in Pc.edges]).drop(columns="edges").to_pickle(os.path.join(CACHE, "corridors.pkl"))
 Pc = Pc.sort_values("score_km", ascending=False).reset_index(drop=True)
 Pc["cum_km"] = Pc.km.cumsum()
 Pc["cum_sbkm_pct"] = Pc.sbkm.cumsum() / tot_s * 100
