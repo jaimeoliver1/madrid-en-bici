@@ -181,17 +181,23 @@ def accidents(cache, excl):
     a["x"] = a.coordenada_x_utm.map(utm_num); a["y"] = a.coordenada_y_utm.map(utm_num)
     a["epac"] = a.tipo_vehiculo.str.contains("EPAC", na=False)
     a["serious"] = a.cod_lesividad.isin(["3", "4"]); a["killed"] = a.cod_lesividad.eq("4")
+    # people hurt, by the DGT's injury classes (cod_lesividad): 4 died, 3 admitted over 24 h (serious),
+    # 1, 2, 5, 6, 7 treated without a stay over 24 h (slight), 14 or blank not hurt
+    a["n_killed"] = a.killed.astype(int); a["n_serious"] = a.cod_lesividad.eq("3").astype(int)
+    a["n_slight"] = a.cod_lesividad.isin(["1", "2", "5", "6", "7"]).astype(int)
     by = a.groupby("year").agg(accidents=("num_expediente", "nunique"), people=("num_expediente", "size"), seriously_injured_or_killed=("serious", "sum"),
                                killed=("killed", "sum"), ebike_riders=("epac", "sum"), months=("date", lambda s: s.dt.month.nunique())).reset_index()
     acc = a.groupby("num_expediente").agg(year=("year", "first"), hour=("hour", "first"), x=("x", "first"), y=("y", "first"), type=("tipo_accidente", "first"),
-                                          weather=("estado_meteorologico", "first"), serious=("serious", "any"), killed=("killed", "any"), place=("localizacion", "first"))
+                                          weather=("estado_meteorologico", "first"), serious=("serious", "any"), killed=("killed", "any"), place=("localizacion", "first"),
+                                          n_slight=("n_slight", "sum"), n_serious=("n_serious", "sum"), n_killed=("n_killed", "sum"))
     acc = acc[(acc.x > 420000) & (acc.x < 460000)].copy()
     lo, la = TO_LL.transform(acc.x.values, acc.y.values); acc["lat"] = np.round(la, 5); acc["lon"] = np.round(lo, 5)
     tree = STRtree(excl)
     acc["on_exclusive_lane"] = [int(nearest_m(tree, excl, x, y, 30) <= 15) for x, y in zip(acc.x, acc.y)]
     acc["serious"] = acc.serious.astype(int); acc["killed"] = acc.killed.astype(int); acc["hour"] = acc.hour.astype("Int64"); acc["place"] = acc.place.str.title()
     acc = acc.reset_index().rename(columns={"num_expediente": "expediente"})
-    return acc[["expediente", "year", "hour", "lat", "lon", "type", "weather", "serious", "killed", "on_exclusive_lane", "place"]], by, a.date.max()
+    return acc[["expediente", "year", "hour", "lat", "lon", "type", "weather", "serious", "killed", "n_slight", "n_serious", "n_killed",
+                "on_exclusive_lane", "place"]], by, a.date.max()
 
 
 def parking(cache):
