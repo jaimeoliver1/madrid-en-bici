@@ -2,7 +2,7 @@
 
 **¿Es fácil moverse en bici por Madrid?** A public website that explains, with open data and plenty of maps, how BiciMAD (Madrid's public bike share) and the city's bike lanes are doing, and what would make Madrid easier to cycle in. It's in Spanish, with an English toggle.
 
-- **Live site:** _add the Vercel URL here once deployed_
+- **Live site:** https://madrid-en-bici.vercel.app
 - **What's on it:** a 24-hour animation of every BiciMAD bike, a report card against planning benchmarks, and sections on coverage, hills, bike lanes, safety and weather. It ends with six recommendations.
 - **Live data:** station availability comes straight from BiciMAD's public feed in the visitor's browser. Everything else is refreshed monthly by a GitHub Action.
 
