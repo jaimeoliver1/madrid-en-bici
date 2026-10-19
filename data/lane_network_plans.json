@@ -1,0 +1,21 @@
+{
+ "bestfirst": {
+  "options": 33,
+  "km": 21.3,
+  "build_eur": 19978582,
+  "benefit_eur_yr": 3389030,
+  "annual_cost_eur_yr": 1147327,
+  "net_benefit_eur_yr": 2241702,
+  "bcr": 2.95
+ },
+ "axisfirst": {
+  "options": 18,
+  "km": 21.6,
+  "build_eur": 19932018,
+  "benefit_eur_yr": 2628428,
+  "annual_cost_eur_yr": 1144653,
+  "net_benefit_eur_yr": 1483775,
+  "bcr": 2.3
+ },
+ "headline": "bestfirst"
+}
