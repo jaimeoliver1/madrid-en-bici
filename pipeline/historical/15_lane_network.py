@@ -131,9 +131,17 @@ pool = set(C.nlargest(A.pool * 2 // 3, "score_km").index) | set(C.nlargest(A.poo
 C = C.loc[sorted(pool)].reset_index(drop=True)
 C["segs"] = [np.array([g.seg_id[k] for k in ks if k in g.seg_id], np.int32) for ks in C["keys"]]
 C["nodes"] = [set(np.r_[g.u[np.isin(g.seg, s)], g.v[np.isin(g.seg, s)]].tolist()) for s in C.segs]
-# a corridor on a big avenue (any carriageway trunk/primary/secondary, side roads included) is priced as an avenue
-big = set(g.seg_name[np.isin(g.seg_hw, ["trunk", "primary", "secondary"])]) - {""}
-C["cost_class"] = ["secondary" if n in big else h for n, h in zip(C.name, C.hw)]
+# a corridor is priced as an avenue when a trunk/primary/secondary carriageway of the same street runs within 60 m
+# of it (so Castellana's side roads count, but a residential stretch of a street that is an avenue elsewhere does not)
+from scipy.spatial import cKDTree as _KD
+first = np.full(g.nseg, -1); first[g.seg[::-1]] = np.arange(len(g.seg))[::-1]
+smx = (g.x[g.u[first]] + g.x[g.v[first]]) / 2; smy = (g.y[g.u[first]] + g.y[g.v[first]]) / 2
+bigseg = np.isin(g.seg_hw, ["trunk", "primary", "secondary"])
+def avenue(name, segs):
+    m = bigseg & (g.seg_name == name)
+    if not m.any(): return False
+    return bool((_KD(np.c_[smx[m], smy[m]]).query(np.c_[smx[segs], smy[segs]])[0] <= 60).any())
+C["cost_class"] = ["secondary" if avenue(n, s) else h for n, s, h in zip(C.name, C.segs, C.hw)]
 C["build_eur"] = [km * ap_.build_cost_km(h) for km, h in zip(C.km, C.cost_class)]
 log("candidates", len(C), "covering", round(C.km.sum(), 1), "km,", round(C.build_eur.sum() / 1e6, 1), "M EUR to build")
 
