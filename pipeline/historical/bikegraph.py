@@ -21,7 +21,7 @@ LANE_TAGS = ("cycleway", "cycleway:left", "cycleway:right", "cycleway:both")
 
 
 class Graph:
-    def __init__(self, pbf, dem=None):
+    def __init__(self, pbf, dem=None, contraflow=False):
         ways = []
 
         class H(osmium.SimpleHandler):
@@ -76,6 +76,18 @@ class Graph:
         self.u, self.v = np.array(U, np.int32), np.array(V, np.int32)
         self.f = np.array(F); self.seg = np.array(S, np.int32); self.upslope = np.array(UP)
         self.seg_lane = np.array(lanes); self.seg_sep = np.array(seps)
+        # contraflow arcs for one-way segments: absent (infinite cost) unless the segment gets a protected lane,
+        # which is then usable in both directions
+        self.rev = np.zeros(len(self.u), bool)
+        if contraflow:
+            have = set(zip(U, V))
+            miss = np.array([i for i, (a, b) in enumerate(zip(U, V)) if (b, a) not in have], int)
+            ru, rv = self.v[miss], self.u[miss]
+            L = np.hypot(X[ru] - X[rv], Y[ru] - Y[rv])
+            up = np.maximum(0, (self.z[rv] - self.z[ru]) / np.maximum(L, 1e-6))
+            self.u = np.r_[self.u, ru]; self.v = np.r_[self.v, rv]; self.f = np.r_[self.f, self.f[miss]]
+            self.seg = np.r_[self.seg, self.seg[miss]]; self.upslope = np.r_[self.upslope, up]
+            self.rev = np.r_[self.rev, np.ones(len(miss), bool)]
         self.length = np.hypot(X[self.u] - X[self.v], Y[self.u] - Y[self.v])
         self.seg_key = list(seg); self.seg_name = np.array(names, object); self.seg_hw = np.array(hws, object)
         self.nseg = len(seg)
@@ -91,12 +103,13 @@ class Graph:
 
     def matrix(self, f):
         """Sparse cost matrix for per-arc weight factors f (keeps the cheapest arc between two nodes)."""
-        w = self.length * f + 1e-6
-        m = csr_matrix((w, (self.u, self.v)), shape=(self.n, self.n))
+        ok = np.isfinite(f)  # infinite factor = arc not available (e.g. contraflow without a protected lane)
+        u, v, w = self.u[ok], self.v[ok], self.length[ok] * f[ok] + 1e-6
+        m = csr_matrix((w, (u, v)), shape=(self.n, self.n))
         # csr_matrix sums duplicates; rebuild with the minimum instead when any exist
         if m.nnz < len(w):
-            o = np.lexsort((w, self.v, self.u)); first = np.r_[True, (np.diff(self.u[o]) != 0) | (np.diff(self.v[o]) != 0)]
-            o = o[first]; m = csr_matrix((w[o], (self.u[o], self.v[o])), shape=(self.n, self.n))
+            o = np.lexsort((w, v, u)); first = np.r_[True, (np.diff(u[o]) != 0) | (np.diff(v[o]) != 0)]
+            o = o[first]; m = csr_matrix((w[o], (u[o], v[o])), shape=(self.n, self.n))
         return m
 
 
