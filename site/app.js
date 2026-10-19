@@ -15,9 +15,33 @@
   // ---------- language ----------
   const T = {
     es: {
-      nav_bicimad: "BiciMAD", nav_barrios: "Barrios", nav_cuestas: "Cuestas", nav_carriles: "Carriles", nav_seguridad: "Seguridad", nav_mejorar: "Qué mejorar",
-      hero_kicker: "BiciMAD · Madrid · datos abiertos", pl_date: "Jueves 12 de enero de 2023", pl_moving: "bicis circulando ahora", pl_flow: "El rastro azul se acumula: al final del día, las calles más usadas brillan más", pl_day: "Ver el día completo", pl_scrub: "Arrastra para moverte por el día", pl_play: "Reproducir", pl_pause: "Pausa", pl_note: "Cada punto es una bici real de BiciMAD, por la ruta ciclista más probable entre sus dos estaciones. <a href=\"https://claude.ai/artifact/GJbZpaqHckxf79TpvRCdbR\" target=\"_blank\" rel=\"noopener\">Ver el vídeo</a>.", pl_hour_trips: "viajes que empiezan cada hora", zoom_hint: "Usa Ctrl + rueda (o pellizca) para hacer zoom", zoom_in: "Acercar", zoom_out: "Alejar", zoom_reset: "Ver todo", hero_h1: "¿Es fácil moverse en bici por Madrid?",
-      hero_lede: "Cada vez más gente usa la bici, pero la red tiene <b>huecos, cuestas y cruces peligrosos</b>. Aquí lo contamos con datos, en un vistazo.",
+      b_pick: "Elige tu barrio",
+      v_hill: " Sus estaciones están altas ({e} m de media), así que <b>a menudo se vacían</b>.",
+      v_ok: "<b>Buena cobertura</b>: tienes estaciones cerca de casa.",
+      v_mid: "Cobertura <b>aceptable</b>, aunque por debajo de lo recomendado.",
+      v_low: "Hay estaciones, pero <b>pocas</b>: muchas veces tendrás que andar más de 300 m.",
+      v_none: "Tu barrio <b>aún no tiene ninguna estación</b> de BiciMAD. Te tocará andar hasta un barrio vecino.",
+      f_acc: "accidentes con bici desde 2019",
+      f_lane: "hasta el carril protegido más cercano (mediana desde sus estaciones)",
+      f_empty: "estaciones vacías ahora",
+      f_bikes: "bicis en sus estaciones ahora",
+      f_dens: "estaciones por km² (lo ideal: 10–16)",
+      f_st: "estaciones BiciMAD",
+      b_sub: "{d} · {p} vecinos",
+      b_dist: "Distrito de {d}",
+      b_noloc: "No hemos podido saber dónde estás",
+      b_far: "Parece que estás fuera de Madrid",
+      b_locate: "Usar mi ubicación",
+      cov_h: "Dónde faltan estaciones",
+      fix_h: "Seis cambios concretos",
+      pl_lede: "Cada punto es una persona en una BiciMAD real, un jueves de enero. Dale al play y mira cómo la ciudad se despierta, va a trabajar y vuelve a casa.",
+      pl_h: "Así se mueve Madrid en bici en 24 horas",
+      pl_k: "Un día cualquiera",
+      nav_city: "Para el Ayuntamiento",
+      nav_barrio: "Tu barrio",
+      nav_bicimad: "Cuándo", nav_barrios: "Barrios", nav_cuestas: "Cuestas", nav_carriles: "Carriles", nav_seguridad: "Seguridad", nav_mejorar: "Qué mejorar",
+      hero_kicker: "BiciMAD y la bici en Madrid", pl_date: "Jueves 12 de enero de 2023", pl_moving: "bicis circulando", pl_flow: "El rastro azul se acumula: al final del día, las calles más usadas brillan más", pl_day: "Ver el día completo", pl_scrub: "Arrastra para moverte por el día", pl_play: "Reproducir", pl_pause: "Pausa", pl_note: "Recorridos estimados: la ruta en bici más probable entre las dos estaciones. <a href=\"https://claude.ai/artifact/GJbZpaqHckxf79TpvRCdbR\" target=\"_blank\" rel=\"noopener\">Ver el vídeo</a>.", pl_hour_trips: "viajes que empiezan cada hora", zoom_hint: "Usa Ctrl + rueda (o pellizca) para hacer zoom", zoom_in: "Acercar", zoom_out: "Alejar", zoom_reset: "Ver todo", hero_h1: "¿Cómo es moverse en bici por Madrid?",
+      hero_lede: "Cada día, decenas de miles de personas cogen una BiciMAD. Aquí verás <b>dónde hay bicis, por dónde ir y qué falta</b>, con datos abiertos y en directo.",
       score_h: "La nota de Madrid", score_sub: "Cada tarjeta compara Madrid con lo que recomiendan las guías de planificación o con otras ciudades. La franja verde es el objetivo.",
       good: "Bien", mid: "A medias", bad: "Mal", target: "objetivo",
       t_use_q: "¿Se usan las bicis de BiciMAD?", t_use_u: "viajes por bici al día. Lo sano es entre 4 y 8. París y Barcelona: 6,7.",
@@ -27,45 +51,45 @@
       t_route_q: "¿Van protegidos los viajes?", t_route_u: "del recorrido de los viajes de BiciMAD va por carril separado del tráfico.",
       t_route_u2: "de las estaciones de BiciMAD tienen un carril separado a menos de 50 m.",
       t_safe_q: "¿Es seguro pedalear?", t_safe_u: "accidentes con bici en {y1}, un {p} más que en {y0}. Crecen casi tanto como los viajes.",
-      s1_k: "1 · BiciMAD", s1_h: "BiciMAD funciona y no para de crecer", s1_lede: "La bici pública de Madrid bate récords. Ya es una forma normal de moverse por el centro.",
+      s1_k: "Cuándo", s1_h: "¿Cuándo se usa más la bici?", s1_lede: "Los picos son a las 8 y entre las 18 y las 19 h, cuando la gente va y vuelve del trabajo: es cuando <b>más cuesta encontrar bici o hueco</b>. Y cada septiembre se bate un récord.",
       n_trips: "viajes en los últimos 12 meses", n_users: "personas la usaron en {m}", n_record: "viajes el {d}, el día récord", n_ebike: "bicis, todas eléctricas",
-      s1_c1: "Viajes al día, mes a mes", s1_c1n: "Media de viajes diarios cada mes. Septiembre es siempre el mes estrella; agosto, el más flojo.",
-      s1_c2: "Se usa para ir a trabajar", s1_c2n: "Viajes que empiezan cada hora (datos de 2023). Entre semana hay dos picos: ir y volver del trabajo.",
+      s1_c1: "Cada año, más viajes", s1_c1n: "Media de viajes al día, mes a mes. Septiembre es el mes estrella; agosto, el más tranquilo.",
+      s1_c2: "Viajes que empiezan cada hora", s1_c2n: "Entre semana hay dos picos: ir y volver del trabajo (datos de 2023).",
       weekday: "Laborable", weekend: "Fin de semana", trips_day: "viajes al día", trips_hour: "viajes por hora",
-      s2_k: "2 · Cobertura", s2_h: "Casi todos tienen una estación cerca… pero no las suficientes",
-      s2_lede: "Para que la bici pública funcione, las estaciones tienen que estar <b>a menos de 300 m</b> de cualquier punto: unas 10 a 16 por km². En Madrid solo el centro se acerca a eso.",
-      s2_c1: "Estaciones por km², barrio a barrio", s2_c1n: "Cuanto más oscuro, más estaciones. Pasa el ratón para ver cada barrio.",
+      s2_k: "Tu barrio", s2_h: "¿Tienes BiciMAD cerca de casa?",
+      s2_lede: "Elige tu barrio, o tócalo en el mapa, y mira cuántas estaciones tienes, cuántas bicis hay ahora mismo y lo lejos que queda el carril bici.",
+      s2_c1: "Estaciones por km², barrio a barrio", s2_c1n: "Cuanto más oscuro, más estaciones por km². Lo ideal son 10 a 16: una estación a menos de 300 m de cualquier portal.",
       s2_c2: "¿Dónde vive la gente?", s2_c2n: "Porcentaje de madrileños según cuántas estaciones hay en su barrio.",
       s2_c3: "Distrito a distrito", s2_c3n: "Anclajes de BiciMAD por cada 1.000 vecinos.",
       cov_none: "Sin estación", cov_low: "Menos de 4 por km²", cov_mid: "De 4 a 10", cov_ok: "10 o más (lo recomendado)",
       people: "vecinos", stations: "estaciones", per_km2: "por km²", docks_1000: "anclajes por 1.000 vecinos",
-      s3_k: "3 · Cuestas", s3_h: "Las bicis bajan solas… y alguien tiene que subirlas",
-      s3_lede: "Madrid tiene <b>175 metros de desnivel</b> entre sus estaciones. La gente baja en bici hacia el río y vuelve en metro. Las estaciones altas se vacían y las bajas se llenan.",
-      s3_c1: "Bicis que gana o pierde cada estación al día", s3_c1n: "Según la altura de la estación (enero-febrero 2023). Abajo ganan, arriba pierden.",
-      s3_c2: "Estaciones vacías, en directo", s3_c2n: "Foto en directo del {snap}. En rojo, estaciones sin ninguna bici.",
+      s3_k: "Cuestas", s3_h: "¿Por qué mi estación siempre está vacía?",
+      s3_lede: "Madrid tiene cuestas. La gente baja en bici hacia el río y vuelve en metro, así que <b>las estaciones de arriba se vacían y las de abajo se llenan</b>. Entre la estación más alta y la más baja hay 175 m de desnivel.",
+      s3_c1: "Las de arriba pierden bicis, las de abajo ganan", s3_c1n: "Bicis que gana o pierde al día cada estación, según su altura (enero–febrero 2023).",
+      s3_c2: "Estaciones vacías ahora mismo", s3_c2n: "Actualizado el {snap}. En rojo, sin ninguna bici.",
       empty: "Vacía", hasbikes: "Con bicis", gains: "gana", loses: "pierde", bikes_day: "bicis al día", m: "m",
       cuestas_callout: "<b>{e} de las {t} estaciones vacías</b> estaban por encima de 680 m de altura. Las estaciones altas tenían de media un {ho}% de sus anclajes con bici; las bajas, un {lo}%.",
-      s4_k: "4 · Carriles bici", s4_h: "Muchos kilómetros, poca protección",
-      s4_lede: "La mitad de la red son <b>ciclocarriles</b>: un dibujo en el suelo y un límite de 30 km/h, compartido con coches. Los carriles separados del tráfico, los que hacen que la gente se anime, están sobre todo en las afueras.",
+      s4_k: "Carriles bici", s4_h: "¿Hay carril bici en mi camino?",
+      s4_lede: "Probablemente sí, pero <b>casi nunca separado del tráfico</b>. La mitad de la red son ciclocarriles: una bici pintada en el suelo y 30 km/h, compartiendo la calle con los coches.",
       ln_x: "km de carril bici separado", ln_v: "km del Anillo Verde, en el borde de la ciudad", ln_s: "km de ciclocarril compartido con coches",
       s4_c1: "La red ciclista de Madrid", lane_x: "Carril separado", lane_v: "Anillo Verde", lane_p: "Calle preferente bici", lane_s: "Ciclocarril (compartido)", lane_st: "Estación BiciMAD",
-      s4_c2: "¿Qué parte del camino va por carril protegido?", s4_c2n: "Calculamos la ruta en bici más probable de cada viaje de BiciMAD y medimos cuánto va por carril separado del tráfico. El mapa muestra los 300 trayectos más repetidos.",
+      s4_c2: "¿Cuánto de tu viaje va protegido?", s4_c2n: "Calculamos la ruta en bici más probable de cada viaje de BiciMAD. El mapa muestra los 300 trayectos más repetidos, coloreados según la parte que va por carril separado.",
       routes_pending: "Calculando rutas…", route_share_h: "Viajes según la parte del camino que va protegida",
-      s5_k: "5 · Seguridad", s5_h: "Más bicis, más accidentes: hay que proteger el crecimiento",
-      s5_lede: "La Policía Municipal registró <b id=\"acc-total\">{n}</b> accidentes con bicis entre 2019 y {accend}. Suben a la vez que el uso, y se concentran en unos pocos cruces.",
+      s5_k: "Seguridad", s5_h: "¿Es seguro ir en bici?",
+      s5_lede: "Casi todos los viajes acaban sin problema, pero la Policía Municipal registró <b id=\"acc-total\">{n}</b> accidentes con bici entre 2019 y {accend}. Se concentran en unos pocos cruces: conviene conocerlos.",
       s5_c1: "Dónde ocurren", s5_c1n: "Cada punto es un accidente. En rojo, heridos graves o fallecidos. Los círculos marcan los cruces con más accidentes.",
-      s5_c2: "Accidentes por año", s5_c2n: "{partial}", s5_c3: "Los cruces más peligrosos", accidents: "accidentes", ebike_share: "en bici eléctrica",
-      s6_k: "6 · Calles y tiempo", s6_h: "La lluvia frena, el calor casi no",
-      s6_lede: "Los madrileños pedalean con 35 grados, pero un día de lluvia fuerte se pierde <b>uno de cada cuatro viajes</b>. Y donde hay buena infraestructura, se nota: los contadores más altos están en calles con carril.",
+      s5_c2: "Accidentes por año", s5_c2n: "{partial}", s5_c3: "Los cruces donde más cuidado hay que tener", accidents: "accidentes", ebike_share: "en bici eléctrica",
+      s6_k: "Tiempo", s6_h: "¿Y si llueve?",
+      s6_lede: "Con lluvia fuerte se queda en casa <b>uno de cada cuatro viajes</b>. El calor, en cambio, apenas frena: Madrid pedalea a 35 grados.",
       s6_c1: "Viajes de BiciMAD frente a un día normal", s6_c1n: "100 = un día normal de esa época. Lluvia medida en El Retiro.",
       rain_dry: "Seco", rain_lt1: "Llovizna", rain_1to5: "1–5 mm", rain_5to10: "5–10 mm", rain_gt10: "Más de 10 mm", rain_t: "Según la lluvia", heat_t: "Según la temperatura máxima (días secos)",
       days: "días", normal: "de lo normal",
       s6_c2: "Las calles con más bicis", s6_c2n: "Bicis al día que cuentan los contadores automáticos del Ayuntamiento (media de 2023).",
-      s7_k: "7 · Qué mejorar", s7_h: "Seis cambios que harían Madrid más ciclable", s7_lede: "Basados en lo que han hecho otras ciudades y en lo que dice la investigación. Cada uno ataca un número de esta página.",
+      s7_k: "Para el Ayuntamiento", s7_h: "Lo que haría Madrid más fácil para ir en bici", s7_lede: "Esta parte es para quien decide: cómo está Madrid frente a lo que recomiendan las guías y otras ciudades, y seis cambios concretos basados en la investigación y en lo que ya funciona fuera.",
       lever_lanes: "Palanca: carriles bici", lever_bicimad: "Palanca: BiciMAD", lever_both: "Palanca: datos y gestión", now: "Hoy:", goal: "Objetivo:",
       m_h: "Cómo lo hemos calculado", src_h: "Fuentes",
-      live_k: "BiciMAD en directo", live_ago: "actualizado a las {t} · se refresca cada minuto", live_off: "sin conexión con BiciMAD: mostrando la foto del {snap}",
-      lv_bikes: "bicis listas para coger ahora (de {fleet})", lv_empty: "estaciones vacías ahora mismo", lv_full: "estaciones llenas: no hay dónde dejar la bici",
+      live_k: "Ahora mismo en BiciMAD", live_ago: "actualizado a las {t} · se refresca cada minuto", live_off: "sin conexión con BiciMAD: mostrando la foto del {snap}",
+      lv_bikes: "bicis esperándote en las estaciones (de {fleet})", lv_empty: "estaciones sin ninguna bici", lv_full: "estaciones llenas, sin hueco para dejarla",
       lv_out: "bicis han salido de su estación desde que abriste esta página<sup><a href=\"#datos\">1</a></sup>",
       fr_h: "¿Cada cuánto se actualizan los datos?", fr_what: "Dato", fr_when: "Frecuencia", fr_upto: "Datos hasta", fr_src: "Fuente",
       fr_live: "En directo", fr_month: "Cada mes", fr_frozen: "Congelado",
@@ -78,12 +102,36 @@
       fr_r_cnt: "Contadores automáticos de bicis", fr_c_cnt: "Último año completo publicado", fr_u_cnt: "2023",
       fr_auto: "La web se actualiza sola el día 10 de cada mes. Última actualización: {refreshed}.",
       fr_fn1: "Contamos cuántas bicis desaparecen de cada estación entre una lectura y la siguiente (cada minuto). Es una estimación: si alguien coge y deja una bici en la misma estación en ese minuto no se ve, y las furgonetas que redistribuyen bicis también cuentan.",
-      fc_bicimad: "Se actualiza cada mes · datos hasta {dlast}", fc_barrios: "Revisado cada mes", fc_cuestas: "Mapa en directo · flujos de 2023", fc_carriles: "Carriles revisados cada mes · rutas de 2023", fc_seguridad: "Se actualiza cada mes · datos hasta {accend}", fc_tiempo: "Se actualiza cada mes",
+      fc_bicimad: "Se actualiza cada mes · datos hasta {dlast}", fc_barrios: "Bicis en directo · estaciones revisadas cada mes", fc_cuestas: "Mapa en directo · flujos de 2023", fc_carriles: "Carriles revisados cada mes · rutas de 2023", fc_seguridad: "Se actualiza cada mes · datos hasta {accend}", fc_tiempo: "Se actualiza cada mes",
     },
     en: {
-      nav_bicimad: "BiciMAD", nav_barrios: "Neighbourhoods", nav_cuestas: "Hills", nav_carriles: "Bike lanes", nav_seguridad: "Safety", nav_mejorar: "What to fix",
-      hero_kicker: "BiciMAD · Madrid · open data", pl_date: "Thursday 12 January 2023", pl_moving: "bikes riding right now", pl_flow: "The blue trail builds up: by midnight, the busiest streets glow brightest", pl_day: "Show the whole day", pl_scrub: "Drag to move through the day", pl_play: "Play", pl_pause: "Pause", pl_note: "Each dot is a real BiciMAD bike, on the most likely bike route between its two stations. <a href=\"https://claude.ai/artifact/GJbZpaqHckxf79TpvRCdbR\" target=\"_blank\" rel=\"noopener\">Watch the video</a>.", pl_hour_trips: "trips starting each hour", zoom_hint: "Use Ctrl + scroll (or pinch) to zoom", zoom_in: "Zoom in", zoom_out: "Zoom out", zoom_reset: "Show all", hero_h1: "Is it easy to get around Madrid by bike?",
-      hero_lede: "More and more people ride, but the network has <b>gaps, hills and dangerous junctions</b>. Here it is in data, at a glance.",
+      b_pick: "Pick your barrio",
+      v_hill: " Its stations sit high ({e} m on average), so <b>they often run empty</b>.",
+      v_ok: "<b>Good coverage</b>: there are stations close to home.",
+      v_mid: "<b>Decent</b> coverage, though below the recommended level.",
+      v_low: "There are stations, but <b>not many</b>: you'll often walk more than 300 m.",
+      v_none: "Your barrio <b>has no BiciMAD station yet</b>. You'll have to walk to a neighbouring one.",
+      f_acc: "bike accidents since 2019",
+      f_lane: "to the nearest protected lane (median from its stations)",
+      f_empty: "empty stations now",
+      f_bikes: "bikes at its stations now",
+      f_dens: "stations per km² (goal: 10–16)",
+      f_st: "BiciMAD stations",
+      b_sub: "{d} · {p} residents",
+      b_dist: "{d} district",
+      b_noloc: "We couldn't get your location",
+      b_far: "Looks like you're outside Madrid",
+      b_locate: "Use my location",
+      cov_h: "Where stations are missing",
+      fix_h: "Six concrete changes",
+      pl_lede: "Each dot is a person on a real BiciMAD, one Thursday in January. Press play and watch the city wake up, go to work and head home.",
+      pl_h: "How Madrid moves by bike in 24 hours",
+      pl_k: "An ordinary day",
+      nav_city: "For the City Council",
+      nav_barrio: "Your barrio",
+      nav_bicimad: "When", nav_barrios: "Neighbourhoods", nav_cuestas: "Hills", nav_carriles: "Bike lanes", nav_seguridad: "Safety", nav_mejorar: "What to fix",
+      hero_kicker: "BiciMAD and cycling in Madrid", pl_date: "Thursday 12 January 2023", pl_moving: "bikes on the move", pl_flow: "The blue trail builds up: by midnight, the busiest streets glow brightest", pl_day: "Show the whole day", pl_scrub: "Drag to move through the day", pl_play: "Play", pl_pause: "Pause", pl_note: "Estimated paths: the most likely bike route between the two stations. <a href=\"https://claude.ai/artifact/GJbZpaqHckxf79TpvRCdbR\" target=\"_blank\" rel=\"noopener\">Watch the video</a>.", pl_hour_trips: "trips starting each hour", zoom_hint: "Use Ctrl + scroll (or pinch) to zoom", zoom_in: "Zoom in", zoom_out: "Zoom out", zoom_reset: "Show all", hero_h1: "What's it like to get around Madrid by bike?",
+      hero_lede: "Every day, tens of thousands of people take a BiciMAD. Here you'll see <b>where the bikes are, which way to go and what's missing</b>, with open, live data.",
       score_h: "Madrid's report card", score_sub: "Each card compares Madrid with what planning guides recommend or with other cities. The green band is the target.",
       good: "Good", mid: "So-so", bad: "Poor", target: "target",
       t_use_q: "Are BiciMAD bikes being used?", t_use_u: "trips per bike per day. Healthy is 4 to 8. Paris and Barcelona: 6.7.",
@@ -93,45 +141,45 @@
       t_route_q: "Are trips protected?", t_route_u: "of the distance ridden on BiciMAD trips runs on a lane separated from traffic.",
       t_route_u2: "of BiciMAD stations have a separated lane within 50 m.",
       t_safe_q: "Is it safe to ride?", t_safe_u: "bike accidents in {y1}, {p} more than in {y0}. They grow almost as fast as trips.",
-      s1_k: "1 · BiciMAD", s1_h: "BiciMAD works and keeps growing", s1_lede: "Madrid's public bikes keep breaking records. They are now a normal way to get around the centre.",
+      s1_k: "When", s1_h: "When do people ride?", s1_lede: "The peaks are at 8 am and between 6 and 7 pm, when people go to and from work: that's when <b>it's hardest to find a bike or a free dock</b>. And every September sets a new record.",
       n_trips: "trips in the last 12 months", n_users: "people used it in {m}", n_record: "trips on {d}, the record day", n_ebike: "bikes, all electric",
-      s1_c1: "Trips per day, month by month", s1_c1n: "Average daily trips each month. September is always the best month; August the quietest.",
-      s1_c2: "People ride to work", s1_c2n: "Trips starting each hour (2023 data). Weekdays have two peaks: going to work and coming back.",
+      s1_c1: "More trips every year", s1_c1n: "Average trips per day, month by month. September is the busiest month; August the quietest.",
+      s1_c2: "Trips starting each hour", s1_c2n: "Weekdays have two peaks: going to and coming back from work (2023 data).",
       weekday: "Weekday", weekend: "Weekend", trips_day: "trips a day", trips_hour: "trips an hour",
-      s2_k: "2 · Coverage", s2_h: "Almost everyone has a station nearby… just not enough of them",
-      s2_lede: "For bike share to work, stations must be <b>within 300 m</b> of anywhere: about 10 to 16 per km². In Madrid only the centre comes close.",
-      s2_c1: "Stations per km², neighbourhood by neighbourhood", s2_c1n: "Darker means more stations. Hover to see each neighbourhood.",
+      s2_k: "Your barrio", s2_h: "Is there a BiciMAD near you?",
+      s2_lede: "Pick your barrio, or tap it on the map, and see how many stations you have, how many bikes there are right now and how far the nearest bike lane is.",
+      s2_c1: "Stations per km², neighbourhood by neighbourhood", s2_c1n: "Darker means more stations per km². The goal is 10 to 16: a station within 300 m of every front door.",
       s2_c2: "Where do people live?", s2_c2n: "Share of residents by how many stations their neighbourhood has.",
       s2_c3: "District by district", s2_c3n: "BiciMAD docks per 1,000 residents.",
       cov_none: "No station", cov_low: "Under 4 per km²", cov_mid: "4 to 10", cov_ok: "10 or more (recommended)",
       people: "residents", stations: "stations", per_km2: "per km²", docks_1000: "docks per 1,000 residents",
-      s3_k: "3 · Hills", s3_h: "Bikes roll downhill… and someone has to bring them back up",
-      s3_lede: "There are <b>175 metres of height</b> between Madrid's stations. People ride down to the river and take the metro back. High stations empty out and low ones fill up.",
-      s3_c1: "Bikes each station gains or loses per day", s3_c1n: "By station height (January–February 2023). Low stations gain, high ones lose.",
-      s3_c2: "Empty stations, live", s3_c2n: "Live snapshot, {snap}. Red: stations with no bikes at all.",
+      s3_k: "Hills", s3_h: "Why is my station always empty?",
+      s3_lede: "Madrid is hilly. People ride down towards the river and come back by metro, so <b>stations up the hill empty out and those at the bottom fill up</b>. There are 175 m between the highest and the lowest station.",
+      s3_c1: "Uphill stations lose bikes, downhill ones gain", s3_c1n: "Bikes each station gains or loses per day, by its height (January–February 2023).",
+      s3_c2: "Empty stations right now", s3_c2n: "Updated {snap}. Red: no bikes at all.",
       empty: "Empty", hasbikes: "Has bikes", gains: "gains", loses: "loses", bikes_day: "bikes a day", m: "m",
       cuestas_callout: "<b>{e} of the {t} empty stations</b> were above 680 m. High stations had on average {ho}% of their docks holding a bike; low ones, {lo}%.",
-      s4_k: "4 · Bike lanes", s4_h: "Lots of kilometres, little protection",
-      s4_lede: "Half the network is <b>ciclocarriles</b>: a painted symbol and a 30 km/h limit, shared with cars. Lanes separated from traffic, the kind that get people riding, are mostly on the outskirts.",
+      s4_k: "Bike lanes", s4_h: "Is there a bike lane on my way?",
+      s4_lede: "Probably, but <b>rarely separated from traffic</b>. Half the network is shared lanes: a bike painted on the road and a 30 km/h limit, sharing the street with cars.",
       ln_x: "km of separated bike lane", ln_v: "km of the Anillo Verde ring, at the city's edge", ln_s: "km of shared lane with cars",
       s4_c1: "Madrid's cycling network", lane_x: "Separated lane", lane_v: "Anillo Verde ring", lane_p: "Bike-priority street", lane_s: "Shared lane", lane_st: "BiciMAD station",
-      s4_c2: "How much of the ride is protected?", s4_c2n: "We worked out the most likely bike route of every BiciMAD trip and measured how much runs on a lane separated from traffic. The map shows the 300 most common trips.",
+      s4_c2: "How much of your ride is protected?", s4_c2n: "We worked out the most likely bike route of every BiciMAD trip. The map shows the 300 most common trips, coloured by how much of the way runs on a separated lane.",
       routes_pending: "Routing trips…", route_share_h: "Trips by how much of the route is protected",
-      s5_k: "5 · Safety", s5_h: "More bikes, more crashes: growth needs protecting",
-      s5_lede: "Madrid's municipal police recorded <b id=\"acc-total\">{n}</b> accidents involving bikes between 2019 and {accend}. They rise with use, and cluster at a few junctions.",
+      s5_k: "Safety", s5_h: "Is it safe to ride?",
+      s5_lede: "Almost every ride ends fine, but the municipal police recorded <b id=\"acc-total\">{n}</b> bike accidents between 2019 and {accend}. They cluster at a few junctions worth knowing.",
       s5_c1: "Where they happen", s5_c1n: "Each dot is one accident. Red: serious injury or death. Circles mark the junctions with the most accidents.",
-      s5_c2: "Accidents per year", s5_c2n: "{partial}", s5_c3: "The most dangerous junctions", accidents: "accidents", ebike_share: "on an e-bike",
-      s6_k: "6 · Streets and weather", s6_h: "Rain puts people off, heat hardly does",
-      s6_lede: "Madrileños ride at 35 °C, but a day of heavy rain loses <b>one trip in four</b>. And good infrastructure shows: the busiest counters are on streets with lanes.",
+      s5_c2: "Accidents per year", s5_c2n: "{partial}", s5_c3: "The junctions to take most care at", accidents: "accidents", ebike_share: "on an e-bike",
+      s6_k: "Weather", s6_h: "What if it rains?",
+      s6_lede: "Heavy rain keeps <b>one in four trips</b> at home. Heat barely matters: Madrid rides at 35 °C.",
       s6_c1: "BiciMAD trips against a normal day", s6_c1n: "100 = a normal day for that time of year. Rain measured at El Retiro.",
       rain_dry: "Dry", rain_lt1: "Drizzle", rain_1to5: "1–5 mm", rain_5to10: "5–10 mm", rain_gt10: "Over 10 mm", rain_t: "By rain", heat_t: "By top temperature (dry days)",
       days: "days", normal: "of normal",
       s6_c2: "The streets with the most bikes", s6_c2n: "Bikes per day counted by the city's automatic counters (2023 average).",
-      s7_k: "7 · What to fix", s7_h: "Six changes that would make Madrid more bikeable", s7_lede: "Based on what other cities have done and what research shows. Each one moves a number on this page.",
+      s7_k: "For the City Council", s7_h: "What would make Madrid easier to ride", s7_lede: "This part is for decision makers: how Madrid compares with planning guides and other cities, and six concrete changes based on research and on what already works elsewhere.",
       lever_lanes: "Lever: bike lanes", lever_bicimad: "Lever: BiciMAD", lever_both: "Lever: data and management", now: "Today:", goal: "Goal:",
       m_h: "How we worked it out", src_h: "Sources",
-      live_k: "BiciMAD live", live_ago: "updated at {t} · refreshes every minute", live_off: "can't reach BiciMAD: showing the snapshot from {snap}",
-      lv_bikes: "bikes ready to take right now (out of {fleet})", lv_empty: "stations empty right now", lv_full: "stations full: nowhere to drop a bike",
+      live_k: "BiciMAD right now", live_ago: "updated at {t} · refreshes every minute", live_off: "can't reach BiciMAD: showing the snapshot from {snap}",
+      lv_bikes: "bikes waiting at stations (out of {fleet})", lv_empty: "stations with no bikes", lv_full: "stations full, nowhere to drop yours",
       lv_out: "bikes have left their station since you opened this page<sup><a href=\"#datos\">1</a></sup>",
       fr_h: "How often is the data updated?", fr_what: "Data", fr_when: "How often", fr_upto: "Data up to", fr_src: "Source",
       fr_live: "Live", fr_month: "Monthly", fr_frozen: "Frozen",
@@ -144,7 +192,7 @@
       fr_r_cnt: "Automatic bike counters", fr_c_cnt: "Latest full year published", fr_u_cnt: "2023",
       fr_auto: "The site updates itself on the 10th of every month. Last update: {refreshed}.",
       fr_fn1: "We count how many bikes disappear from each station between one reading and the next (every minute). It's an estimate: a bike taken and returned to the same station within that minute isn't seen, and the vans that rebalance bikes are counted too.",
-      fc_bicimad: "Updated monthly · data up to {dlast}", fc_barrios: "Checked monthly", fc_cuestas: "Live map · 2023 flows", fc_carriles: "Lanes checked monthly · 2023 routes", fc_seguridad: "Updated monthly · data up to {accend}", fc_tiempo: "Updated monthly",
+      fc_bicimad: "Updated monthly · data up to {dlast}", fc_barrios: "Live bikes · stations checked monthly", fc_cuestas: "Live map · 2023 flows", fc_carriles: "Lanes checked monthly · 2023 routes", fc_seguridad: "Updated monthly · data up to {accend}", fc_tiempo: "Updated monthly",
     },
   };
   let L = "es";
@@ -281,6 +329,63 @@
       .each(function (p) { this.__f0 = p[4] > 1 ? 10.5 : 11.5; this.style.fontSize = this.__f0 + "px"; });
   }
 
+  // ---------- your barrio: pick one (or use your location) and get a card with its stations, live bikes, lanes and accidents ----------
+  let covMap = null, myBarrio = null;
+  try { myBarrio = localStorage.getItem("mc-barrio"); } catch (e) {}
+  const RINGS = new Map(M.barrios.map(b => [b[0], b[5].split("|").map(r => r.split(" ").map(q => q.split(",").map(Number)))]));
+  function inBarrio(name, lon, lat) {
+    let inside = false;
+    for (const ring of RINGS.get(name)) for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+      const [xi, yi] = ring[i], [xj, yj] = ring[j];
+      if ((yi > lat) !== (yj > lat) && lon < (xj - xi) * (lat - yi) / (yj - yi) + xi) inside = !inside;
+    }
+    return inside;
+  }
+  const BOX = new Map([...RINGS].map(([n, rs]) => { const a = rs.flat(); return [n, [d3.min(a, p => p[0]), d3.min(a, p => p[1]), d3.max(a, p => p[0]), d3.max(a, p => p[1])]]; }));
+  const within = (n, lon, lat) => { const b = BOX.get(n); return lon >= b[0] && lon <= b[2] && lat >= b[1] && lat <= b[3] && inBarrio(n, lon, lat); };
+  const accBy = new Map();
+  function pickBarrio(name) {
+    if (!RINGS.has(name)) return;
+    myBarrio = name; try { localStorage.setItem("mc-barrio", name); } catch (e) {}
+    const sel = document.getElementById("b-select"); if (sel.value !== name) sel.value = name;
+    document.getElementById("b-msg").textContent = "";
+    barrioCard();
+  }
+  function barrio() {
+    const sel = document.getElementById("b-select");
+    const byD = d3.groups(M.barrios.slice().sort((a, b) => a[0].localeCompare(b[0], "es")), b => b[1]).sort((a, b) => a[0].localeCompare(b[0], "es"));
+    sel.replaceChildren(el("option", null, t("b_pick")), ...byD.map(([d, bs]) => { const og = el("optgroup"); og.label = t("b_dist", { d }); bs.forEach(b => { const o = el("option", null, b[0]); o.value = b[0]; og.append(o); }); return og; }));
+    sel.firstChild.disabled = true; sel.firstChild.value = "";
+    sel.onchange = () => pickBarrio(sel.value);
+    const loc = document.getElementById("b-locate"); loc.textContent = "◎ " + t("b_locate");
+    loc.hidden = !("geolocation" in navigator);
+    loc.onclick = () => navigator.geolocation.getCurrentPosition(pos => {
+      const { longitude: lon, latitude: lat } = pos.coords, hit = M.barrios.find(b => within(b[0], lon, lat));
+      if (hit) pickBarrio(hit[0]); else document.getElementById("b-msg").textContent = t("b_far");
+    }, () => { document.getElementById("b-msg").textContent = t("b_noloc"); }, { timeout: 10000, maximumAge: 300000 });
+    if (!myBarrio || !RINGS.has(myBarrio)) myBarrio = RINGS.has("Sol") ? "Sol" : M.barrios[0][0];
+    sel.value = myBarrio;
+    barrioCard();
+  }
+  function barrioCard() {
+    const b = M.barrios.find(x => x[0] === myBarrio), box = document.getElementById("b-card"); if (!b || !box) return;
+    const st = M.stations.filter(s => within(b[0], s[1], s[0]));
+    if (!accBy.has(b[0])) accBy.set(b[0], M.acc_points.filter(a => within(b[0], a[1], a[0])).length);
+    const dens = b[4] / b[3], bikes = d3.sum(st, s => s[2]), empty = st.filter(s => s[2] === 0).length;
+    const lane = st.length ? d3.median(st, s => s[5]) : null, elev = d3.mean(st.filter(s => s[4] != null), s => s[4]);
+    const fact = (v, l, cls) => { const d = el("div", "fact" + (cls ? " " + cls : "")); d.append(el("span", "v", v), el("span", "l", l)); return d; };
+    const h = el("div"); h.append(el("h3", null, b[0]), el("p", "sub", t("b_sub", { d: b[1], p: nf(b[2]) })));
+    const v = el("p", "verdict"); v.innerHTML = t(b[4] === 0 ? "v_none" : dens < 4 ? "v_low" : dens < 10 ? "v_mid" : "v_ok") + (elev > 680 && st.length ? t("v_hill", { e: nf(Math.round(elev)) }) : "");
+    const f = el("div", "facts");
+    f.append(fact(nf(b[4]), t("f_st")), fact(n1(dens), t("f_dens"), dens >= 10 ? "ok" : "warn"),
+      fact(st.length ? nf(bikes) : "–", t("f_bikes")), fact(st.length ? nf(empty) : "–", t("f_empty"), empty ? "warn" : null),
+      fact(lane == null ? "–" : (lane < 1000 ? nf(Math.round(lane / 10) * 10) + " m" : n1(lane / 1000) + " km"), t("f_lane"), lane != null && lane <= 300 ? "ok" : "warn"),
+      fact(nf(accBy.get(b[0])), t("f_acc")));
+    box.replaceChildren(h, v, f);
+    if (covMap) covMap.g.select("path.sel").attr("d", ringsPath(covMap.F, b[5])).raise();
+    if (covMap) covMap.g.select("g.places").raise();
+  }
+
   // ---------- 0 · report card ----------
   function scorecard() {
     const box = document.getElementById("score"); box.replaceChildren();
@@ -351,9 +456,12 @@
     const box = document.getElementById("ch-barrios"), { g, F } = mapBase(box, 560);
     const ramp = d3.scaleThreshold([0.01, 1, 4, 10], [css("--grey-map"), css("--lane-soft"), d3.interpolateRgb(css("--lane-soft"), css("--lane"))(0.45), d3.interpolateRgb(css("--lane-soft"), css("--lane"))(0.75), css("--lane")]);
     const tp = tip(box);
-    g.selectAll("path").data(M.barrios).join("path").attr("d", b => ringsPath(F, b[5])).attr("fill", b => ramp(b[4] / b[3])).attr("stroke", css("--card")).attr("stroke-width", 0.8)
+    g.selectAll("path").data(M.barrios).join("path").attr("class", "bar").attr("d", b => ringsPath(F, b[5])).attr("fill", b => ramp(b[4] / b[3])).attr("stroke", css("--card")).attr("stroke-width", 0.8)
+      .style("cursor", "pointer").on("click", (ev, b) => pickBarrio(b[0]))
       .on("pointermove", (ev, b) => { const [a, c] = d3.pointer(ev, box); tp.show(a, c, `${b[0]} (${b[1]})`, [`${b[4]} ${t("stations")} · ${n1(b[4] / b[3])} ${t("per_km2")}`, `${nf(b[2])} ${t("people")}`]); }).on("pointerleave", () => tp.hide());
-    context(g, F, { faint: true }); places(g, F);
+    context(g, F, { faint: true });
+    g.append("path").attr("class", "sel").attr("fill", "none").attr("stroke", css("--ink")).attr("stroke-width", 2.5).attr("stroke-linejoin", "round").style("pointer-events", "none");
+    places(g, F); covMap = { g, F };
     const lg = document.getElementById("lg-barrios"); lg.replaceChildren();
     [[0, t("cov_none")], [0.5, t("cov_low")], [5, t("cov_mid")], [12, t("cov_ok")]].forEach(([v, l]) => { const s = el("span"); const i = el("i", "sw"); i.style.background = ramp(v); i.style.height = "10px"; s.append(i, document.createTextNode(l)); lg.append(s); });
     const P = d3.sum(M.barrios, b => b[2]), share = f => d3.sum(M.barrios.filter(f), b => b[2]) / P * 100;
@@ -575,7 +683,7 @@
   }
   function render() {
     texts();
-    const parts = [scorecard, bicimad, coverage, hills, lanes, safety, weather, fixes, method];
+    const parts = [scorecard, bicimad, coverage, barrio, hills, lanes, safety, weather, fixes, method];
     for (const f of parts) { try { f(); } catch (e) { console.error(f.name, e); } }
     document.querySelectorAll("main .chart[id], #score, #bicimad-nums, #lane-nums").forEach(b => onView(b, () => animate(b)));
     document.querySelectorAll(".stop").forEach(s => { if (!s.id) return; onView(s, () => {}); });
@@ -641,7 +749,7 @@
       });
       K.empty_now = M.stations.filter(s => s[2] === 0).length;
       K.snapshot = LV.at.toLocaleString("sv-SE", { timeZone: "Europe/Madrid" }).slice(0, 16);
-      texts(); hills();
+      texts(); hills(); barrioCard();
     } catch (e) { LV.ok = false; liveShow(); /* offline or feed down: keep the last published snapshot */ }
   }
   live();
