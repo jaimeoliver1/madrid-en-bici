@@ -6,6 +6,7 @@ Writes <out_dir>/bicimad_2023_routes_all.csv.gz (one row per station pair) and
 <out_dir>/bicimad_2023_top_routes_routed.csv (geometry for the most used pairs, for the site map).
 """
 import sys, ast, math, heapq, numpy as np, pandas as pd, osmium, shapefile
+from bike_costs import COST, factor
 from pyproj import Transformer
 from shapely.geometry import LineString
 from shapely.ops import unary_union
@@ -13,24 +14,17 @@ from shapely.prepared import prep
 from scipy.spatial import cKDTree
 
 PBF, RAW, SHP, OUT = sys.argv[1:5]
-COST = {"cycleway": 0.6, "living_street": 0.9, "residential": 1.0, "unclassified": 1.0, "service": 1.15, "busway": 1.1,
-        "tertiary": 1.15, "tertiary_link": 1.15, "secondary": 1.35, "secondary_link": 1.35, "primary": 1.6, "primary_link": 1.6,
-        "pedestrian": 1.3, "path": 1.0, "track": 1.2, "footway": 1.6, "steps": 12.0}
 BBOX = (40.37, 40.50, -3.76, -3.61)
 
 class H(osmium.SimpleHandler):
     def __init__(s):
         super().__init__(); s.ways = []
     def way(s, w):
-        t = w.tags; hw = t.get("highway")
-        if hw not in COST or t.get("access") in ("no", "private") or t.get("bicycle") == "no": return
+        t = w.tags; hw = t.get("highway"); f = factor(t)
+        if f is None: return
         try: pts = [(n.ref, n.lon, n.lat) for n in w.nodes]
         except osmium.InvalidLocationError: return
         if not any(BBOX[0] <= la <= BBOX[1] and BBOX[2] <= lo <= BBOX[3] for _, lo, la in pts): return
-        f = COST[hw]
-        if hw != "cycleway" and (t.get("bicycle") == "designated" or any(t.get(k, "").startswith(("track", "lane", "separate"))
-                                                                     for k in ("cycleway", "cycleway:left", "cycleway:right", "cycleway:both"))):
-            f = min(f, 0.75)
         ow = t.get("oneway") in ("yes", "1", "true") or hw in ("primary_link", "secondary_link") and t.get("oneway") != "no" or t.get("junction") == "roundabout"
         if t.get("oneway:bicycle") == "no" or t.get("cycleway", "").startswith("opposite"): ow = False
         s.ways.append((pts, f, ow, t.get("oneway") == "-1"))

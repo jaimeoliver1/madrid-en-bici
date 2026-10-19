@@ -8,27 +8,21 @@ coordinate in stage pixels (1920x1080), using the same projection as the film's 
 Usage: python3 pipeline/historical/10_film_routes.py <Madrid.osm.pbf> <trips_dir_2023> <map.json> <out_dir>
 """
 import sys, json, ast, math, heapq, numpy as np, pandas as pd, osmium
+from bike_costs import COST, factor
 from scipy.spatial import cKDTree
 
 PBF, RAW, MAPJ, OUT = sys.argv[1:5]
-COST = {"cycleway": 0.6, "living_street": 0.9, "residential": 1.0, "unclassified": 1.0, "service": 1.15, "busway": 1.1,
-        "tertiary": 1.15, "tertiary_link": 1.15, "secondary": 1.35, "secondary_link": 1.35, "primary": 1.6, "primary_link": 1.6,
-        "pedestrian": 1.3, "path": 1.0, "track": 1.2, "footway": 1.6, "steps": 12.0}
 BBOX = (40.37, 40.50, -3.76, -3.61)
 
 class H(osmium.SimpleHandler):
     def __init__(s):
         super().__init__(); s.ways = []
     def way(s, w):
-        t = w.tags; hw = t.get("highway")
-        if hw not in COST or t.get("access") in ("no", "private") or t.get("bicycle") == "no": return
+        t = w.tags; hw = t.get("highway"); f = factor(t)
+        if f is None: return
         try: pts = [(n.ref, n.lon, n.lat) for n in w.nodes]
         except osmium.InvalidLocationError: return
         if not any(BBOX[0] <= la <= BBOX[1] and BBOX[2] <= lo <= BBOX[3] for _, lo, la in pts): return
-        f = COST[hw]
-        if hw != "cycleway" and (t.get("bicycle") == "designated" or any(t.get(k, "").startswith(("track", "lane", "separate"))
-                                                                     for k in ("cycleway", "cycleway:left", "cycleway:right", "cycleway:both"))):
-            f = min(f, 0.75)
         ow = t.get("oneway") in ("yes", "1", "true") or hw in ("primary_link", "secondary_link") and t.get("oneway") != "no" or t.get("junction") == "roundabout"
         if t.get("oneway:bicycle") == "no" or t.get("cycleway", "").startswith("opposite"): ow = False
         s.ways.append((pts, f, ow, t.get("oneway") == "-1"))
@@ -112,6 +106,7 @@ for a, targets in by_src.items():
         pts = rdp([(round(x * 2) / 2, round(y * 2) / 2) for x, y in pts], 1.0)
         lines.append(f"{a},{b}:" + "".join(enc(max(0, min(4095, round(x * 2)))) + enc(max(0, min(4095, round(y * 2)))) for x, y in pts))
 txt = "\n".join(lines)
+open(f"{OUT}/routes.txt", "w").write(txt)  # read by 12_build_film_data.py
 print("routed", len(lines), "failed", fails, "chars", len(txt), "median route m", round(float(np.median(lens))), flush=True)
 # split into modules of at most 190 KiB on line boundaries
 parts, cur = [], []
