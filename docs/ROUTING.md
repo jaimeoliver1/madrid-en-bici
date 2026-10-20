@@ -39,6 +39,12 @@ Routing is all-or-nothing: everyone takes the single best route. Real riders spr
 - Segments between junctions are merged into about 83,500 links. Each link stores length-weighted sums of every cost component: length, traffic bands, separated length, walking extra, uphill length by grade band in each direction, climb, recorded accidents and expected injury cost, and the same for the part covered by the proposed lanes. Because the cost is a weighted sum of these components, any weighting chosen in the browser gives exactly the cost the full segment graph would give.
 - Coordinates are rounded to 1e-5 degrees (about 1 m) and stored as differences.
 
+## Using the planner
+
+- Two buttons, **A · Salida** and **B · Llegada**, say which point the next tap on the map sets; after the start is set, the next tap sets the finish. Each shows the street the point snapped to.
+- The **A and B markers can be dragged**; they snap to the nearest street of the network when dropped.
+- The map **zooms to the route** when A or B change. Every map on the site has a **full-screen button** (under +, − and ⟲); in the planner it takes the controls along, so the weights can still be changed.
+
 ## What the visitor can change
 
 | Slider | What it multiplies | ×1 means |

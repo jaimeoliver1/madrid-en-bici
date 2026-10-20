@@ -197,10 +197,29 @@ input[type=range] { width: 100%; accent-color: var(--sky) }
 .callout { background: var(--brick-soft); padding: 16px 20px; border-radius: 18px; margin-top: 20px; max-width: 72ch }
 .callout b { font-weight: 600 }
 
+/* full screen maps */
+.zoomui .fullbtn { display: inline-flex; align-items: center; justify-content: center }
+body.noscroll { overflow: hidden }
+.mapfull { position: fixed !important; inset: 0; z-index: 60; margin: 0 !important; border-radius: 0 !important; overflow: auto; background: var(--paper); padding: 16px max(16px, env(safe-area-inset-right)) 16px max(16px, env(safe-area-inset-left)) !important }
+:fullscreen { background: var(--paper); overflow: auto; padding: 16px }
+.panel.mapfull, .panel:fullscreen { background: var(--card) }
+.panel.mapfull .mapbox svg, .panel:fullscreen .mapbox svg { width: 100%; height: calc(100vh - 150px) }
+.planner.mapfull, .planner:fullscreen { margin: 0; align-items: stretch }
+.planner.mapfull > .panel, .planner:fullscreen > .panel { overflow: auto }
+.planner.mapfull .mapbox svg, .planner:fullscreen .mapbox svg { width: 100%; height: calc(100vh - 110px) }
+@media (max-width: 900px) { .planner.mapfull .mapbox svg, .planner:fullscreen .mapbox svg { height: 62vh } }
+.player.mapfull, .player:fullscreen { margin: 0 }
+
 /* route planner */
 .planner { display: grid; grid-template-columns: minmax(0, 340px) minmax(0, 1fr); gap: 20px; margin-top: 30px; align-items: start }
 @media (max-width: 900px) { .planner { grid-template-columns: 1fr } .planner > .panel:last-child { order: -1 } }
 .planner .controls { margin: 8px 0 18px }
+.chips { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 6px 0 4px }
+.chip { display: flex; align-items: center; gap: 8px; border: 0; border-radius: 14px; padding: 10px 12px; background: var(--paper); color: var(--ink); font: 600 .9rem var(--body); cursor: pointer; text-align: left; box-shadow: inset 0 0 0 1.5px transparent }
+.chip i { flex: none; width: 22px; height: 22px; border-radius: 50%; color: #fff; font: 700 .75rem/22px var(--body); text-align: center; font-style: normal }
+.chip small { display: block; color: var(--muted); font-weight: 500; font-size: .78rem }
+.chip[aria-pressed="true"] { box-shadow: inset 0 0 0 2px var(--sky); background: var(--card) }
+.rt-marker { cursor: grab } .rt-marker:active { cursor: grabbing }
 .rt-status { font-weight: 600; margin-bottom: 4px }
 .slider { display: flex; flex-direction: column; gap: 4px; margin: 10px 0 }
 .sl-top { display: flex; justify-content: space-between; gap: 10px; font-size: .92rem }

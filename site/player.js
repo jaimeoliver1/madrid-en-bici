@@ -91,6 +91,8 @@
   }
   function size() {
     W = stage.clientWidth; H = Math.max(380, Math.min(720, W * (Y1 - Y0) / (X1 - X0)));
+    const full = stage.closest(".mapfull") || (document.fullscreenElement && document.fullscreenElement.contains(stage));
+    if (full) H = Math.max(320, window.innerHeight - (window.innerWidth <= 820 ? 330 : 40));
     stage.style.height = H + "px";
     dpr = Math.min(2, window.devicePixelRatio || 1);
     canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr);
@@ -114,6 +116,8 @@
     const b = document.createElement("button"); b.type = "button"; b.textContent = s; b.dataset.k = k; b.addEventListener("click", f); ui.append(b);
   });
   stage.append(ui);
+  let fullAdded = false;
+  window.addEventListener("mc-full", () => setup());
 
   // ---------- HUD ----------
   const clock = document.getElementById("pl-clock"), count = document.getElementById("pl-count"), slider = document.getElementById("pl-time");
@@ -209,7 +213,9 @@
     if (e.isIntersecting) { if (!reduce && !userPaused) setPlaying(true); } else setPlaying(false);
   }), { threshold: 0.3 }).observe(stage);
 
-  function setup() { readColors(); size(); buildBars(); labelPlay(); document.getElementById("pl-day").textContent = T("pl_day"); ui.querySelectorAll("button").forEach(b => { b.title = T(b.dataset.k); b.setAttribute("aria-label", T(b.dataset.k)); }); draw(); }
+  function setup() {
+    if (!fullAdded && window.MCI && window.MCI.fullButton) { ui.append(window.MCI.fullButton(stage)); fullAdded = true; }
+    readColors(); size(); buildBars(); labelPlay(); document.getElementById("pl-day").textContent = T("pl_day"); ui.querySelectorAll("button[data-k]").forEach(b => { b.title = T(b.dataset.k); b.setAttribute("aria-label", T(b.dataset.k)); }); draw(); }
   window.addEventListener("mc-render", setup);
   setup();
 })();

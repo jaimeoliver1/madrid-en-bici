@@ -15,6 +15,8 @@
   // ---------- language ----------
   const T = {
     es: {
+      zoom_exitfull: "Salir de pantalla completa",
+      zoom_full: "Pantalla completa",
       nav_ruta: "Tu ruta",
       theme_light: "Modo claro",
       theme_dark: "Modo oscuro",
@@ -108,6 +110,8 @@
       fc_bicimad: "Se actualiza cada mes · datos hasta {dlast}", fc_barrios: "Bicis en directo · estaciones revisadas cada mes", fc_cuestas: "Mapa en directo · flujos de 2023", fc_carriles: "Carriles revisados cada mes · rutas de 2023", fc_seguridad: "Se actualiza cada mes · datos hasta {accend}", fc_tiempo: "Se actualiza cada mes",
     },
     en: {
+      zoom_exitfull: "Exit full screen",
+      zoom_full: "Full screen",
       nav_ruta: "Your route",
       theme_light: "Light mode",
       theme_dark: "Dark mode",
@@ -306,6 +310,7 @@
         g.selectAll("circle").each(function () { if (this.__r0 == null) this.__r0 = +this.getAttribute("r"); this.setAttribute("r", this.__r0 / Math.pow(k, 0.7)); });
         g.selectAll("text").each(function () { if (this.__f0 == null) this.__f0 = 12; this.style.fontSize = (this.__f0 / k) + "px"; });
         g.selectAll("text.t2").attr("display", k < 1.8 ? "none" : null);
+        g.selectAll("text.place").style("stroke-width", (3 / k) + "px");  // keep the label halo thin when zoomed
       });
     svg.call(zoom).on("dblclick.zoom", null).style("touch-action", "pan-y");
     svg.on("wheel.hint", ev => { if (!ev.ctrlKey && !ev.metaKey) showHint(); });
@@ -314,7 +319,35 @@
      ["⟲", "zoom_reset", () => svg.transition().duration(450).call(zoom.transform, d3.zoomIdentity)]].forEach(([s, k, f]) => {
       const b = el("button", null, s); b.type = "button"; b.title = t(k); b.setAttribute("aria-label", t(k)); b.addEventListener("click", f); ui.append(b);
     });
+    ui.append(fullButton(box));
     box.append(ui);
+    svg.node().__zoomer = zoom;  // so other scripts (routing.js) can zoom to a route
+  }
+  // ---------- full screen for any map: the browser's Fullscreen API, or a fixed overlay where it is missing (iPhone) ----------
+  const ICON_FULL = '<svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true"><path d="M2 6V2h4M10 2h4v4M14 10v4h-4M6 14H2v-4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  const ICON_EXIT = '<svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true"><path d="M6 2v4H2M14 6h-4V2M10 14v-4h4M2 10h4v4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  const fullTarget = box => box.closest(".planner") || box.closest(".player") || box.closest(".panel") || box;
+  const isFull = el_ => document.fullscreenElement === el_ || el_.classList.contains("mapfull");
+  function setFullLabel(b, on) { b.innerHTML = on ? ICON_EXIT : ICON_FULL; b.title = t(on ? "zoom_exitfull" : "zoom_full"); b.setAttribute("aria-label", b.title); }
+  function toggleFull(target) {
+    if (isFull(target)) {
+      if (document.fullscreenElement) document.exitFullscreen();
+      else { target.classList.remove("mapfull"); document.body.classList.remove("noscroll"); fullChanged(); }
+      return;
+    }
+    const css = () => { target.classList.add("mapfull"); document.body.classList.add("noscroll"); fullChanged(); };
+    if (target.requestFullscreen && document.fullscreenEnabled) target.requestFullscreen().catch(css); else css();
+  }
+  function fullChanged() {
+    document.querySelectorAll(".fullbtn").forEach(b => setFullLabel(b, isFull(fullTarget(b.closest(".mapbox, .stage")))));
+    window.dispatchEvent(new Event("mc-full"));
+  }
+  document.addEventListener("fullscreenchange", fullChanged);
+  document.addEventListener("keydown", ev => { if (ev.key === "Escape") document.querySelectorAll(".mapfull").forEach(x => toggleFull(x)); });
+  function fullButton(box) {
+    const b = el("button", "fullbtn"); b.type = "button"; setFullLabel(b, false);
+    b.addEventListener("click", () => toggleFull(fullTarget(box)));
+    return b;
   }
   const ringsPath = (F, rings) => rings.split("|").map(r => F.path(r) + "Z").join("");
   // context from OpenStreetMap (basemap.js): parks, the Manzanares and main roads over the barrio fill; landmark names go on top of the data
@@ -694,7 +727,7 @@
     for (const f of parts) { try { f(); } catch (e) { console.error(f.name, e); } }
     document.querySelectorAll("main .chart[id], #score, #bicimad-nums, #lane-nums").forEach(b => onView(b, () => animate(b)));
     document.querySelectorAll(".stop").forEach(s => { if (!s.id) return; onView(s, () => {}); });
-    window.MCI = { t, nf, n1, pct, big, css, el, tip, mapBase, context, places, lang: () => L };
+    window.MCI = { t, nf, n1, pct, big, css, el, tip, mapBase, context, places, fullButton, lang: () => L };
     window.dispatchEvent(new Event("mc-render"));
   }
   // ---------- data freshness: a chip per section and a table in the footer ----------

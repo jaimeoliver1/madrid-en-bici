@@ -8,7 +8,8 @@
       rt_k: "Tu ruta", rt_h: "¿Por dónde voy en bici?",
       rt_lede: "Toca el mapa para marcar la <b>salida</b> y la <b>llegada</b>. Calculamos al momento la ruta más cómoda con el mismo modelo que usamos para analizar la red, y tú decides cuánto te importa cada cosa.",
       loading: "Cargando la red ciclista de Madrid (unos 2 MB)…", load_err: "No se ha podido cargar la red. Recarga la página para intentarlo de nuevo.",
-      pick_a: "Toca el mapa para marcar la salida", pick_b: "Ahora toca la llegada", picked: "Toca otro punto para cambiar la llegada",
+      pick_a: "Toca el mapa para poner la salida (A)", pick_b: "Toca el mapa para poner la llegada (B)", drag: "También puedes arrastrar A y B por el mapa.",
+      chip_a: "Salida", chip_b: "Llegada", chip_set: "Toca el mapa", chip_near: "Junto a {n}", chip_here: "Punto fijado",
       from: "Salida", to: "Llegada", swap: "Invertir", clear: "Borrar", example: "Ejemplo: Atocha → Bernabéu",
       w_h: "¿Qué te importa más?", w_t: "Evitar calles con muchos coches", w_p: "Preferir carriles protegidos", w_s: "Evitar cuestas", w_a: "Evitar sitios con accidentes",
       w_def: "Valores publicados", w_note: "×1 = cómo eligen la ruta los ciclistas según Broach, Dill y Gliebe (2012). Accidentes: ×1 = el riesgo registrado valorado en euros frente al valor del tiempo.",
@@ -34,7 +35,8 @@
       rt_k: "Your route", rt_h: "Which way should I ride?",
       rt_lede: "Tap the map to set your <b>start</b> and <b>finish</b>. We work out the most comfortable route on the spot, with the same model we used to analyse the network, and you decide how much each thing matters to you.",
       loading: "Loading Madrid's bike network (about 2 MB)…", load_err: "Couldn't load the network. Reload the page to try again.",
-      pick_a: "Tap the map to set your start", pick_b: "Now tap your finish", picked: "Tap another point to move the finish",
+      pick_a: "Tap the map to set the start (A)", pick_b: "Tap the map to set the finish (B)", drag: "You can also drag A and B around the map.",
+      chip_a: "Start", chip_b: "Finish", chip_set: "Tap the map", chip_near: "Near {n}", chip_here: "Point set",
       from: "Start", to: "Finish", swap: "Swap", clear: "Clear", example: "Example: Atocha → Bernabéu",
       w_h: "What matters most to you?", w_t: "Avoid streets with heavy traffic", w_p: "Prefer protected lanes", w_s: "Avoid hills", w_a: "Avoid places with accidents",
       w_def: "Published values", w_note: "×1 = how cyclists choose routes according to Broach, Dill & Gliebe (2012). Accidents: ×1 = recorded risk valued in euros against the value of time.",
@@ -118,7 +120,7 @@
   const label = s => s.startsWith("Atocha - Prado") ? tt("axis") : s.replace(" (whole street)", I.lang() === "es" ? " (calle entera)" : " (whole street)");
 
   // ================= the route planner =================
-  const RT = { G: null, loading: false, a: null, b: null, w: { t: 1, p: 1, s: 1, a: 0 }, plan: false };
+  const RT = { G: null, loading: false, a: null, b: null, mode: "a", w: { t: 1, p: 1, s: 1, a: 0 }, plan: false };
   let mapRef = null;
 
   function load() {
@@ -213,7 +215,7 @@
     return out;
   }
   function example() {
-    const G = RT.G; RT.a = nearest(G, -3.6905, 40.4075); RT.b = nearest(G, -3.6890, 40.4520); update();
+    const G = RT.G; RT.a = nearest(G, -3.6905, 40.4075); RT.b = nearest(G, -3.6890, 40.4520); RT.mode = "b"; update(true);
   }
   function status(s) { const e = document.getElementById("rt-status"); if (e) e.textContent = s; }
 
@@ -223,8 +225,18 @@
     document.getElementById("rt-lede").innerHTML = tt("rt_lede");
     const c = document.getElementById("rt-controls"); c.replaceChildren();
     const st = I.el("p", "rt-status"); st.id = "rt-status"; c.append(st);
+    // which point the next tap on the map sets
+    const chips = I.el("div", "chips"); chips.id = "rt-chips";
+    [["a", "A", "--good"], ["b", "B", "--bad"]].forEach(([k, lab, col]) => {
+      const b = I.el("button", "chip"); b.type = "button"; b.dataset.k = k;
+      const i = I.el("i", null, lab); i.style.background = I.css(col);
+      const txt = I.el("span"); txt.append(document.createTextNode(tt("chip_" + k)), I.el("small"));
+      b.append(i, txt); b.addEventListener("click", () => { RT.mode = k; chipsUpdate(); status(tt(k === "a" ? "pick_a" : "pick_b")); });
+      chips.append(b);
+    });
+    c.append(chips);
     const bt = I.el("div", "controls");
-    [["swap", () => { [RT.a, RT.b] = [RT.b, RT.a]; update(); }], ["clear", () => { RT.a = RT.b = null; update(); }], ["example", () => RT.G && example()]].forEach(([k, f]) => {
+    [["swap", () => { [RT.a, RT.b] = [RT.b, RT.a]; update(); }], ["clear", () => { RT.a = RT.b = null; RT.mode = "a"; update(); }], ["example", () => RT.G && example()]].forEach(([k, f]) => {
       const b = I.el("button", "btn ghost", tt(k)); b.type = "button"; b.addEventListener("click", f); bt.append(b);
     });
     c.append(bt, I.el("h3", null, tt("w_h")));
@@ -255,7 +267,7 @@
 
   function drawMap() {
     const box = document.getElementById("ch-route"); if (!box) return;
-    const { svg, g, F } = I.mapBase(box, 620);
+    const { svg, g, F, W } = I.mapBase(box, 620);
     g.selectAll("path.b").data(M.barrios).join("path").attr("class", "b").attr("d", b => b[5].split("|").map(r => F.path(r) + "Z").join(""))
       .attr("fill", I.css("--grey-map")).attr("stroke", I.css("--card")).attr("stroke-width", 0.8);
     I.context(g, F);
@@ -263,19 +275,40 @@
       .attr("fill", "none").attr("stroke", I.css("--lane")).attr("stroke-width", 1.4).attr("stroke-opacity", 0.5);
     const gp = g.append("g").attr("class", "plan"), gr = g.append("g").attr("class", "routes"), gm = g.append("g").attr("class", "marks");
     I.places(g, F);
-    mapRef = { F, gp, gr, gm };
+    mapRef = { F, gp, gr, gm, svg, W, H: F.h };
     svg.on("click", ev => {
       if (!RT.G) return;
       const [x, y] = d3.pointer(ev, g.node()), [lon, lat] = F.inv(x, y), v = nearest(RT.G, lon, lat);
       if (v < 0) { status(tt("far")); return; }
-      if (RT.a == null) RT.a = v; else if (RT.b == null) RT.b = v; else RT.b = v;
-      update();
+      RT[RT.mode] = v;
+      if (RT.mode === "a") RT.mode = "b";   // after the start, the next tap sets the finish
+      update(true);
     });
     svg.style("cursor", "crosshair");
     if (RT.G) update(); else status(RT.loading ? tt("loading") : "");
   }
 
-  function update() {
+  function nearName(v) {
+    const G = RT.G; if (!G || v == null) return "";
+    for (let p = G.start[v]; p < G.start[v + 1]; p++) { const nm = G.names[G.E[G.edge[p] * G.K + G.ix.name]]; if (nm) return nm; }
+    return "";
+  }
+  function chipsUpdate() {
+    document.querySelectorAll("#rt-chips .chip").forEach(b => {
+      const k = b.dataset.k, v = RT[k]; b.setAttribute("aria-pressed", String(RT.mode === k));
+      b.querySelector("small").textContent = v == null ? tt("chip_set") : nearName(v) ? tt("chip_near", { n: nearName(v) }) : tt("chip_here");
+    });
+  }
+  // zoom the map to the route (or to the two points) when they change
+  function fitTo(pts) {
+    const { svg, W, H } = mapRef, z = svg.node().__zoomer; if (!z || pts.length < 2) return;
+    const xs = pts.map(p => p[0]), ys = pts.map(p => p[1]);
+    const x0 = Math.min(...xs), x1 = Math.max(...xs), y0 = Math.min(...ys), y1 = Math.max(...ys);
+    const k = Math.max(1, Math.min(5, 0.75 * Math.min(W / Math.max(x1 - x0, 1), H / Math.max(y1 - y0, 1))));
+    const t = d3.zoomIdentity.translate(W / 2 - k * (x0 + x1) / 2, H / 2 - k * (y0 + y1) / 2).scale(k);
+    svg.transition().duration(650).call(z.transform, t);
+  }
+  function update(fit) {
     if (!mapRef) return;
     const { F, gp, gr, gm } = mapRef, G = RT.G;
     const line = pts => "M" + pts.map(([lo, la]) => F.P(lo, la).map(v => v.toFixed(1)).join(" ")).join("L");
@@ -285,15 +318,28 @@
     gr.selectAll("*").remove(); gm.selectAll("*").remove();
     const res = document.getElementById("rt-results"); if (res) res.replaceChildren();
     if (!G) return;
-    status(RT.a == null ? tt("pick_a") : RT.b == null ? tt("pick_b") : tt("picked"));
-    [[RT.a, "A", I.css("--good")], [RT.b, "B", I.css("--bad")]].forEach(([v, lab, col]) => {
-      if (v == null) return;
+    status(tt(RT.mode === "a" ? "pick_a" : "pick_b") + (RT.a != null && RT.b != null ? ". " + tt("drag") : ""));
+    chipsUpdate();
+    const k0 = d3.zoomTransform(mapRef.svg.node()).k;
+    [["a", "A", I.css("--good")], ["b", "B", I.css("--bad")]].forEach(([key, lab, col]) => {
+      const v = RT[key]; if (v == null) return;
       const [x, y] = F.P(G.lon[v], G.lat[v]);
-      const m = gm.append("g").attr("transform", `translate(${x},${y})`);
-      m.append("circle").attr("r", 9).attr("fill", col).attr("stroke", I.css("--card")).attr("stroke-width", 2);
-      m.append("text").attr("text-anchor", "middle").attr("dy", ".35em").style("fill", "#fff").style("font", "700 10px var(--body)").text(lab);
+      const m = gm.append("g").attr("class", "rt-marker").attr("transform", `translate(${x},${y})`);
+      m.append("circle").attr("r", 11).attr("fill", col).attr("stroke", I.css("--card")).attr("stroke-width", 2.5);
+      m.append("text").attr("text-anchor", "middle").attr("dy", ".35em").style("fill", "#fff").style("font", "700 11px var(--body)").text(lab);
+      m.selectAll("circle").each(function () { this.__r0 = 11; this.setAttribute("r", 11 / Math.pow(k0, 0.7)); });
+      m.selectAll("text").each(function () { this.__f0 = 11; this.style.fontSize = (11 / k0) + "px"; });
+      // drag a marker to move it; it snaps to the nearest street when dropped
+      m.call(d3.drag().on("drag", ev => m.attr("transform", `translate(${ev.x},${ev.y})`)).on("end", ev => {
+        const [lon, lat] = F.inv(ev.x, ev.y), w = nearest(G, lon, lat);
+        if (w >= 0) { RT[key] = w; RT.mode = key; }
+        update();
+      }));
     });
-    if (RT.a == null || RT.b == null || RT.a === RT.b) return;
+    if (RT.a == null || RT.b == null || RT.a === RT.b) {
+      if (fit && (RT.a ?? RT.b) != null) { const v = RT.a ?? RT.b, [x, y] = F.P(G.lon[v], G.lat[v]); fitTo([[x - 150, y - 150], [x + 150, y + 150]]); }
+      return;
+    }
     weigh(G);
     const best = dijkstra(G, RT.a, RT.b, G.cost), short = dijkstra(G, RT.a, RT.b, G.len);
     if (!best) return;
@@ -303,6 +349,7 @@
     if (short) draw(short, I.css("--muted"), 3, "6 5");
     draw(best, I.css("--card"), 7); draw(best, I.css("--sky"), 4.5);
     gm.raise();
+    if (fit) fitTo(best.flatMap(p => { const c = edgeCoords(G, G.edge[p]); return [F.P(...c[0]), F.P(...c[c.length - 1])]; }));
     const sb = stats(G, best), ss = short ? stats(G, short) : null;
     const same = ss && Math.abs(sb.L - ss.L) < 1 && Math.abs(sb.prot - ss.prot) < 1e-3;
     const sum = I.el("p", "verdict");
