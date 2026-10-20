@@ -13,7 +13,7 @@
       from: "Salida", to: "Llegada", swap: "Invertir", clear: "Borrar", example: "Ejemplo: Atocha → Bernabéu",
       w_h: "¿Qué te importa más?", w_t: "Evitar calles con muchos coches", w_p: "Preferir carriles protegidos", w_s: "Evitar cuestas", w_a: "Evitar sitios con accidentes",
       w_def: "Valores publicados", w_note: "×1 = cómo eligen la ruta los ciclistas según Broach, Dill y Gliebe (2012). Accidentes: ×1 = el riesgo registrado valorado en euros frente al valor del tiempo.",
-      plan_on: "Con los carriles protegidos propuestos", plan_note: "Añade los 21 km del plan que proponemos más abajo.",
+      plan_on: "Con los carriles protegidos propuestos", plan_note: "Añade los 21 km del <a href=\"#plan\">plan que proponemos en Mejorar Madrid</a>.",
       best: "Ruta recomendada", short: "Ruta más corta", km: "km", min: "min", prot: "por carril protegido", busy: "por calles con mucho tráfico",
       climb: "de subida", acc: "accidentes registrados en el camino (2019–2026)", via: "Por", same: "Coinciden: la ruta más corta ya es la recomendada.",
       vs: "{d} km más que la más corta · {p} por carril protegido (la más corta: {q}).", vs2: "Igual de larga que la más corta, por calles más cómodas.",
@@ -40,7 +40,7 @@
       from: "Start", to: "Finish", swap: "Swap", clear: "Clear", example: "Example: Atocha → Bernabéu",
       w_h: "What matters most to you?", w_t: "Avoid streets with heavy traffic", w_p: "Prefer protected lanes", w_s: "Avoid hills", w_a: "Avoid places with accidents",
       w_def: "Published values", w_note: "×1 = how cyclists choose routes according to Broach, Dill & Gliebe (2012). Accidents: ×1 = recorded risk valued in euros against the value of time.",
-      plan_on: "With the proposed protected lanes", plan_note: "Adds the 21 km of the plan we propose further down.",
+      plan_on: "With the proposed protected lanes", plan_note: "Adds the 21 km of <a href=\"#plan\">the plan we propose under Improve Madrid</a>.",
       best: "Recommended route", short: "Shortest route", km: "km", min: "min", prot: "on protected lanes", busy: "on streets with heavy traffic",
       climb: "uphill", acc: "recorded accidents along the way (2019–2026)", via: "Via", same: "They match: the shortest route is already the recommended one.",
       vs: "{d} km longer than the shortest · {p} on protected lanes (shortest: {q}).", vs2: "As long as the shortest, on more comfortable streets.",
@@ -252,7 +252,8 @@
     c.append(def, I.el("p", "note", tt("w_note")));
     const tg = I.el("label", "toggle"), cb = document.createElement("input"); cb.type = "checkbox"; cb.checked = RT.plan;
     cb.addEventListener("change", () => { RT.plan = cb.checked; update(); });
-    tg.append(cb, I.el("span", null, tt("plan_on"))); c.append(tg, I.el("p", "note", tt("plan_note")));
+    const pn = I.el("p", "note"); pn.innerHTML = tt("plan_note");
+    tg.append(cb, I.el("span", null, tt("plan_on"))); c.append(tg, pn);
     const res = I.el("div", "rt-results"); res.id = "rt-results"; c.append(res);
     const more = I.el("p", "note"), a = I.el("a", null, tt("rt_more")); a.href = DOCS + "ROUTING.md"; a.target = "_blank"; a.rel = "noopener"; more.append(a); c.append(more);
     const lg = document.getElementById("lg-route"); lg.replaceChildren();

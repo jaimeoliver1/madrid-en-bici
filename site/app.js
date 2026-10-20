@@ -17,7 +17,6 @@
     es: {
       zoom_exitfull: "Salir de pantalla completa",
       zoom_full: "Pantalla completa",
-      nav_ruta: "Tu ruta",
       theme_light: "Modo claro",
       theme_dark: "Modo oscuro",
       b_pick: "Elige tu barrio",
@@ -42,9 +41,19 @@
       pl_lede: "Cada punto es una persona en una BiciMAD real, un jueves de enero. Dale al play y mira cómo la ciudad se despierta, va a trabajar y vuelve a casa.",
       pl_h: "Así se mueve Madrid en bici en 24 horas",
       pl_k: "Un día cualquiera",
-      nav_city: "Para el Ayuntamiento",
-      nav_barrio: "Tu barrio",
-      nav_bicimad: "Cuándo", nav_barrios: "Barrios", nav_cuestas: "Cuestas", nav_carriles: "Carriles", nav_seguridad: "Seguridad", nav_mejorar: "Qué mejorar",
+      tab_ir: "Ir en bici", tab_mejorar: "Mejorar Madrid",
+      j_ruta: "Planea tu ruta", j_barrio: "¿Hay BiciMAD cerca?", j_tips: "Antes de salir",
+      tips_k: "Antes de salir", tips_h: "Cuatro cosas que conviene saber", tips_lede: "Lo esencial de los datos, en corto. Abre cada tarjeta si quieres ver los gráficos.",
+      more_data: "Ver datos", less_data: "Ocultar datos",
+      to_city_h: "¿Qué haría falta para que fuera más fácil?", to_city_p: "La nota de Madrid, un plan de carriles protegidos con su coste y su beneficio, y seis cambios concretos.",
+      to_ride_h: "¿Vas en bici?", to_ride_p: "Planea tu ruta por las calles más cómodas, mira las bicis de tu barrio en directo y lo que conviene saber antes de salir.",
+      j_lanes: "Los carriles hoy", j_plan: "El plan de carriles", j_fixes: "Seis cambios", j_safety: "Accidentes", j_cov: "Estaciones", j_use: "Uso",
+      ln_h: "La red de carriles, hoy", plan_k: "El plan", fix_k: "Qué hacer",
+      sf_h: "Los accidentes crecen con los viajes",
+      sf_lede: "Los accidentes con bici <b>crecen casi tanto como los viajes</b>: más bicis en la calle aún no han traído calles más seguras. Se concentran en unos pocos cruces (los tienes en <a href=\"#seguridad\">Ir en bici</a>), y arreglarlos es el segundo de los seis cambios.",
+      cov_k: "BiciMAD", cov_lede: "Lo recomendado es una estación cada 300 m. Hoy solo el centro llega; en el resto de barrios hay que andar demasiado.",
+      use_k: "Uso", use_h: "¿Cuánta gente va en bici?",
+      use_lede: "BiciMAD bate un récord cada septiembre y por las calles más ciclistas pasan hasta {ctop} bicis al día. <b>Hay demanda; lo que falta es una red que la acompañe.</b>",
       hero_kicker: "BiciMAD y la bici en Madrid", pl_date: "Jueves 12 de enero de 2023", pl_moving: "bicis circulando", pl_flow: "El rastro azul se acumula: al final del día, las calles más usadas brillan más", pl_day: "Ver el día completo", pl_scrub: "Arrastra para moverte por el día", pl_play: "Reproducir", pl_pause: "Pausa", pl_note: "Recorridos estimados: la ruta en bici más probable entre las dos estaciones. <a href=\"https://claude.ai/artifact/GJbZpaqHckxf79TpvRCdbR\" target=\"_blank\" rel=\"noopener\">Ver el vídeo</a>.", pl_hour_trips: "viajes que empiezan cada hora", zoom_hint: "Usa Ctrl + rueda (o pellizca) para hacer zoom", zoom_in: "Acercar", zoom_out: "Alejar", zoom_reset: "Ver todo", hero_h1: "¿Cómo es moverse en bici por Madrid?",
       hero_lede: "Cada día, decenas de miles de personas cogen una BiciMAD. Aquí verás <b>dónde hay bicis, por dónde ir y qué falta</b>, con datos abiertos y en directo.",
       score_h: "La nota de Madrid", score_sub: "Cada tarjeta compara Madrid con lo que recomiendan las guías de planificación o con otras ciudades. La franja verde es el objetivo.",
@@ -112,7 +121,6 @@
     en: {
       zoom_exitfull: "Exit full screen",
       zoom_full: "Full screen",
-      nav_ruta: "Your route",
       theme_light: "Light mode",
       theme_dark: "Dark mode",
       b_pick: "Pick your barrio",
@@ -137,9 +145,19 @@
       pl_lede: "Each dot is a person on a real BiciMAD, one Thursday in January. Press play and watch the city wake up, go to work and head home.",
       pl_h: "How Madrid moves by bike in 24 hours",
       pl_k: "An ordinary day",
-      nav_city: "For the City Council",
-      nav_barrio: "Your barrio",
-      nav_bicimad: "When", nav_barrios: "Neighbourhoods", nav_cuestas: "Hills", nav_carriles: "Bike lanes", nav_seguridad: "Safety", nav_mejorar: "What to fix",
+      tab_ir: "Ride", tab_mejorar: "Improve Madrid",
+      j_ruta: "Plan your route", j_barrio: "BiciMAD near you", j_tips: "Before you ride",
+      tips_k: "Before you ride", tips_h: "Four things worth knowing", tips_lede: "The gist of the data, in short. Open a card if you want to see the charts.",
+      more_data: "Show the data", less_data: "Hide the data",
+      to_city_h: "What would make it easier?", to_city_p: "Madrid's report card, a protected-lane plan with its costs and benefits, and six concrete changes.",
+      to_ride_h: "Do you ride?", to_ride_p: "Plan your route on the most comfortable streets, see live bikes in your barrio and what's worth knowing before you set off.",
+      j_lanes: "Lanes today", j_plan: "The lane plan", j_fixes: "Six changes", j_safety: "Accidents", j_cov: "Stations", j_use: "Usage",
+      ln_h: "The bike network today", plan_k: "The plan", fix_k: "What to do",
+      sf_h: "Accidents grow with trips",
+      sf_lede: "Bike accidents <b>are growing almost as fast as trips</b>: more bikes on the street haven't made the streets safer yet. They cluster at a few junctions (see them under <a href=\"#seguridad\">Ride</a>), and fixing those is the second of the six changes.",
+      cov_k: "BiciMAD", cov_lede: "The goal is one station every 300 m. Today only the centre gets there; elsewhere the walk is too long.",
+      use_k: "Usage", use_h: "How many people ride?",
+      use_lede: "BiciMAD sets a record every September, and up to {ctop} bikes a day pass along the busiest cycling streets. <b>The demand is there; what's missing is a network to match it.</b>",
       hero_kicker: "BiciMAD and cycling in Madrid", pl_date: "Thursday 12 January 2023", pl_moving: "bikes on the move", pl_flow: "The blue trail builds up: by midnight, the busiest streets glow brightest", pl_day: "Show the whole day", pl_scrub: "Drag to move through the day", pl_play: "Play", pl_pause: "Pause", pl_note: "Estimated paths: the most likely bike route between the two stations. <a href=\"https://claude.ai/artifact/GJbZpaqHckxf79TpvRCdbR\" target=\"_blank\" rel=\"noopener\">Watch the video</a>.", pl_hour_trips: "trips starting each hour", zoom_hint: "Use Ctrl + scroll (or pinch) to zoom", zoom_in: "Zoom in", zoom_out: "Zoom out", zoom_reset: "Show all", hero_h1: "What's it like to get around Madrid by bike?",
       hero_lede: "Every day, tens of thousands of people take a BiciMAD. Here you'll see <b>where the bikes are, which way to go and what's missing</b>, with open, live data.",
       score_h: "Madrid's report card", score_sub: "Each card compares Madrid with what planning guides recommend or with other cities. The green band is the target.",
@@ -678,7 +696,7 @@
       n: nf(M.acc_points.length),
       snap: snapD.toLocaleString(loc_, { weekday: "long", day: "numeric", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit" }),
       accend: fmonth(K.acc_last.slice(0, 7)),
-      dlast: fdate(K.daily_last), refreshed: K.refreshed ? fdate(K.refreshed) : "", fleet: nf(K.fleet),
+      dlast: fdate(K.daily_last), ctop: nf(M.counters[0][1]), refreshed: K.refreshed ? fdate(K.refreshed) : "", fleet: nf(K.fleet),
       partial: part ? (L === "es" ? `${part[0]} solo incluye enero a ${new Date(K.acc_last + "T12:00:00Z").toLocaleDateString(loc_, { month: "long" })}.` : `${part[0]} covers January to ${new Date(K.acc_last + "T12:00:00Z").toLocaleDateString(loc_, { month: "long" })} only.`) : "",
     };
     document.querySelectorAll("[data-i18n]").forEach(e => { e.textContent = t(e.dataset.i18n, V); });
@@ -734,7 +752,7 @@
   const FRESH = { bicimad: "f-month", barrios: "f-month", cuestas: "f-live", carriles: "f-month", seguridad: "f-month", tiempo: "f-month" };
   function freshness(V) {
     document.querySelectorAll("[data-fresh]").forEach(sec => {
-      const k = sec.dataset.fresh, h2 = sec.querySelector("h2"); if (!h2) return;
+      const k = sec.dataset.fresh, h2 = sec.querySelector("h2, h3"); if (!h2) return;
       let a = sec.querySelector(".fresh"); if (!a) { a = el("a", "fresh " + FRESH[k]); a.href = "#datos"; h2.after(a); }
       a.replaceChildren(el("i"), document.createTextNode(t("fc_" + k, V)));
     });
@@ -812,5 +830,31 @@
     render();
   });
   window.addEventListener("mc-render", themeLabel);
+  // ---------- two tabs: "Ir en bici" for riders, "Mejorar Madrid" for decision makers; the hash picks the tab ----------
+  // charts size themselves from their box, so a tab is drawn again when it is shown, and a tip card when it is opened
+  const PANES = [...document.querySelectorAll(".pane")], PARTS = { hills, bicimad, safety, weather };
+  function paneFor(hash) {
+    const target = hash.length > 1 ? document.getElementById(decodeURIComponent(hash.slice(1))) : null;
+    return { target, pane: target ? target.closest(".pane") : PANES[0] };  // pane is null for anchors outside the tabs (footer)
+  }
+  function showPane(pane) {
+    PANES.forEach(p => { p.hidden = p !== pane; });
+    document.querySelectorAll(".tabs a").forEach(a => { if (a.dataset.pane === pane.id) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current"); });
+  }
+  function goTo(target, pane) {
+    if (target && target !== pane) target.scrollIntoView({ behavior: "instant" }); else window.scrollTo({ top: 0, behavior: "instant" });
+  }
+  window.addEventListener("hashchange", () => {
+    const { target, pane } = paneFor(location.hash);
+    if (!pane || !pane.hidden) return;  // a link within the open tab, or to the footer: the browser scrolls
+    showPane(pane); render(); goTo(target, pane);
+  });
+  document.querySelectorAll(".tipcard details").forEach(d => d.addEventListener("toggle", () => {
+    const f = PARTS[d.closest(".tipcard").dataset.part];
+    if (d.open && f) { try { f(); } catch (e) { console.error(f.name, e); } }
+  }));
+  const first = paneFor(location.hash);
+  showPane(first.pane || PANES[0]);
   render();
+  if (first.target) goTo(first.target, first.pane);
 })();

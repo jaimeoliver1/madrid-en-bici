@@ -68,14 +68,13 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .top .wrap { display: flex; align-items: center; gap: 14px; padding-block: 10px }
 .brand { font: 700 1.15rem var(--display); letter-spacing: -.01em; display: flex; align-items: center; gap: 9px; text-decoration: none; color: var(--ink); flex: none }
 .brand svg { width: 30px; height: 30px; flex: none }
-.nav { display: flex; gap: 4px; margin-left: auto; overflow-x: auto; scrollbar-width: none; min-width: 0 }
-.nav::-webkit-scrollbar { display: none }
-.nav a { color: var(--muted); text-decoration: none; font: 500 .92rem var(--body); padding: 6px 11px; border-radius: 999px; white-space: nowrap }
-.nav a:hover { color: var(--ink); background: var(--band) }
-.nav a.city { color: var(--brick) }
-@media (max-width: 860px) { .top .wrap { flex-wrap: wrap; row-gap: 6px } .nav { order: 3; flex-basis: 100%; margin: 0 -11px } .themebtn { margin-left: auto } .top .lang { margin-left: 0 } }
-.lang { display: inline-flex; background: var(--band); border-radius: 999px; padding: 3px; flex: none; margin-left: auto }
-@media (min-width: 861px) { .lang { margin-left: 4px } }
+/* two tabs: "Ir en bici" for riders, "Mejorar Madrid" for decision makers */
+.tabs { display: inline-flex; background: var(--band); border-radius: 999px; padding: 3px; flex: none; margin-inline: auto }
+.tabs a { font: 600 .9rem var(--body); color: var(--muted); text-decoration: none; padding: 7px 16px; border-radius: 999px; white-space: nowrap; text-align: center }
+.tabs a:hover { color: var(--ink) }
+.tabs a[aria-current="page"] { background: var(--card); color: var(--ink); box-shadow: 0 1px 3px rgba(0,0,0,.08) }
+@media (max-width: 860px) { html { scroll-padding-top: 112px } .top .wrap { flex-wrap: wrap; row-gap: 8px } .tabs { order: 3; flex-basis: 100%; display: grid; grid-template-columns: 1fr 1fr } .top .themebtn { margin-left: auto } .top .lang { margin-left: 0 } }
+.lang { display: inline-flex; background: var(--band); border-radius: 999px; padding: 3px; flex: none; margin-left: 4px }
 .lang button { font: 600 .78rem var(--body); background: transparent; color: var(--muted); border: 0; padding: 5px 10px; border-radius: 999px; cursor: pointer }
 .lang button[aria-pressed="true"] { background: var(--card); color: var(--ink); box-shadow: 0 1px 3px rgba(0,0,0,.08) }
 .themebtn { flex: none; margin-left: 4px; width: 34px; height: 34px; border-radius: 999px; border: 0; background: var(--band); color: var(--muted); font-size: 1rem; line-height: 1; cursor: pointer }
@@ -86,7 +85,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .stop.band { background: var(--band) }
 .kicker { display: inline-flex; align-items: center; gap: 8px; font: 600 .85rem var(--body); color: var(--sky); background: color-mix(in srgb, var(--sky) 10%, transparent); padding: 5px 12px 5px 10px; border-radius: 999px; margin-bottom: 16px }
 .kicker i { width: 8px; height: 8px; border-radius: 50%; background: currentColor; display: inline-block }
-.stop.problem .kicker { color: var(--brick); background: color-mix(in srgb, var(--brick) 12%, transparent) }
+.stop.problem .kicker, .tipcard.problem .kicker { color: var(--brick); background: color-mix(in srgb, var(--brick) 12%, transparent) }
 .stop.city .kicker { color: var(--ink); background: var(--card); box-shadow: var(--shadow) }
 .lede { font-size: 1.16rem; margin-top: 16px; color: var(--muted) }
 .lede b { color: var(--ink); font-weight: 600 }
@@ -260,6 +259,36 @@ body.noscroll { overflow: hidden }
 .city-intro { display: grid; gap: 8px }
 .subh { font-size: clamp(1.4rem, 2.6vw, 1.8rem); margin-top: 56px }
 
+/* jump links under a tab's opening */
+.jump { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 24px }
+a.btn { text-decoration: none }
+
+/* "antes de salir": one card per topic, the charts behind "Ver datos" */
+.tipgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: 16px; margin-top: 28px; align-items: start }
+.tipcard { background: var(--card); border-radius: 22px; padding: clamp(18px, 2.4vw, 24px); box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 10px; min-width: 0 }
+.tipcard:has(details[open]) { grid-column: 1 / -1 }
+.tipcard .kicker { align-self: flex-start; margin-bottom: 2px }
+.tipcard h3 { font-size: 1.4rem; font-weight: 700; letter-spacing: -.02em }
+.tipcard .fresh { margin-top: 0 }
+.tipcard > p { color: var(--muted) }
+.tipcard > p b { color: var(--ink); font-weight: 600 }
+.tipcard summary { cursor: pointer; list-style: none; display: inline-flex; align-items: center; gap: 8px; font: 600 .92rem var(--body); color: var(--sky); padding: 4px 0 }
+.tipcard summary::-webkit-details-marker { display: none }
+.tipcard summary::before { content: "+"; width: 22px; height: 22px; border-radius: 50%; background: color-mix(in srgb, var(--sky) 12%, transparent); font: 700 1rem/22px var(--body); text-align: center }
+.tipcard details[open] summary::before { content: "–" }
+.tipcard details:not([open]) .less, .tipcard details[open] .more { display: none }
+.tipcols { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 400px), 1fr)); gap: 24px 28px; margin-top: 14px }
+.tipcols > * { min-width: 0 }
+.tipcols h4 { font: 600 1.08rem/1.2 var(--display); letter-spacing: -.01em; margin: 0 0 4px }
+.tipcols .note { font-size: .9rem; color: var(--muted); margin-bottom: 12px }
+
+/* the link from one tab to the other */
+.tocity { display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-top: 40px; background: var(--ink); color: var(--paper); border-radius: 22px; padding: 24px 26px; text-decoration: none }
+.tocity h3 { color: inherit; font-size: 1.35rem }
+.tocity p { opacity: .78; margin-top: 6px }
+.tocity .arrow { font: 700 2rem/1 var(--display); flex: none }
+.tocity:hover .arrow { transform: translateX(4px) }
+
 footer { background: var(--band); padding-block: 56px 72px; font-size: .9rem; color: var(--muted) }
 footer h3 { color: var(--ink) }
 footer ul { padding-left: 18px; margin: 8px 0 0 }
@@ -278,18 +307,13 @@ footer li { margin-bottom: 4px }
 <body>
 <header class="top">
   <div class="wrap">
-    <a class="brand" href="#inicio" aria-label="Madrid en bici">
+    <a class="brand" href="#ir" aria-label="Madrid en bici">
       <svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="9" fill="var(--sky)"/><g fill="none" stroke="var(--paper)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="20" r="4.5"/><circle cx="22" cy="20" r="4.5"/><path d="M10 20 L14 12 H20 L22 20 M14 12 L17 20 H10"/></g></svg>
       <span>Madrid en bici</span>
     </a>
-    <nav class="nav" aria-label="Secciones">
-      <a href="#barrio" data-i18n="nav_barrio">Tu barrio</a>
-      <a href="#bicimad" data-i18n="nav_bicimad">Cuándo</a>
-      <a href="#cuestas" data-i18n="nav_cuestas">Cuestas</a>
-      <a href="#carriles" data-i18n="nav_carriles">Carriles</a>
-      <a href="#ruta" data-i18n="nav_ruta">Tu ruta</a>
-      <a href="#seguridad" data-i18n="nav_seguridad">Seguridad</a>
-      <a href="#ayuntamiento" class="city" data-i18n="nav_city">Para el Ayuntamiento</a>
+    <nav class="tabs" aria-label="Secciones">
+      <a href="#ir" data-pane="ir" data-i18n="tab_ir" aria-current="page">Ir en bici</a>
+      <a href="#mejorar" data-pane="mejorar" data-i18n="tab_mejorar">Mejorar Madrid</a>
     </nav>
     <button type="button" class="themebtn" id="theme" aria-pressed="false">☾</button>
     <div class="lang" role="group" aria-label="Idioma / Language">
@@ -300,10 +324,17 @@ footer li { margin-bottom: 4px }
 </header>
 
 <main id="inicio">
+<!-- ================= Ir en bici: for people who ride ================= -->
+<div class="pane" id="ir">
   <section class="wrap hero">
     <div class="kicker"><i></i><span data-i18n="hero_kicker">BiciMAD y la bici en Madrid</span></div>
     <h1 data-i18n="hero_h1">¿Cómo es moverse en bici por Madrid?</h1>
     <p class="lede" data-i18n-html="hero_lede"></p>
+    <div class="jump">
+      <a class="btn" href="#ruta" data-i18n="j_ruta">Planea tu ruta</a>
+      <a class="btn ghost" href="#barrio" data-i18n="j_barrio">¿Hay BiciMAD cerca?</a>
+      <a class="btn ghost" href="#consejos" data-i18n="j_tips">Antes de salir</a>
+    </div>
 
     <div class="live off" id="live" aria-live="polite">
       <div class="live-h"><span class="dot" aria-hidden="true"></span><span data-i18n="live_k">Ahora mismo en BiciMAD</span><span class="small muted" id="live-ago"></span></div>
@@ -342,7 +373,22 @@ footer li { margin-bottom: 4px }
     </div>
   </section>
 
-  <section class="stop" id="barrio" data-fresh="barrios">
+  <section class="stop" id="ruta">
+    <div class="wrap">
+      <div class="kicker"><i></i><span id="rt-k">Tu ruta</span></div>
+      <h2 id="rt-h">¿Por dónde voy en bici?</h2>
+      <p class="lede" id="rt-lede"></p>
+      <div class="planner">
+        <div class="panel" id="rt-controls"></div>
+        <div class="panel">
+          <div class="legend" id="lg-route"></div>
+          <div class="chart mapbox" id="ch-route"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="stop band" id="barrio" data-fresh="barrios">
     <div class="wrap">
       <div class="kicker"><i></i><span data-i18n="s2_k">Tu barrio</span></div>
       <h2 data-i18n="s2_h">¿Tienes BiciMAD cerca de casa?</h2>
@@ -363,53 +409,120 @@ footer li { margin-bottom: 4px }
     </div>
   </section>
 
-  <section class="stop band" id="bicimad" data-fresh="bicimad">
+  <section class="stop" id="consejos">
     <div class="wrap">
-      <div class="kicker"><i></i><span data-i18n="s1_k">Cuándo</span></div>
-      <h2 data-i18n="s1_h"></h2>
-      <p class="lede" data-i18n-html="s1_lede"></p>
-      <div class="big3" id="bicimad-nums"></div>
-      <div class="cols">
-        <div class="panel">
-          <h3 data-i18n="s1_c2"></h3>
-          <p class="note" data-i18n="s1_c2n"></p>
-          <div class="chart" id="ch-hourly"></div>
-        </div>
-        <div class="panel">
-          <h3 data-i18n="s1_c1"></h3>
-          <p class="note" data-i18n="s1_c1n"></p>
-          <div class="chart" id="ch-monthly"></div>
-        </div>
+      <div class="kicker"><i></i><span data-i18n="tips_k">Antes de salir</span></div>
+      <h2 data-i18n="tips_h">Cuatro cosas que conviene saber</h2>
+      <p class="lede" data-i18n="tips_lede"></p>
+      <div class="tipgrid">
+        <article class="tipcard problem" id="cuestas" data-fresh="cuestas" data-part="hills">
+          <div class="kicker"><i></i><span data-i18n="s3_k">Cuestas</span></div>
+          <h3 data-i18n="s3_h"></h3>
+          <p data-i18n-html="s3_lede"></p>
+          <details>
+            <summary><span class="more" data-i18n="more_data">Ver datos</span><span class="less" data-i18n="less_data">Ocultar datos</span></summary>
+            <div class="tipcols">
+              <div>
+                <h4 data-i18n="s3_c2"></h4>
+                <p class="note" data-i18n="s3_c2n"></p>
+                <div class="legend"><span><i class="dot" style="background:var(--bad)"></i><span data-i18n="empty">Vacía</span></span><span><i class="dot" style="background:var(--sky)"></i><span data-i18n="hasbikes">Con bicis</span></span></div>
+                <div class="chart mapbox" id="ch-empty"></div>
+              </div>
+              <div>
+                <h4 data-i18n="s3_c1"></h4>
+                <p class="note" data-i18n="s3_c1n"></p>
+                <div class="chart" id="ch-slope"></div>
+                <div class="callout" id="cuestas-callout"></div>
+              </div>
+            </div>
+          </details>
+        </article>
+        <article class="tipcard" id="horas" data-fresh="bicimad" data-part="bicimad">
+          <div class="kicker"><i></i><span data-i18n="s1_k">Cuándo</span></div>
+          <h3 data-i18n="s1_h"></h3>
+          <p data-i18n-html="s1_lede"></p>
+          <details>
+            <summary><span class="more" data-i18n="more_data">Ver datos</span><span class="less" data-i18n="less_data">Ocultar datos</span></summary>
+            <div class="tipcols">
+              <div>
+                <h4 data-i18n="s1_c2"></h4>
+                <p class="note" data-i18n="s1_c2n"></p>
+                <div class="chart" id="ch-hourly"></div>
+              </div>
+            </div>
+          </details>
+        </article>
+        <article class="tipcard problem" id="seguridad" data-fresh="seguridad" data-part="safety">
+          <div class="kicker"><i></i><span data-i18n="s5_k">Seguridad</span></div>
+          <h3 data-i18n="s5_h"></h3>
+          <p data-i18n-html="s5_lede"></p>
+          <details>
+            <summary><span class="more" data-i18n="more_data">Ver datos</span><span class="less" data-i18n="less_data">Ocultar datos</span></summary>
+            <div class="tipcols">
+              <div>
+                <h4 data-i18n="s5_c3"></h4>
+                <div class="chart" id="ch-hotspots"></div>
+              </div>
+              <div>
+                <h4 data-i18n="s5_c1"></h4>
+                <p class="note" data-i18n="s5_c1n"></p>
+                <div class="chart mapbox" id="ch-accmap"></div>
+              </div>
+            </div>
+          </details>
+        </article>
+        <article class="tipcard" id="tiempo" data-fresh="tiempo" data-part="weather">
+          <div class="kicker"><i></i><span data-i18n="s6_k">Tiempo</span></div>
+          <h3 data-i18n="s6_h"></h3>
+          <p data-i18n-html="s6_lede"></p>
+          <details>
+            <summary><span class="more" data-i18n="more_data">Ver datos</span><span class="less" data-i18n="less_data">Ocultar datos</span></summary>
+            <div class="tipcols">
+              <div>
+                <h4 data-i18n="s6_c1"></h4>
+                <p class="note" data-i18n="s6_c1n"></p>
+                <div class="chart" id="ch-rain"></div>
+              </div>
+              <div>
+                <div class="chart" id="ch-heat"></div>
+              </div>
+            </div>
+          </details>
+        </article>
       </div>
+      <a class="tocity" href="#mejorar">
+        <div><h3 data-i18n="to_city_h"></h3><p data-i18n="to_city_p"></p></div>
+        <span class="arrow" aria-hidden="true">→</span>
+      </a>
     </div>
   </section>
+</div>
 
-  <section class="stop problem" id="cuestas" data-fresh="cuestas">
+<!-- ================= Mejorar Madrid: for decision makers ================= -->
+<div class="pane" id="mejorar" hidden>
+  <section class="stop city" id="ayuntamiento">
     <div class="wrap">
-      <div class="kicker"><i></i><span data-i18n="s3_k">Cuestas</span></div>
-      <h2 data-i18n="s3_h"></h2>
-      <p class="lede" data-i18n-html="s3_lede"></p>
-      <div class="cols">
-        <div class="panel">
-          <h3 data-i18n="s3_c2"></h3>
-          <p class="note" data-i18n="s3_c2n"></p>
-          <div class="legend"><span><i class="dot" style="background:var(--bad)"></i><span data-i18n="empty">Vacía</span></span><span><i class="dot" style="background:var(--sky)"></i><span data-i18n="hasbikes">Con bicis</span></span></div>
-          <div class="chart mapbox" id="ch-empty"></div>
-        </div>
-        <div class="panel">
-          <h3 data-i18n="s3_c1"></h3>
-          <p class="note" data-i18n="s3_c1n"></p>
-          <div class="chart" id="ch-slope"></div>
-        </div>
+      <div class="kicker"><i></i><span data-i18n="s7_k">Para el Ayuntamiento</span></div>
+      <h2 data-i18n="s7_h"></h2>
+      <p class="lede" data-i18n="s7_lede"></p>
+      <div class="jump">
+        <a class="btn ghost" href="#carriles" data-i18n="j_lanes">Los carriles hoy</a>
+        <a class="btn ghost" href="#plan" data-i18n="j_plan">El plan de carriles</a>
+        <a class="btn ghost" href="#cambios" data-i18n="j_fixes">Seis cambios</a>
+        <a class="btn ghost" href="#siniestralidad" data-i18n="j_safety">Accidentes</a>
+        <a class="btn ghost" href="#cobertura" data-i18n="j_cov">Estaciones</a>
+        <a class="btn ghost" href="#bicimad" data-i18n="j_use">Uso</a>
       </div>
-      <div class="callout" id="cuestas-callout"></div>
+      <h3 class="subh" data-i18n="score_h">La nota de Madrid</h3>
+      <p class="muted small" style="margin-top:6px" data-i18n="score_sub"></p>
+      <div class="score" id="score"></div>
     </div>
   </section>
 
   <section class="stop problem band" id="carriles" data-fresh="carriles">
     <div class="wrap">
       <div class="kicker"><i></i><span data-i18n="s4_k">Carriles bici</span></div>
-      <h2 data-i18n="s4_h"></h2>
+      <h2 data-i18n="ln_h"></h2>
       <p class="lede" data-i18n-html="s4_lede"></p>
       <div class="big3" id="lane-nums"></div>
       <div class="cols">
@@ -428,80 +541,11 @@ footer li { margin-bottom: 4px }
     </div>
   </section>
 
-  <section class="stop" id="ruta">
+  <section class="stop" id="plan">
     <div class="wrap">
-      <div class="kicker"><i></i><span id="rt-k">Tu ruta</span></div>
-      <h2 id="rt-h">¿Por dónde voy en bici?</h2>
-      <p class="lede" id="rt-lede"></p>
-      <div class="planner">
-        <div class="panel" id="rt-controls"></div>
-        <div class="panel">
-          <div class="legend" id="lg-route"></div>
-          <div class="chart mapbox" id="ch-route"></div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="stop problem band" id="seguridad" data-fresh="seguridad">
-    <div class="wrap">
-      <div class="kicker"><i></i><span data-i18n="s5_k">Seguridad</span></div>
-      <h2 data-i18n="s5_h"></h2>
-      <p class="lede" data-i18n-html="s5_lede"></p>
-      <div class="cols">
-        <div class="panel">
-          <h3 data-i18n="s5_c1"></h3>
-          <p class="note" data-i18n="s5_c1n"></p>
-          <div class="chart mapbox" id="ch-accmap"></div>
-        </div>
-        <div>
-          <div class="panel">
-            <h3 data-i18n="s5_c3"></h3>
-            <div class="chart" id="ch-hotspots"></div>
-          </div>
-          <div class="panel" style="margin-top:20px">
-            <h3 data-i18n="s5_c2"></h3>
-            <p class="note" data-i18n="s5_c2n"></p>
-            <div class="chart" id="ch-accyear"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="stop" id="tiempo" data-fresh="tiempo">
-    <div class="wrap">
-      <div class="kicker"><i></i><span data-i18n="s6_k">Tiempo</span></div>
-      <h2 data-i18n="s6_h"></h2>
-      <p class="lede" data-i18n-html="s6_lede"></p>
-      <div class="cols">
-        <div class="panel">
-          <h3 data-i18n="s6_c1"></h3>
-          <p class="note" data-i18n="s6_c1n"></p>
-          <div class="chart" id="ch-rain"></div>
-          <div class="chart" id="ch-heat" style="margin-top:16px"></div>
-        </div>
-        <div class="panel">
-          <h3 data-i18n="s6_c2"></h3>
-          <p class="note" data-i18n="s6_c2n"></p>
-          <div class="chart" id="ch-counters"></div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="stop city" id="ayuntamiento">
-    <div class="wrap">
-      <div class="kicker"><i></i><span data-i18n="s7_k">Para el Ayuntamiento</span></div>
-      <h2 data-i18n="s7_h"></h2>
-      <p class="lede" data-i18n="s7_lede"></p>
-      <h3 class="subh" data-i18n="score_h">La nota de Madrid</h3>
-      <p class="muted small" style="margin-top:6px" data-i18n="score_sub"></p>
-      <div class="score" id="score"></div>
-      <h3 class="subh" data-i18n="fix_h">Seis cambios que harían Madrid más ciclable</h3>
-      <div class="fixes" id="fixes"></div>
-      <h3 class="subh" id="pl-h">¿Dónde poner los próximos carriles protegidos?</h3>
-      <p class="lede" id="pl-lede" style="font-size:1.02rem"></p>
+      <div class="kicker"><i></i><span data-i18n="plan_k">El plan</span></div>
+      <h2 id="pl-h">¿Dónde poner los próximos carriles protegidos?</h2>
+      <p class="lede" id="pl-lede"></p>
       <div class="big3" id="pl-kpis"></div>
       <div class="cols">
         <div class="panel">
@@ -516,8 +560,38 @@ footer li { margin-bottom: 4px }
         </div>
       </div>
       <p class="note small" id="pl-caveat" style="margin-top:14px"></p>
-      <h3 class="subh" data-i18n="cov_h">Dónde faltan estaciones</h3>
-      <div class="cols" style="margin-top:20px">
+    </div>
+  </section>
+
+  <section class="stop band" id="cambios">
+    <div class="wrap">
+      <div class="kicker"><i></i><span data-i18n="fix_k">Qué hacer</span></div>
+      <h2 data-i18n="fix_h">Seis cambios concretos</h2>
+      <div class="fixes" id="fixes"></div>
+    </div>
+  </section>
+
+  <section class="stop problem" id="siniestralidad" data-fresh="seguridad">
+    <div class="wrap">
+      <div class="kicker"><i></i><span data-i18n="s5_k">Seguridad</span></div>
+      <h2 data-i18n="sf_h"></h2>
+      <p class="lede" data-i18n-html="sf_lede"></p>
+      <div class="cols">
+        <div class="panel">
+          <h3 data-i18n="s5_c2"></h3>
+          <p class="note" data-i18n="s5_c2n"></p>
+          <div class="chart" id="ch-accyear"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="stop band" id="cobertura" data-fresh="barrios">
+    <div class="wrap">
+      <div class="kicker"><i></i><span data-i18n="cov_k">BiciMAD</span></div>
+      <h2 data-i18n="cov_h">Dónde faltan estaciones</h2>
+      <p class="lede" data-i18n="cov_lede"></p>
+      <div class="cols">
         <div class="panel">
           <h3 data-i18n="s2_c2"></h3>
           <p class="note" data-i18n="s2_c2n"></p>
@@ -531,6 +605,32 @@ footer li { margin-bottom: 4px }
       </div>
     </div>
   </section>
+
+  <section class="stop" id="bicimad" data-fresh="bicimad">
+    <div class="wrap">
+      <div class="kicker"><i></i><span data-i18n="use_k">Uso</span></div>
+      <h2 data-i18n="use_h"></h2>
+      <p class="lede" data-i18n-html="use_lede"></p>
+      <div class="big3" id="bicimad-nums"></div>
+      <div class="cols">
+        <div class="panel">
+          <h3 data-i18n="s1_c1"></h3>
+          <p class="note" data-i18n="s1_c1n"></p>
+          <div class="chart" id="ch-monthly"></div>
+        </div>
+        <div class="panel">
+          <h3 data-i18n="s6_c2"></h3>
+          <p class="note" data-i18n="s6_c2n"></p>
+          <div class="chart" id="ch-counters"></div>
+        </div>
+      </div>
+      <a class="tocity" href="#ruta">
+        <div><h3 data-i18n="to_ride_h"></h3><p data-i18n="to_ride_p"></p></div>
+        <span class="arrow" aria-hidden="true">→</span>
+      </a>
+    </div>
+  </section>
+</div>
 </main>
 
 <footer>

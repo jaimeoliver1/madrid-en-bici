@@ -3,7 +3,7 @@
 **¿Es fácil moverse en bici por Madrid?** A public website that explains, with open data and plenty of maps, how BiciMAD (Madrid's public bike share) and the city's bike lanes are doing, and what would make Madrid easier to cycle in. It's in Spanish, with an English toggle.
 
 - **Live site:** https://madrid-en-bici.vercel.app
-- **What's on it:** a 24-hour animation of every BiciMAD bike, your barrio's coverage, sections on hills, bike lanes, safety and weather, and a **route planner** that runs Dijkstra's algorithm in the browser with weights you can change. For the City Council: a report card, six recommendations and a **costed plan for the next protected lanes**.
+- **What's on it:** two tabs. **Ir en bici**, for people who ride: live BiciMAD numbers, a 24-hour animation of every bike, a **route planner** that runs Dijkstra's algorithm in the browser with weights you can change, your barrio's coverage, and four short tip cards (hills, rush hours, dangerous junctions, rain) whose charts open on demand. **Mejorar Madrid**, for the City Council: a report card, the bike network today, a **costed plan for the next protected lanes**, six recommendations, accidents, station coverage and demand.
 - **Live data:** station availability comes straight from BiciMAD's public feed in the visitor's browser. Everything else is refreshed monthly by a GitHub Action.
 
 ## Repository layout
