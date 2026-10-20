@@ -4,7 +4,7 @@ This note covers the routing behind the analysis and the route planner on the we
 
 ## The street network
 
-The network is built from OpenStreetMap (BBBike's Madrid extract) by `pipeline/historical/bikegraph.py`:
+The network is built from OpenStreetMap (Geofabrik's Madrid snapshot of 1 January 2026, pinned in `pipeline/historical/inputs.json`) by `pipeline/historical/bikegraph.py`:
 
 - **Nodes** are OSM nodes; **arcs** are the stretches between consecutive nodes of a way, in each direction riders may use them (one-way streets only one way unless bikes are exempt).
 - Each segment carries its road type, street name, whether it has a painted bike lane (`cycleway=lane`, `bicycle=designated`) or a separated one (`highway=cycleway`, `cycleway=track/separate`, or Madrid's exclusive-lane layer), motor traffic (the city's 2019 average daily traffic per section, matched to OSM streets by name) and uphill grade in each direction (Copernicus DEM GLO-30, profiles smoothed over about 50 m).
@@ -68,11 +68,25 @@ For each route the planner shows length, time at 12.8 km/h (the BiciMAD median, 
 
 ## Rebuilding
 
+Every raw input is pinned to the exact file used (download link, dataset page, SHA-256, licence) in `pipeline/historical/inputs.json`; the rest are in git under `data/`. Package versions are in `pipeline/historical/requirements-lock.txt`.
+
 ```bash
-python3 pipeline/historical/14_lane_priority.py <Madrid.osm.pbf> <trips_2023_dir> <Infraestructura_Ciclista.shp> data
-python3 pipeline/historical/15_lane_network.py <Madrid.osm.pbf> <trips_2023_dir> <IMD_2019.shp> data      # about an hour
-python3 pipeline/historical/16_route_graph.py  <Madrid.osm.pbf> <IMD_2019.shp> data site                   # about a minute
+uv pip install -r pipeline/historical/requirements-lock.txt          # Python 3.12
+python3 pipeline/historical/fetch_inputs.py raw                      # downloads, checks every SHA-256, prints the paths
+python3 pipeline/historical/14_lane_priority.py raw/madrid-260101.osm.pbf <trips_2023_dir> data
+python3 pipeline/historical/15_lane_network.py  raw/madrid-260101.osm.pbf <trips_2023_dir> <IMD_2019.shp> data   # about an hour
+python3 pipeline/historical/16_route_graph.py   raw/madrid-260101.osm.pbf <IMD_2019.shp> data site                # about a minute
 python3 pipeline/build_site.py
 ```
 
-Inputs: BBBike's Madrid `.osm.pbf`, EMT's 2023 trip files, the city's cycling-infrastructure shapefile and 2019 IMD shapefile (datos.madrid.es), and the Copernicus GLO-30 tile `Copernicus_DSM_COG_10_N40_00_W004_00_DEM.tif` saved as `.cache/copernicus_dem_N40_W004.tif`.
+| Input | Source | Pinned file |
+|---|---|---|
+| Street network | OpenStreetMap via [Geofabrik](https://download.geofabrik.de/europe/spain/madrid.html), ODbL | [`madrid-260101.osm.pbf`](https://download.geofabrik.de/europe/spain/madrid-260101.osm.pbf) (1 January 2026) |
+| BiciMAD trips, 1 Jan – 18 Feb 2023 | EMT Madrid, [Históricos de BiciMAD (datos.madrid.es)](https://datos.madrid.es/dataset/900034-0-bicimad-viajes-estaciones) | [`bicimad_2023.zip`](https://media.emtmadrid.es/-9Nii5DXo4x): `trips_23_01_January.csv`, `trips_23_02_February.csv` |
+| Motor traffic 2019 | Ayuntamiento de Madrid, [Intensidad media diaria por tramos](https://datos.madrid.es/dataset/203962-0-trafico-imd), CC BY 4.0 | [`IMD_2019.shp`](https://datos.madrid.es/dataset/203962-0-trafico-imd/resource/203962-5-trafico-imd-zip/download/203962-5-trafico-imd-zip) |
+| Elevation | ESA [Copernicus DEM GLO-30](https://registry.opendata.aws/copernicus-dem/) | [tile N40 W004](https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_N40_00_W004_00_DEM/Copernicus_DSM_COG_10_N40_00_W004_00_DEM.tif), saved as `.cache/copernicus_dem_N40_W004.tif` |
+| Bike accidents, existing bike lanes, bike counters | datos.madrid.es ([300110](https://datos.madrid.es/dataset/300110-0-accidentes-bicicleta), [geoportal layer](https://geoportal.madrid.es/fsdescargas/IDEAM_WBGEOPORTAL/OBRAS/BICI/Infraestructura_Ciclista.zip), [300321](https://datos.madrid.es/dataset/300321-0-aforos-peatones-bicicletas)) | `data/madrid_bike_accidents.csv`, `data/madrid_bike_infrastructure.csv`, `data/madrid_bike_counters.csv` in git |
+
+The OSM extract is Geofabrik's yearly snapshot because it stays online; BBBike's extract and Geofabrik's daily files are replaced, so they cannot be fetched again. The city's bike-lane layer is only served in its latest version, so the analysis reads the copy `refresh.py` keeps in git.
+
+Each run records what it was built from: `data/lane_network_plans.json` and `site/route-graph.json` carry a `provenance` block with the SHA-256 of every input and the git commit. Caches in `.cache/` are tagged with the inputs they came from, and a script stops if a cache was built from other inputs.

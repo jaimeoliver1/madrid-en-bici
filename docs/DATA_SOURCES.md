@@ -4,7 +4,7 @@
 |---|---|---|---|---|
 | BiciMAD daily trips | EMT Madrid (datos.emtmadrid.es) | Feb 2024 onwards | Monthly | `refresh.py` |
 | BiciMAD monthly active users | EMT Madrid | Feb 2024 onwards | Monthly | `refresh.py` |
-| BiciMAD trip-by-trip records | EMT Madrid (yearly archives 2017–2023) | 1 Jan – 18 Feb 2023 | No release since Feb 2023 | manual (`pipeline/historical/`) |
+| BiciMAD trip-by-trip records | EMT Madrid, [Históricos de BiciMAD](https://datos.madrid.es/dataset/900034-0-bicimad-viajes-estaciones) (yearly archives 2017–2023; 2023 file [`bicimad_2023.zip`](https://media.emtmadrid.es/-9Nii5DXo4x)) | 1 Jan – 18 Feb 2023 | No release since Feb 2023 | manual (`pipeline/historical/`) |
 | BiciMAD live stations (GBFS) | EMT (madrid.publicbikesystem.net) | Live in the browser (polled every minute); one snapshot per refresh as fallback | Real time | `site/app.js`, `refresh.py` |
 | Bicycle accidents | Policía Municipal (datos.madrid.es 300110) | 2019 onwards | About monthly, 1–2 month lag | `refresh.py` |
 | Cycling infrastructure | Ayuntamiento geoportal (205107) | Latest layer | A few times a year | `refresh.py` |
@@ -12,7 +12,10 @@
 | Population by barrio | Padrón (300557) | Latest 1 January | Yearly | `refresh.py` |
 | Bike counters | datos.madrid.es (300321) | 2019 – Jun 2024 | Half-yearly files | manual (`pipeline/historical/`) |
 | District and barrio boundaries | Ayuntamiento geoportal | Current | Rarely | manual |
-| Street network, bike shops, map background | OpenStreetMap (BBBike extract, Overpass) | Oct 2026 | Continuous | manual (`13_basemap.py`) |
+| Street network for routing and the lane analysis | OpenStreetMap, [Geofabrik snapshot](https://download.geofabrik.de/europe/spain/madrid-260101.osm.pbf) | 1 Jan 2026 | Yearly snapshot kept online | manual (`pipeline/historical/inputs.json`) |
+| Bike shops, map background | OpenStreetMap (BBBike extract, Overpass) | Oct 2026 | Continuous | manual (`13_basemap.py`) |
+| Motor traffic per road section | Ayuntamiento de Madrid, [IMD (203962)](https://datos.madrid.es/dataset/203962-0-trafico-imd) | 2019 | Yearly | manual (`pipeline/historical/inputs.json`) |
+| Elevation for routing | [Copernicus DEM GLO-30](https://registry.opendata.aws/copernicus-dem/), tile N40 W004 | Static | Static | manual (`pipeline/historical/inputs.json`) |
 | Weather | NOAA GHCN-Daily, Madrid Retiro | Feb 2024 onwards | Daily | `refresh.py` |
 | Elevation | EU-DEM 25 m (OpenTopoData) | Stations | Static | new stations only, in `refresh.py` |
 | Benchmarks | ITDP, CRTM EDM 2018, Barcelona, Paris, Copenhagenize | — | Irregular | manual |

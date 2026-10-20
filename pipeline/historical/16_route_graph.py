@@ -1,12 +1,13 @@
 """Build the compact bike network for the website's route planner (site/route-graph.json).
 
-Usage: python3 pipeline/historical/16_route_graph.py <Madrid.osm.pbf> <IMD_2019.shp> <data_dir> <site_dir>
+Usage: python3 pipeline/historical/16_route_graph.py <madrid.osm.pbf> <IMD_2019.shp> <data_dir> <site_dir>
 Needs 14_lane_priority.py first (.cache/edges.pkl: accidents and existing separated lanes per segment),
 .cache/od2023.pkl (written by 15_lane_network.py, for exposure) and the Copernicus DEM tile in .cache/.
 
 The planner runs Dijkstra in the browser with the same perceived-distance model as 15_lane_network.py
 (appraisal.py: Broach et al. 2012 for traffic, separated paths and slopes) plus an optional accident term, and can
-switch on the protected lanes proposed in data/lane_network_plan.csv. To keep the file small:
+switch on the protected lanes proposed in data/lane_network_plan.csv (its exact segments, column osm_segments). To keep
+the file small:
   - sidewalks, crossings, service roads, steps and tracks are left out;
   - segments between junctions are merged into links that carry length-weighted sums of every cost component, so
     any weighting chosen in the browser gives exactly the same cost as on the full segment graph;
@@ -16,20 +17,27 @@ import os, sys, json, pickle, numpy as np, pandas as pd
 from scipy.spatial import cKDTree
 import bikegraph as bg
 import appraisal as ap_
+import provenance as pv
 from bike_costs import COST
 
 PBF, IMD, DATA, SITE = sys.argv[1:5]
 CACHE = os.path.join(os.path.dirname(os.path.abspath(DATA)), ".cache")
-g = bg.Graph(PBF, dem=os.path.join(CACHE, "copernicus_dem_N40_W004.tif"))
+DEM = os.path.join(CACHE, "copernicus_dem_N40_W004.tif")
+PROV = pv.record(osm=PBF, traffic=[IMD, IMD[:-4] + ".dbf"], dem=DEM, accidents=os.path.join(DATA, "madrid_bike_accidents.csv"),
+                 counters=os.path.join(DATA, "madrid_bike_counters.csv"), plan=os.path.join(DATA, "lane_network_plan.csv"))
+g = bg.Graph(PBF, dem=DEM)
 aadt, measured, *_ = bg.segment_aadt(g, IMD)
-o, d, tr = pickle.load(open(os.path.join(CACHE, "od2023.pkl"), "rb"))
+cached = pickle.load(open(os.path.join(CACHE, "od2023.pkl"), "rb"))
+pv.check({"inputs": {"osm": {"sha256": cached[3]["osm"]}}} if len(cached) == 4 else {}, osm=PROV["inputs"]["osm"]["sha256"])
+o, d, tr = cached[:3]
 E = pd.read_pickle(os.path.join(CACHE, "edges.pkl"))
+pv.check(E.attrs, **{k: PROV["inputs"][k]["sha256"] for k in ("osm", "accidents")})
 E["seg"] = [g.seg_id.get((a, b) if a < b else (b, a), -1) for a, b in zip(E.a, E.b)]
 E = E[E.seg >= 0]
 sep0 = g.seg_sep.copy(); sep0[E.seg[E.protected].values] = True
 nacc = np.zeros(g.nseg); nacc[E.seg.values] = E.acc.values
 acc = pd.read_csv(os.path.join(DATA, "madrid_bike_accidents.csv"))
-years = (pd.Timestamp(acc.year.max(), 8, 31) - pd.Timestamp(acc.year.min(), 1, 1)).days / 365.25
+years = pv.accident_years(DATA)
 cost_per_acc = (acc.n_slight * ap_.COST_SLIGHT + acc.n_serious * ap_.COST_SERIOUS + acc.n_killed * ap_.COST_DEATH).sum() / len(acc)
 
 # ---------- today's flows and injury rates (same model as 15_lane_network.py) ----------
@@ -50,23 +58,12 @@ print(f"all cyclists / BiciMAD {SCALE:.1f}; median injury cost per km on roads {
 plan = pd.read_csv(os.path.join(DATA, "lane_network_plan.csv"))
 ROAD = {"trunk", "trunk_link", "primary", "primary_link", "secondary", "secondary_link", "tertiary", "tertiary_link",
         "residential", "unclassified", "living_street", "busway"}
-isroad = np.array([h in ROAD for h in g.seg_hw])
 inplan = np.zeros(g.nseg, bool); plan_step = np.zeros(g.nseg, int)
-ax_ = np.array([g.idx[a] for a, b in g.seg_key]); bx_ = np.array([g.idx[b] for a, b in g.seg_key])
+# the exact street segments each step protects (OSM node pairs written by 15_lane_network.py)
 for _, r in plan.iterrows():
-    if not isinstance(r.geometry, str): continue
-    pts = []
-    for part in r.geometry.split("|"):
-        ll = np.array([[float(v) for v in q_.split(",")] for q_ in part.split(" ")])
-        x, y = bg.fw.transform(ll[:, 0], ll[:, 1])
-        Lc = np.r_[0, np.cumsum(np.hypot(np.diff(x), np.diff(y)))]
-        t = np.arange(0, Lc[-1] + 1, 5.0)
-        pts.append(np.c_[np.interp(t, Lc, x), np.interp(t, Lc, y)])
-    kd = cKDTree(np.vstack(pts))
-    # a road segment is in the plan when both of its ends lie on the planned line (within 18 m)
-    da = kd.query(np.c_[g.x[ax_], g.y[ax_]])[0]; db = kd.query(np.c_[g.x[bx_], g.y[bx_]])[0]
-    hit = np.where(isroad & (da <= 18) & (db <= 18) & ~inplan)[0]
-    inplan[hit] = True; plan_step[hit] = r.step
+    for pair in str(r.osm_segments).split():
+        a_, b_ = map(int, pair.split("-")); s_ = g.seg_id.get((a_, b_) if a_ < b_ else (b_, a_))
+        if s_ is not None and not inplan[s_]: inplan[s_] = True; plan_step[s_] = r.step
 inplan &= ~sep0
 print("plan segments", inplan.sum(), "km", round(g.seg_len[inplan].sum() / 1000, 1), flush=True)
 
@@ -187,6 +184,7 @@ FIELDS = ["a", "b", "dir", "L", "W", "T1", "T2", "T3", "S", "P", "PT1", "PT2", "
           "Gf", "Gb", "A", "I", "IP", "name", "step"]
 out = {
     "about": "Compact bike network for the route planner. Built by pipeline/historical/16_route_graph.py; method in docs/ROUTING.md.",
+    "provenance": PROV,
     "fields": FIELDS,
     "params": {"traffic": [round(v, 4) for _, v in sorted(ap_.TRAFFIC)], "path": round(ap_.PATH, 4), "slope": [round(v, 4) for _, v in sorted(ap_.SLOPE)],
                "speed_kmh": 12.8, "injury_unit": "I and IP are expected injury cost per traversal, in thousandths of a euro", "vot_eur_h": round(ap_.VOT, 2), "cmf": ap_.CMF, "walk": {k: COST[k] for k in sorted(WALK)}},

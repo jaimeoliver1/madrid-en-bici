@@ -1,0 +1,55 @@
+{
+ "about": "Raw inputs of the lane analysis (14_lane_priority.py, 15_lane_network.py, 16_route_graph.py), pinned to the exact file used. fetch_inputs.py downloads each one, refuses any file whose SHA-256 differs, and unpacks it. The other inputs are in git under data/ (see 'in_git'), so the commit pins them.",
+ "downloads": {
+  "osm": {
+   "what": "OpenStreetMap extract of the Comunidad de Madrid, snapshot of 1 January 2026 (replication timestamp 2026-01-01T21:21:30Z)",
+   "publisher": "Geofabrik GmbH, from OpenStreetMap contributors",
+   "page": "https://download.geofabrik.de/europe/spain/madrid.html",
+   "url": "https://download.geofabrik.de/europe/spain/madrid-260101.osm.pbf",
+   "sha256": "291c3c50d1e7731a709459ad9041eee0d87a5b2b202304cbd2f2ed032b5398ed",
+   "bytes": 80326549,
+   "license": "ODbL 1.0 (https://www.openstreetmap.org/copyright)",
+   "note": "Geofabrik keeps the 1 January snapshot of every year; daily and monthly files are removed after a while, and BBBike's extract is overwritten every week, so neither can be fetched again.",
+   "save_as": "madrid-260101.osm.pbf"
+  },
+  "trips": {
+   "what": "BiciMAD trip-by-trip records 2023 (1 January - 18 February 2023): trips_23_01_January.csv, trips_23_02_February.csv (each in its own zip inside the archive)",
+   "publisher": "EMT Madrid",
+   "page": "https://datos.madrid.es/dataset/900034-0-bicimad-viajes-estaciones",
+   "url": "https://media.emtmadrid.es/-9Nii5DXo4x",
+   "sha256": "9ede24f369b5612fec2c59bc583e8c9188c27e0e237c5ceea2b6e8c21e2c08e2",
+   "bytes": 22573940,
+   "license": "EMT Madrid open data terms, as linked from the datos.madrid.es entry (https://mobilitylabs.emtmadrid.es/sip/terms-of-use)",
+   "save_as": "bicimad_2023.zip",
+   "unzip_to": "trips_2023"
+  },
+  "traffic": {
+   "what": "Average daily motor traffic per road section, 2019 (IMD_2019.shp)",
+   "publisher": "Ayuntamiento de Madrid",
+   "page": "https://datos.madrid.es/dataset/203962-0-trafico-imd",
+   "url": "https://datos.madrid.es/dataset/203962-0-trafico-imd/resource/203962-5-trafico-imd-zip/download/203962-5-trafico-imd-zip",
+   "sha256": "920993a80641bdb37c89def0c148b37462998ad73f332745b16272d831827028",
+   "bytes": 544618,
+   "license": "CC BY 4.0",
+   "save_as": "imd_2019.zip",
+   "unzip_to": "imd_2019"
+  },
+  "dem": {
+   "what": "Copernicus DEM GLO-30, tile N40 W004",
+   "publisher": "European Space Agency, hosted on the AWS Registry of Open Data",
+   "page": "https://registry.opendata.aws/copernicus-dem/",
+   "url": "https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_N40_00_W004_00_DEM/Copernicus_DSM_COG_10_N40_00_W004_00_DEM.tif",
+   "sha256": "cd433030806b00cd44d640ea6ed3c102a12640d848ae819d9dbfa8eb0d413097",
+   "bytes": 40869620,
+   "license": "Copernicus DEM licence (free use with attribution: 'produced using Copernicus WorldDEM-30 (c) DLR e.V. 2010-2014 and (c) Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA; all rights reserved')",
+   "save_as": "copernicus_dem_N40_W004.tif",
+   "copy_to_cache": true
+  }
+ },
+ "in_git": {
+  "data/madrid_bike_accidents.csv": "Bicycle accidents, Policia Municipal (https://datos.madrid.es/dataset/300110-0-accidentes-bicicleta), written by pipeline/refresh.py",
+  "data/refresh_meta.json": "Date of the latest accident in that file (accidents_latest), written by pipeline/refresh.py in the same commit",
+  "data/madrid_bike_infrastructure.csv": "Cycling infrastructure layer, Ayuntamiento geoportal (https://geoportal.madrid.es/fsdescargas/IDEAM_WBGEOPORTAL/OBRAS/BICI/Infraestructura_Ciclista.zip), written by pipeline/refresh.py",
+  "data/madrid_bike_counters.csv": "Bike counters, 2023 average daily bikes (https://datos.madrid.es/dataset/300321-0-aforos-peatones-bicicletas), written by pipeline/historical/06_districts_counters.py"
+ }
+}

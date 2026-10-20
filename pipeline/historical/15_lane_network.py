@@ -2,18 +2,20 @@
 gain once every trip is re-routed, plus injuries avoided on the protected streets, against the yearly cost of
 building it. Parameters and sources: appraisal.py. Method: docs/METHOD_LANES.md.
 
-Usage: python3 pipeline/historical/15_lane_network.py <Madrid.osm.pbf> <trips_dir_2023> <IMD_2019.shp> <data_dir>
+Usage: python3 pipeline/historical/15_lane_network.py <madrid.osm.pbf> <trips_dir_2023> <IMD_2019.shp> <data_dir>
                                                       [--budget-m 20] [--workers 4] [--pool 150]
 Needs 14_lane_priority.py first (street segments with accidents and existing lanes in .cache/edges.pkl) and the
-Copernicus DEM tile in .cache/copernicus_dem_N40_W004.tif.
+Copernicus DEM tile in .cache/copernicus_dem_N40_W004.tif. Inputs are pinned in inputs.json (fetch_inputs.py downloads
+and checks them); lane_network_plans.json records the SHA-256 of every input and the git commit.
 Writes <data_dir>/lane_network_plan.csv (the better of two plans), lane_network_plan_bestfirst.csv,
 lane_network_plan_axisfirst.csv and lane_network_plans.json (the comparison).
 
 Model:
-  - Candidates are streets, not carriageways: all road segments with the same name within 60 m of each other
-    (both sides of a boulevard and its side roads) form one street, cut into pieces of about 1 km. A protected
-    piece is usable in both directions and costs its street length once. Candidates are single pieces, whole
-    streets, and a few multi-street axes (Atocha-Castellana, Bailen-Princesa, the southern Rondas).
+  - Candidates are streets, not carriageways: road segments with the same name that touch or lie within 150 m of
+    each other (both sides of a boulevard and its side roads) form one street, cut into pieces of about 1 km. The
+    lane follows one line along the street (not every carriageway), is usable in both directions and costs the
+    length of that line not yet protected. Candidates are single pieces, whole streets, and a few multi-street axes
+    (Atocha-Castellana, Bailen-Princesa, the southern Rondas).
   - Riders take the route with the least perceived distance [B12]; every trip is re-routed for every option.
   - Comfort: perceived km saved x value of time [H06], scaled to all cyclists with the city's bike counters.
   - Safety, protection only: riders on newly protected streets have their injury rate cut to 0.72 [L11]; the
@@ -24,12 +26,15 @@ Model:
     budget or when no addition returns more than it costs; the plan with the larger net benefit is the headline.
 """
 import os, json, argparse, heapq, pickle, time, numpy as np, pandas as pd
-from multiprocessing import Pool
+import multiprocessing
 from scipy.spatial import cKDTree
+from scipy.sparse import csr_matrix
+from scipy.sparse.csgraph import dijkstra
 from shapely.geometry import LineString
 from shapely.ops import unary_union
 import bikegraph as bg
 import appraisal as ap_
+import provenance as pv
 from bike_costs import COST
 
 ap = argparse.ArgumentParser()
@@ -44,14 +49,21 @@ YEAR = 365 / bg.DAYS  # the 2023 sample covers 49 days
 annual = lambda eur: eur * ap_.ANNUITY
 
 # ---------- graph, traffic, demand ----------
-g = bg.Graph(A.pbf, dem=os.path.join(CACHE, "copernicus_dem_N40_W004.tif"), contraflow=True)
+DEM = os.path.join(CACHE, "copernicus_dem_N40_W004.tif")
+g = bg.Graph(A.pbf, dem=DEM, contraflow=True)
 aadt, measured, *_ = bg.segment_aadt(g, A.imd)
-odc = os.path.join(CACHE, "od2023.pkl")
-if os.path.exists(odc): o, d, tr = pickle.load(open(odc, "rb"))
-else: o, d, tr = bg.load_od(g, A.trips); pickle.dump((o, d, tr), open(odc, "wb"))
+PROV = pv.record(osm=A.pbf, trips=pv.trips_files(A.trips), traffic=[A.imd, A.imd[:-4] + ".dbf"], dem=DEM,
+                 accidents=os.path.join(A.data, "madrid_bike_accidents.csv"), counters=os.path.join(A.data, "madrid_bike_counters.csv"),
+                 infrastructure=os.path.join(A.data, "madrid_bike_infrastructure.csv"))
+odc = os.path.join(CACHE, "od2023.pkl")  # trips snapped to graph nodes, also read by 16_route_graph.py
+od_inputs = {k: PROV["inputs"][k]["sha256"] for k in ("osm", "trips")}
+cached = pickle.load(open(odc, "rb")) if os.path.exists(odc) else ()
+if len(cached) == 4 and cached[3] == od_inputs: o, d, tr, _ = cached
+else: o, d, tr = bg.load_od(g, A.trips); pickle.dump((o, d, tr, od_inputs), open(odc, "wb"))
 log("graph", g.n, "nodes,", g.nseg, "segments,", int(measured.sum()), "with measured traffic;", int(tr.sum()), "trips")
 
 E = pd.read_pickle(os.path.join(CACHE, "edges.pkl"))
+pv.check(E.attrs, **{k: PROV["inputs"][k]["sha256"] for k in ("osm", "trips", "infrastructure", "accidents")})  # 14 ran on these inputs
 E["seg"] = [g.seg_id.get((a, b) if a < b else (b, a), -1) for a, b in zip(E.a, E.b)]
 E = E[E.seg >= 0]
 sep0 = g.seg_sep.copy(); sep0[E.seg[E.protected].values] = True
@@ -59,7 +71,7 @@ nacc = np.zeros(g.nseg); nacc[E.seg.values] = E.acc.values
 accw = np.zeros(g.nseg); accw[E.seg.values] = E.acc_w.values
 sbkm = np.zeros(g.nseg); sbkm[E.seg.values] = E.sbkm.values
 acc = pd.read_csv(os.path.join(A.data, "madrid_bike_accidents.csv"))
-years = (pd.Timestamp(acc.year.max(), 8, 31) - pd.Timestamp(acc.year.min(), 1, 1)).days / 365.25
+years = pv.accident_years(A.data)
 cost_per_acc = (acc.n_slight * ap_.COST_SLIGHT + acc.n_serious * ap_.COST_SERIOUS + acc.n_killed * ap_.COST_DEATH).sum() / len(acc)
 log(f"injury cost per recorded bike accident {cost_per_acc:,.0f} EUR; {len(acc) / years:.0f} accidents a year")
 
@@ -125,7 +137,7 @@ def value(segs):
     safety = (flow[new] * g.seg_len[new] / 1000 * YEAR * rate[new]).sum() * (1 - ap_.CMF) * cost_per_acc
     return comfort, safety, flow
 
-# ---------- street pieces: same name, carriageways within 60 m merged, cut into ~1 km ----------
+# ---------- street pieces: same name, touching or carriageways within 150 m merged, cut into ~1 km ----------
 ROAD = {"trunk", "trunk_link", "primary", "primary_link", "secondary", "secondary_link", "tertiary", "tertiary_link",
         "residential", "unclassified", "living_street", "busway"}
 isroad = np.array([h in ROAD for h in g.seg_hw]) & (g.seg_name != "")
@@ -136,26 +148,82 @@ def find(x):
 for name in np.unique(g.seg_name[isroad]):
     ids = np.where(isroad & (g.seg_name == name))[0]
     if len(ids) < 2: continue
-    for a, b in cKDTree(np.c_[smx[ids], smy[ids]]).query_pairs(60):
-        ra, rb = find(ids[a]), find(ids[b])
+    # touching segments, and carriageways whose midpoints lie within 150 m (Prado's carriageways are ~100 m apart)
+    ends = pd.DataFrame({"i": np.r_[ids, ids], "n": np.r_[g.u[first][ids], g.v[first][ids]]})
+    pairs = ends.merge(ends, on="n").query("i_x < i_y")[["i_x", "i_y"]].values.tolist()
+    pairs += [(ids[a], ids[b]) for a, b in cKDTree(np.c_[smx[ids], smy[ids]]).query_pairs(150)]
+    for a, b in pairs:
+        ra, rb = find(a), find(b)
         if ra != rb: parent[ra] = rb
 comp = np.array([find(i) for i in range(g.nseg)])
-pieces = []  # dicts: name, segs, km, avenue, comp
+
+# ---------- one lane line per street ----------
+# A boulevard is several parallel carriageways (Castellana: two central ones and two side roads), but a street gets
+# one protected lane, usable both ways (a two-way track, or a lane on each side of the same line). The line is the
+# shortest path between the street's two ends along its own segments: stepping onto another street costs 10x, running
+# across the street's axis (crossovers between carriageways) up to 3x, and stretches already protected count half,
+# so a new lane continues an existing one. The street's other carriageways are left as they are; only a branch of the
+# same name more than 250 m from the line and at least 300 m long gets a line of its own.
+sa, sb = g.u[first], g.v[first]
+node_kd = cKDTree(np.c_[g.x, g.y])
+def spine(ids):
+    """Segments of `ids` on the shortest path between its two ends along its main axis."""
+    nodes = np.unique(np.r_[sa[ids], sb[ids]]); P = np.c_[g.x[nodes], g.y[nodes]]
+    ax = np.linalg.svd(P - P.mean(0), full_matrices=False)[2][0] if len(nodes) > 2 else np.array([1.0, 0.0])
+    s = (P - P.mean(0)) @ ax; src, dst = nodes[s.argmin()], nodes[s.argmax()]
+    near = np.zeros(g.n, bool)
+    near[node_kd.query_ball_point(P.mean(0), np.hypot(*(P - P.mean(0)).T).max() + 200)] = True
+    m = near[sa] & near[sb]; loc = np.where(m)[0]
+    dx, dy = g.x[sb[loc]] - g.x[sa[loc]], g.y[sb[loc]] - g.y[sa[loc]]
+    across = np.abs(dx * ax[1] - dy * ax[0]) / np.maximum(np.hypot(dx, dy), 1e-9)  # |sin| of the angle to the axis
+    w = g.seg_len[loc] * np.where(np.isin(loc, ids), np.where(sep0[loc], 0.5, 1.0) * (1 + 2 * across), 10.0) + 1e-3
+    nn = np.unique(np.r_[sa[loc], sb[loc]]); li = lambda x: np.searchsorted(nn, x)
+    M = csr_matrix((w, (li(sa[loc]), li(sb[loc]))), shape=(len(nn), len(nn)))
+    _, pred = dijkstra(M, directed=False, indices=li(src), return_predecessors=True)
+    if pred[li(dst)] < 0: return ids
+    path, cur = [], li(dst)
+    while cur != li(src): path.append((nn[pred[cur]], nn[cur])); cur = pred[cur]
+    on = {g.seg_id.get((a, b) if a < b else (b, a), -1) for a, b in ((g.osm_id[p], g.osm_id[q]) for p, q in path)}
+    return ids[np.isin(ids, list(on))]
+def dist_to(ids, line):
+    """Distance (m) from the midpoint of each segment in `ids` to the nearest segment in `line`."""
+    px, py = smx[ids][:, None], smy[ids][:, None]
+    ax_, ay_, bx_, by_ = g.x[sa[line]], g.y[sa[line]], g.x[sb[line]], g.y[sb[line]]
+    dx, dy = bx_ - ax_, by_ - ay_
+    t = np.clip(((px - ax_) * dx + (py - ay_) * dy) / np.maximum(dx * dx + dy * dy, 1e-9), 0, 1)
+    return np.hypot(ax_ + t * dx - px, ay_ + t * dy - py).min(1)
+keep = np.zeros(g.nseg, bool)
 for cid in np.unique(comp[isroad]):
-    ids = np.where(isroad & (comp == cid))[0]
+    rest, lines = np.where(isroad & (comp == cid))[0], np.array([], int)
+    while len(rest):
+        line = spine(rest)
+        if not len(line): break
+        keep[line] = True; lines = np.r_[lines, line]
+        rest = rest[~np.isin(rest, lines)]
+        if len(rest): rest = rest[dist_to(rest, lines) > 250]
+        if g.seg_len[rest].sum() < 300: break
+log(f"one line per street: {g.seg_len[keep].sum() / 1000:.0f} of {g.seg_len[isroad].sum() / 1000:.0f} km of named road kept as lane candidates")
+
+pieces = []  # dicts: name, segs, km, avenue, comp
+for cid in np.unique(comp[isroad & keep]):
+    ids = np.where(isroad & keep & (comp == cid))[0]
     P = np.c_[smx[ids], smy[ids]]; c0 = P.mean(0)
     ax = np.linalg.svd(P - c0, full_matrices=False)[2][0] if len(ids) > 2 else np.array([1.0, 0.0])
     s = (P - c0) @ ax; span = max(s.max() - s.min(), 1.0)
     k = max(1, round(span / 1000)); cut = np.minimum(((s - s.min()) / span * k).astype(int), k - 1)
+    # every carriageway of the street (not only the lane line) for the price class and the ranking of pieces
+    alls = np.where(isroad & (comp == cid))[0]
+    cut_all = np.clip(((np.c_[smx[alls], smy[alls]] - c0) @ ax - s.min()) / span * k, 0, k - 1).astype(int)
     for j in range(k):
         segs = ids[cut == j]
         if not len(segs): continue
         Lall = g.seg_len[segs].sum(); Lprot = g.seg_len[segs][sep0[segs]].sum()
         if Lprot > 0.8 * Lall: continue  # already protected
-        ss = s[cut == j]; km = max(ss.max() - ss.min(), g.seg_len[segs].max()) / 1000
-        avenue = bool(np.isin(g.seg_hw[segs], ["trunk", "primary", "secondary"]).any())
+        km = (Lall - Lprot) / 1000  # one line per street, so its length is the street's; existing lanes are not rebuilt
+        side = alls[cut_all == j]
+        avenue = bool(np.isin(g.seg_hw[side], ["trunk", "primary", "secondary"]).any())
         pieces.append({"name": g.seg_name[segs[0]], "segs": segs, "km": max(km, 0.2), "avenue": avenue, "comp": cid,
-                       "lat": float(smlat[segs].mean()), "sbkm": sbkm[segs].sum(), "accw": accw[segs].sum()})
+                       "lat": float(smlat[segs].mean()), "sbkm": sbkm[side].sum(), "accw": accw[side].sum()})
 Pc = pd.DataFrame(pieces)
 Pc["build_eur"] = Pc.km * np.where(Pc.avenue, ap_.BUILD_AVENUE, ap_.BUILD_STREET)
 tot_s, tot_a = Pc.sbkm.sum(), Pc.accw.sum()
@@ -240,7 +308,7 @@ def grow(P, start, label, first_vals):
             heapq.heapify(heap)
     return rows, base, B, spent
 
-with Pool(A.workers) as P:
+with multiprocessing.get_context("fork").Pool(A.workers) as P:  # fork everywhere (macOS defaults to spawn, which reruns the script)
     first_vals = {i: (c, s) for i, c, s in P.imap_unordered(evaluate, [(i, np.array([], np.int32)) for i in range(len(cands))])}
     log("first pass done")
     for i, (c, s) in sorted(first_vals.items(), key=lambda kv: -(sum(kv[1])) / annual(Pc.build_eur[cands[kv[0]]["pieces"]].sum()))[:12]:
@@ -266,7 +334,9 @@ for label, (rows, base, B, spent) in plans.items():
         ss = np.concatenate([Pc.segs[p] for p in ps]); return round((F[ss] * g.seg_len[ss]).sum() / max(g.seg_len[ss].sum(), 1) / bg.DAYS * SCALE)
     df["trips_day_before"] = [trips(ps, flow0) for ps in df.pieces]
     df["trips_day_after"] = [trips(ps, flow) for ps in df.pieces]
-    df["geometry"] = [geom(np.concatenate([Pc.segs[p] for p in ps])) for ps in df.pieces]
+    newsegs = lambda ps: (lambda ss: ss[~sep0[ss]])(np.concatenate([Pc.segs[p] for p in ps]))  # draw only what gets built
+    df["geometry"] = [geom(newsegs(ps)) for ps in df.pieces]
+    df["osm_segments"] = [" ".join(f"{a_}-{b_}" for a_, b_ in (g.seg_key[x] for x in newsegs(ps))) for ps in df.pieces]  # OSM node pairs, for 16_route_graph.py
     df.drop(columns="pieces").to_csv(os.path.join(A.data, f"lane_network_plan_{label}.csv"), index=False)
     km = df.km_new.sum()
     summary[label] = {"options": len(df), "km": round(km, 1), "build_eur": round(spent), "benefit_eur_yr": round(B),
@@ -274,6 +344,7 @@ for label, (rows, base, B, spent) in plans.items():
     log(f"[{label}] {len(df)} additions, {km:.1f} km, {spent / 1e6:.1f} M EUR -> {B / 1e6:.2f} M EUR/yr vs {annual(spent) / 1e6:.2f} (BCR {B / annual(spent):.2f})")
 best = max(summary, key=lambda k: summary[k]["net_benefit_eur_yr"])
 summary["headline"] = best
+summary["provenance"] = {**PROV, "args": {k: v for k, v in vars(A).items() if k in ("budget_m", "workers", "pool")}}  # the greedy order can depend on workers
 json.dump(summary, open(os.path.join(A.data, "lane_network_plans.json"), "w"), indent=1)
 pd.read_csv(os.path.join(A.data, f"lane_network_plan_{best}.csv")).to_csv(os.path.join(A.data, "lane_network_plan.csv"), index=False)
 print(json.dumps(summary, indent=1))

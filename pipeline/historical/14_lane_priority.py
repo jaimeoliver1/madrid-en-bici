@@ -1,13 +1,15 @@
 """Where would a new protected bike lane help most? Rank street corridors by the bikes that ride them
 unprotected (weighted by how stressful the street is) and by the bike accidents that happen on them.
 
-Usage: python3 pipeline/historical/14_lane_priority.py <Madrid.osm.pbf> <trips_dir_2023> <Infraestructura_Ciclista.shp> <data_dir> [--w-bikes 0.5]
+Usage: python3 pipeline/historical/14_lane_priority.py <madrid.osm.pbf> <trips_dir_2023> <data_dir> [--w-bikes 0.5]
+Inputs are pinned in inputs.json (fetch_inputs.py downloads and checks them).
 Writes <data_dir>/lane_priority.csv (ranked corridors with geometry) and prints the 10/25/50 km plans.
 
 Method (approach A, a static ranking):
   1. Route every Jan-Feb 2023 station-to-station trip on the same bike-weighted OSM graph as 11_all_routes.py
-     and count trips on every street segment (cached in <data_dir>/../.cache/edge_trips.npz).
-  2. Mark segments that already have a separated lane (within 15 m of Madrid's exclusive infrastructure).
+     and count trips on every street segment (cached in <data_dir>/../.cache/, keyed by the inputs' SHA-256).
+  2. Mark segments that already have a separated lane (within 15 m of Madrid's exclusive infrastructure, from
+     data/madrid_bike_infrastructure.csv, which refresh.py writes from the city's layer and git keeps).
   3. Snap each located bike accident (2019 onwards) to the nearest street segment within 25 m;
      serious injuries and deaths count 5 times.
   4. Group unprotected segments into corridors: same street name, connected, cut into pieces of about 1 km.
@@ -17,7 +19,8 @@ Stress is a proxy for the level of traffic stress (Mekuria et al. 2012) from roa
 residential 0.2, tertiary 0.5, secondary 0.85, primary and trunk 1; the side roads of a big boulevard (same name
 as a trunk or primary carriageway) count 0.5.
 """
-import sys, os, ast, math, heapq, argparse, zlib, numpy as np, pandas as pd, osmium, shapefile
+import sys, os, ast, math, heapq, argparse, zlib, numpy as np, pandas as pd, osmium
+import provenance as pv
 from bike_costs import COST, factor
 from pyproj import Transformer
 from shapely.geometry import LineString, Point
@@ -27,7 +30,7 @@ from shapely import STRtree
 from scipy.spatial import cKDTree
 
 ap = argparse.ArgumentParser()
-ap.add_argument("pbf"); ap.add_argument("trips"); ap.add_argument("shp"); ap.add_argument("data")
+ap.add_argument("pbf"); ap.add_argument("trips"); ap.add_argument("data")
 ap.add_argument("--w-bikes", type=float, default=0.5)
 ap.add_argument("--what-if", default="", help="';'-separated street names to treat as already protected when routing (latent demand test)")
 A = ap.parse_args()
@@ -73,7 +76,10 @@ EK = list(edge_way); EIDX = {k: i for i, k in enumerate(EK)}
 print("graph", len(coord), "edges", len(EK), flush=True)
 
 # ---------- trips per edge (cached: routing takes a few minutes) ----------
-cache = os.path.join(CACHE, "edge_trips.npz" if not WHATIF else "edge_trips_whatif_%08x.npz" % zlib.crc32(A.what_if.encode()))
+PROV = pv.record(osm=A.pbf, trips=pv.trips_files(A.trips), infrastructure=os.path.join(A.data, "madrid_bike_infrastructure.csv"),
+                 accidents=os.path.join(A.data, "madrid_bike_accidents.csv"))
+key = PROV["inputs"]["osm"]["sha256"][:12] + "_" + PROV["inputs"]["trips"]["sha256"][:12]
+cache = os.path.join(CACHE, f"edge_trips_{key}.npz" if not WHATIF else f"edge_trips_{key}_whatif_%08x.npz" % zlib.crc32(A.what_if.encode()))
 if os.path.exists(cache) and np.load(cache)["n"] == len(EK):
     etrips = np.load(cache)["t"]; print("edge trips from cache", flush=True)
 else:
@@ -118,11 +124,11 @@ else:
 print("trips on edges: total bike-km/day", round(sum(etrips[i] * math.dist(xy[a], xy[b]) for i, (a, b) in enumerate(EK)) / 1000 / DAYS), flush=True)
 
 # ---------- existing separated lanes ----------
-r = shapefile.Reader(A.shp, encoding="utf-8"); ex = []
-for sh, rec in zip(r.shapes(), r.records()):
-    if rec["d_COD_TIPO"].replace("ESCLUSIVA", "EXCLUSIVA") not in ("VÍA EXCLUSIVA BICI", "ANILLO VERDE CICLISTA"): continue
-    for i0, i1 in zip(list(sh.parts), list(sh.parts[1:]) + [len(sh.points)]):
-        if i1 - i0 >= 2: ex.append(LineString(sh.points[i0:i1]))
+infra = pd.read_csv(os.path.join(A.data, "madrid_bike_infrastructure.csv"))
+ex = []
+for path in infra.loc[infra.type.isin(["Exclusive bike lane", "Anillo Verde ring"]), "path"]:  # refresh.py's EXCLUSIVE
+    lo, la = zip(*(map(float, p.split(",")) for p in path.split()))
+    if len(lo) >= 2: ex.append(LineString(zip(*fw.transform(lo, la))))
 EXB = prep(unary_union([g.buffer(15) for g in ex]))
 
 # ---------- per-edge table ----------
@@ -158,8 +164,9 @@ E["acc"] = 0.0; E["acc_w"] = 0.0; E["acc_sev"] = 0.0
 ridx = road.index.values
 for q, t_ in zip(qi, ti):
     j = ridx[t_]; E.at[j, "acc"] += 1; E.at[j, "acc_w"] += acc.w.iat[q]; E.at[j, "acc_sev"] += acc.w.iat[q] > 1
-years = (pd.Timestamp(acc.year.max(), 8, 31) - pd.Timestamp(acc.year.min(), 1, 1)).days / 365.25
-E.to_pickle(os.path.join(CACHE, "edges.pkl"))  # for diagnostics
+years = pv.accident_years(A.data)
+E.attrs = PROV
+E.to_pickle(os.path.join(CACHE, "edges.pkl"))  # for 15_lane_network.py and 16_route_graph.py
 print("accidents", len(acc), "snapped", len(qi), "years", round(years, 2), flush=True)
 
 # ---------- corridors: same name + connected, cut into ~1 km pieces along the street's main axis ----------

@@ -1,21 +1,60 @@
 {
  "bestfirst": {
-  "options": 33,
-  "km": 21.3,
-  "build_eur": 19978582,
-  "benefit_eur_yr": 3389030,
-  "annual_cost_eur_yr": 1147327,
-  "net_benefit_eur_yr": 2241702,
-  "bcr": 2.95
+  "options": 36,
+  "km": 23.0,
+  "build_eur": 19765631,
+  "benefit_eur_yr": 2997991,
+  "annual_cost_eur_yr": 1135098,
+  "net_benefit_eur_yr": 1862893,
+  "bcr": 2.64
  },
  "axisfirst": {
-  "options": 18,
-  "km": 21.6,
-  "build_eur": 19932018,
-  "benefit_eur_yr": 2628428,
-  "annual_cost_eur_yr": 1144653,
-  "net_benefit_eur_yr": 1483775,
-  "bcr": 2.3
+  "options": 11,
+  "km": 16.4,
+  "build_eur": 15628705,
+  "benefit_eur_yr": 1698290,
+  "annual_cost_eur_yr": 897523,
+  "net_benefit_eur_yr": 800767,
+  "bcr": 1.89
  },
- "headline": "bestfirst"
+ "headline": "bestfirst",
+ "provenance": {
+  "inputs": {
+   "osm": {
+    "file": "madrid-260101.osm.pbf",
+    "sha256": "291c3c50d1e7731a709459ad9041eee0d87a5b2b202304cbd2f2ed032b5398ed"
+   },
+   "trips": {
+    "file": "trips_23_01_January.csv, trips_23_02_February.csv",
+    "sha256": "0c5e63ce7d1f88c173ae1b6b8abd6835640be68b02e4f2ab6b1b4c2dda116230"
+   },
+   "traffic": {
+    "file": "IMD_2019.shp, IMD_2019.dbf",
+    "sha256": "c802bdf2f02df4e08213bd3dc4f5a6a6828f2122ab516e6b724ddbe5723e623f"
+   },
+   "dem": {
+    "file": "copernicus_dem_N40_W004.tif",
+    "sha256": "cd433030806b00cd44d640ea6ed3c102a12640d848ae819d9dbfa8eb0d413097"
+   },
+   "accidents": {
+    "file": "madrid_bike_accidents.csv",
+    "sha256": "f5e090c0c954e900a14ae7376117380a351091b91fd332d84bd6efdc3007659f"
+   },
+   "counters": {
+    "file": "madrid_bike_counters.csv",
+    "sha256": "c6f827f96421c014eb0b7af362468e254b9ed0e2c7745b14df3dbe71279233d5"
+   },
+   "infrastructure": {
+    "file": "madrid_bike_infrastructure.csv",
+    "sha256": "b2a21794efb6e3701bc3010e18bdac061b43755876d84c830c8512a9ffd8da24"
+   }
+  },
+  "git_commit": "869c5361179828e224b928c4fd35d074191091c9",
+  "uncommitted_changes": true,
+  "args": {
+   "budget_m": 20,
+   "workers": 4,
+   "pool": 150
+  }
+ }
 }

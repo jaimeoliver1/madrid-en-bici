@@ -4,6 +4,8 @@
 
 This note explains how `pipeline/historical/15_lane_network.py` decides which streets should get a protected bike lane, and in what order. Every value comes from a published source or from Madrid's own data; the code keeps them in one place, `pipeline/historical/appraisal.py`.
 
+**Reproducing it.** Every input is pinned to the exact file used, with its link, SHA-256 and licence, in `pipeline/historical/inputs.json` (street network: OpenStreetMap, Geofabrik's Madrid snapshot of 1 January 2026); `pipeline/historical/fetch_inputs.py` downloads and checks them. Each run writes the SHA-256 of its inputs and the git commit into `data/lane_network_plans.json`. Steps in [ROUTING.md](ROUTING.md#rebuilding).
+
 ## The question
 
 For each candidate street corridor, what is it worth to society each year to give it a protected (separated) lane, compared with what it costs? All effects are measured in the same unit, **2025 euros per year**, so there are no arbitrary weights between "bikes" and "safety".
@@ -76,31 +78,32 @@ All prices are moved to 2025 euros with Eurostat's harmonised consumer price ind
 
 ## 6. Choosing the network
 
-1. **Streets, not carriageways.** OpenStreetMap stores each side of a boulevard as a separate one-way road. All road segments with the same street name within 60 m of each other (both carriageways and the side roads of Castellana, for example) are merged into one street, then cut into pieces of about 1 km along the street. A piece costs its length of street once, at the avenue price if any of it is a trunk, primary or secondary road.
-2. **Three kinds of candidates.** The most promising pieces (ranked by stress-weighted bike-km and accidents, per km and in total), whole streets (when two or more of their pieces are promising), and three axes that cross several street names: Atocha – Prado – Recoletos – Castellana (to Nuevos Ministerios), Bailén – Plaza de España – Princesa, and the southern Rondas. An option only pays for the pieces not yet built.
-3. Each candidate is valued on its own (re-routing everything).
-4. Options are added one at a time, always the one with the highest **benefit-cost ratio** for the network built so far. After each addition, options that touch it are re-valued at once, because connections can make them worth more; others are re-valued lazily when they reach the top.
-5. It stops when the budget is spent or when no addition returns more than it costs (benefit-cost ratio below 1).
-6. **Two plans are built and compared**: best-first from an empty network, and the same procedure starting with the Atocha – Castellana axis. A step-by-step method depends on its first choices, so comparing whole plans checks whether a network built around the main axis does better. The headline plan is the one with the larger **net benefit** (yearly benefit minus yearly cost).
+1. **Streets, not carriageways.** OpenStreetMap stores each side of a boulevard as a separate one-way road. Road segments with the same street name that touch or lie within 150 m of each other (both carriageways and the side roads of Castellana, for example) are merged into one street.
+2. **One lane line per street.** A street gets one protected lane, not one on every carriageway: Castellana has four carriageways side by side, and protecting all four would count four lanes' worth of riders and safety for the price of one. The lane follows a single line, the shortest path between the street's two ends along its own segments (crossing to another street costs 10 times its length, running across the street between carriageways up to 3 times, and stretches already protected count half, so a new lane continues an existing one). It is usable in both directions, which stands for a two-way track or a lane on each side. Only a branch of the same name more than 250 m from that line and at least 300 m long gets a line of its own. The line is then cut into pieces of about 1 km. A piece costs the length of its line not yet protected, at the avenue price if any carriageway of the street there is a trunk, primary or secondary road (so the side road of a big avenue is priced as the avenue).
+3. **Three kinds of candidates.** The most promising pieces (ranked by stress-weighted bike-km and accidents, per km and in total), whole streets (when two or more of their pieces are promising), and three axes that cross several street names: Atocha – Prado – Recoletos – Castellana (to Nuevos Ministerios), Bailén – Plaza de España – Princesa, and the southern Rondas. An option only pays for the pieces not yet built.
+4. Each candidate is valued on its own (re-routing everything).
+5. Options are added one at a time, always the one with the highest **benefit-cost ratio** for the network built so far. After each addition, options that touch it are re-valued at once, because connections can make them worth more; others are re-valued lazily when they reach the top.
+6. It stops when the budget is spent or when no addition returns more than it costs (benefit-cost ratio below 1).
+7. **Two plans are built and compared**: best-first from an empty network, and the same procedure starting with the Atocha – Castellana axis. A step-by-step method depends on its first choices, so comparing whole plans checks whether a network built around the main axis does better. The headline plan is the one with the larger **net benefit** (yearly benefit minus yearly cost).
 
 ## 7. Results
 
-With a budget of €20 million (`data/lane_network_plan.csv`, `data/lane_network_plans.json`):
+With a budget of €20 million (`data/lane_network_plan.csv`, `data/lane_network_plans.json`; inputs and commit in that file's `provenance` block):
 
 | | Best value first (headline) | Atocha – Castellana axis first |
 |---|---|---|
-| New protected lane | 21.3 km | 21.6 km |
-| Build cost | €20.0M | €19.9M |
-| Benefit a year | €3.39M (comfort €2.11M, safety €1.28M) | €2.63M |
-| Yearly build cost (3%, 25 years) | €1.15M | €1.14M |
-| Net benefit a year | **€2.24M** | €1.48M |
-| Benefit per euro | **2.95** | 2.30 |
+| New protected lane | 23.0 km | 16.4 km |
+| Build cost | €19.8M | €15.6M |
+| Benefit a year | €3.00M (comfort €1.74M, safety €1.26M) | €1.70M |
+| Yearly build cost (3%, 25 years) | €1.14M | €0.90M |
+| Net benefit a year | **€1.86M** | €0.80M |
+| Benefit per euro | **2.64** | 1.89 |
 
-- **First steps:** Paseo del Prado and the Atocha roundabout (Plaza del Emperador Carlos V), each returning more than €5 per euro; then Alcalá, Plaza de la Independencia, Génova, Menéndez Pelayo, Concepción Jerónima, Cuesta de la Vega and Recoletos.
-- **The main axis:** at step 12 the plan adds the whole Atocha – Prado – Recoletos – Castellana axis to Nuevos Ministerios (4.9 km more, €4.8M, €3.20 per euro). It is complete within the first €10M.
-- **Then** feeders and crossings: San Bernardo, Eloy Gonzalo, Bailén, Juan Bravo, Ciudad de Barcelona, Calle de Atocha, Segovia, Delicias, Princesa.
-- **The budget binds:** the last addition still returns €1.45 per euro, so more lanes would pay off.
-- **Two plans:** both include the full axis. Growing outwards from the best-value pieces beats starting from the axis and then adding other long axes (Doctor Esquerdo, Bailén – Princesa, the southern Rondas), which bring low-value stretches along with the good ones.
+- **First steps:** Paseo del Prado (€6.74 per euro) and the Atocha roundabout (Plaza del Emperador Carlos V, €6.47); then Alcalá, Paseo de las Delicias, Plaza de la Independencia, Alberto Aguilera, Luchana, Génova, Concepción Jerónima and Villanueva, all above €2.80 per euro.
+- **The main axis:** valued on its own, the whole Atocha – Prado – Recoletos – Castellana axis returns €2.87 per euro, but the best-value plan never takes it as a whole. It builds its southern half piece by piece (the Atocha roundabout, Prado, and Recoletos at step 22) and leaves Castellana out: with one lane instead of every carriageway, Castellana's pieces return less than the streets that feed the centre.
+- **Then** feeders and crossings: Ciudad de Barcelona, Calle de Atocha, Toledo, Martínez Campos, Fuencarral, Conde de Peñalver, Menéndez Pelayo, Gran Vía, Bailén.
+- **The budget binds:** the last addition (Francisco Silvela) still returns €1.72 per euro, so more lanes would pay off.
+- **Two plans:** growing outwards from the best-value pieces gives more than twice the net benefit of starting with the whole axis. The axis-first plan then adds Bailén – Princesa (€1.35 per euro) and the whole of Bravo Murillo (€1.06) and stops at €15.6M.
 
 ### How the method got here
 
@@ -108,6 +111,7 @@ With a budget of €20 million (`data/lane_network_plan.csv`, `data/lane_network
 2. **Step by step with hand-picked weights**: added corridors by stress-weighted bike-km avoided after re-routing.
 3. **In euros** (published sources, this note): comfort plus safety against cost.
 4. **Version 2**: avenues were candidates one carriageway at a time (one direction only, charged as a whole street), so Prado never paid off and the plan left a gap between Atocha and Recoletos. Candidates became whole streets with two-way protected lanes, whole streets and axes were added as options, safety was limited to the protection effect, and two plans were compared.
+5. **Version 3**: version 2 protected every carriageway of a street at once. On Recoletos that was 2.8 km of lane (two central carriageways and two side roads) charged as 0.8 km of street, and on the Atocha – Castellana axis 13.4 km charged as 4.9 km, so boulevards got the riders and safety of four lanes for the price of one. Each street now gets one lane line. Wide boulevards were also split into several streets where their carriageways were more than 60 m apart (Prado around its central promenade, Castellana at big junctions); touching segments of the same name are now merged, and the distance is 150 m. The map draws only the stretches each step builds, not the parts of a street that already have a protected lane. At the same time every input was pinned (OpenStreetMap moved from a weekly BBBike extract to Geofabrik's 1 January 2026 snapshot, and the existing lanes are read from the copy of the city's layer in git). Result: 23.0 km for €19.8M at €2.64 per euro (was 21.3 km at €2.95), and Castellana drops out of the best-value plan.
 
 ## What this leaves out
 
