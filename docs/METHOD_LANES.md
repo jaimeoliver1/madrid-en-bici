@@ -1,5 +1,7 @@
 # Where to build protected bike lanes: method
 
+> **Results on the website:** "¿Dónde poner los próximos carriles protegidos?" in *Para el Ayuntamiento*, and the route planner's switch *Con los carriles protegidos propuestos*. Routing itself is explained in [ROUTING.md](ROUTING.md).
+
 This note explains how `pipeline/historical/15_lane_network.py` decides which streets should get a protected bike lane, and in what order. Every value comes from a published source or from Madrid's own data; the code keeps them in one place, `pipeline/historical/appraisal.py`.
 
 ## The question
@@ -80,6 +82,32 @@ All prices are moved to 2025 euros with Eurostat's harmonised consumer price ind
 4. Options are added one at a time, always the one with the highest **benefit-cost ratio** for the network built so far. After each addition, options that touch it are re-valued at once, because connections can make them worth more; others are re-valued lazily when they reach the top.
 5. It stops when the budget is spent or when no addition returns more than it costs (benefit-cost ratio below 1).
 6. **Two plans are built and compared**: best-first from an empty network, and the same procedure starting with the Atocha – Castellana axis. A step-by-step method depends on its first choices, so comparing whole plans checks whether a network built around the main axis does better. The headline plan is the one with the larger **net benefit** (yearly benefit minus yearly cost).
+
+## 7. Results
+
+With a budget of €20 million (`data/lane_network_plan.csv`, `data/lane_network_plans.json`):
+
+| | Best value first (headline) | Atocha – Castellana axis first |
+|---|---|---|
+| New protected lane | 21.3 km | 21.6 km |
+| Build cost | €20.0M | €19.9M |
+| Benefit a year | €3.39M (comfort €2.11M, safety €1.28M) | €2.63M |
+| Yearly build cost (3%, 25 years) | €1.15M | €1.14M |
+| Net benefit a year | **€2.24M** | €1.48M |
+| Benefit per euro | **2.95** | 2.30 |
+
+- **First steps:** Paseo del Prado and the Atocha roundabout (Plaza del Emperador Carlos V), each returning more than €5 per euro; then Alcalá, Plaza de la Independencia, Génova, Menéndez Pelayo, Concepción Jerónima, Cuesta de la Vega and Recoletos.
+- **The main axis:** at step 12 the plan adds the whole Atocha – Prado – Recoletos – Castellana axis to Nuevos Ministerios (4.9 km more, €4.8M, €3.20 per euro). It is complete within the first €10M.
+- **Then** feeders and crossings: San Bernardo, Eloy Gonzalo, Bailén, Juan Bravo, Ciudad de Barcelona, Calle de Atocha, Segovia, Delicias, Princesa.
+- **The budget binds:** the last addition still returns €1.45 per euro, so more lanes would pay off.
+- **Two plans:** both include the full axis. Growing outwards from the best-value pieces beats starting from the axis and then adding other long axes (Doctor Esquerdo, Bailén – Princesa, the southern Rondas), which bring low-value stretches along with the good ones.
+
+### How the method got here
+
+1. **First ranking (approach A, `14_lane_priority.py`)**: corridors scored by bikes and accidents, 50/50, per km. Found that Castellana, Recoletos and Prado were missing because OSM tags them `trunk` and that road type was left out of the network; fixed in every routing script.
+2. **Step by step with hand-picked weights**: added corridors by stress-weighted bike-km avoided after re-routing.
+3. **In euros** (published sources, this note): comfort plus safety against cost.
+4. **Version 2**: avenues were candidates one carriageway at a time (one direction only, charged as a whole street), so Prado never paid off and the plan left a gap between Atocha and Recoletos. Candidates became whole streets with two-way protected lanes, whole streets and axes were added as options, safety was limited to the protection effect, and two plans were compared.
 
 ## What this leaves out
 

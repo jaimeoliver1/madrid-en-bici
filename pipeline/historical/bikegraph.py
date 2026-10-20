@@ -39,7 +39,7 @@ class Graph:
                 lane = t.get("bicycle") == "designated" or any(c.startswith("lane") for c in cyc)
                 sep = hw == "cycleway" or any(c.startswith(("track", "separate")) for c in cyc)
                 flat = t.get("bridge", "no") != "no" or t.get("tunnel", "no") != "no"
-                ways.append((pts, f, ow, hw, t.get("name", ""), lane, sep, flat))
+                ways.append((pts, f, ow, hw, t.get("name", ""), lane, sep, flat, t.get("footway", "")))
 
         H().apply_file(pbf, locations=True)
         ids = {}
@@ -53,9 +53,9 @@ class Graph:
         # elevation at every node [DEM]; per way, a profile smoothed over ~50 m so that 30 m DEM noise
         # does not turn into fake slopes; bridges and tunnels take a straight line between their ends
         self.z = sample_dem(dem, self.lon, self.lat) if dem else np.zeros(self.n)
-        U, V, F, S, UP, names, hws, lanes, seps = [], [], [], [], [], [], [], [], []
+        U, V, F, S, UP, names, hws, lanes, seps, subs = [], [], [], [], [], [], [], [], [], []
         seg = {}
-        for wi, (pts, f, ow, hw, name, lane, sep, flat) in enumerate(ways):
+        for wi, (pts, f, ow, hw, name, lane, sep, flat, sub) in enumerate(ways):
             ix = np.array([ids[p[0]] for p in pts])
             d = np.r_[0, np.cumsum(np.hypot(np.diff(X[ix]), np.diff(Y[ix])))]
             z = self.z[ix]
@@ -69,13 +69,13 @@ class Graph:
                 a, b = pts[j][0], pts[j + 1][0]
                 key = (a, b) if a < b else (b, a)
                 s = seg.setdefault(key, len(seg))
-                if s == len(names): names.append(name); hws.append(hw); lanes.append(lane); seps.append(sep)
+                if s == len(names): names.append(name); hws.append(hw); lanes.append(lane); seps.append(sep); subs.append(sub)
                 L = max(d[j + 1] - d[j], 1e-6); dz = zs[j + 1] - zs[j]
                 U.append(ia); V.append(ib); F.append(f); S.append(s); UP.append(max(0.0, dz / L))
                 if not ow: U.append(ib); V.append(ia); F.append(f); S.append(s); UP.append(max(0.0, -dz / L))
         self.u, self.v = np.array(U, np.int32), np.array(V, np.int32)
         self.f = np.array(F); self.seg = np.array(S, np.int32); self.upslope = np.array(UP)
-        self.seg_lane = np.array(lanes); self.seg_sep = np.array(seps)
+        self.seg_lane = np.array(lanes); self.seg_sep = np.array(seps); self.seg_sub = np.array(subs, object)  # OSM footway=* (sidewalk, crossing...)
         # contraflow arcs for one-way segments: absent (infinite cost) unless the segment gets a protected lane,
         # which is then usable in both directions
         self.rev = np.zeros(len(self.u), bool)
@@ -175,6 +175,41 @@ def segment_aadt(g, shp, max_snap=80.0, max_spread=1000.0):
         med = np.nanmedian(aadt[m & measured]) if hw != "residential" and (m & measured).sum() >= 10 else 0.0
         aadt[m & ~measured] = med
     return np.nan_to_num(aadt), measured, len(pts), sum(len(v) for v in counts.values())
+
+
+def broach_factors(g, aadt, sep_seg):
+    """Perceived-distance multiplier per arc [B12, appraisal.py] for today's network plus `sep_seg` separated
+    segments; footways, steps and tracks keep bike_costs.py weights; contraflow arcs only where separated."""
+    import appraisal as ap_
+    from bike_costs import COST
+    walk_set = {"footway", "pedestrian", "path", "track", "steps"}
+    hw = g.seg_hw[g.seg]; walk = np.array([h in walk_set for h in hw])
+    base_walk = np.array([COST[h] if h in walk_set else 0 for h in hw])
+    slope_pen = np.zeros(len(g.u)); traffic_pen = np.zeros(len(g.u))
+    for lo, v in sorted(ap_.SLOPE): slope_pen[g.upslope >= lo] = v
+    for lo, v in sorted(ap_.TRAFFIC): traffic_pen[aadt[g.seg] >= lo] = v
+    s = sep_seg[g.seg]; lane = g.seg_lane[g.seg]
+    f = 1 + np.where(s, ap_.PATH, np.where(lane, 0.0, traffic_pen)) + slope_pen
+    f = np.where(walk & ~s, base_walk + slope_pen, f)
+    return np.where(g.rev & ~s, np.inf, f)
+
+
+def eb_rates(g, flow, nacc, years, sep, days=DAYS):
+    """Injury rate per BiciMAD-km on every segment: road-class rate (class = road type x already separated),
+    adjusted per segment by empirical Bayes with a negative binomial dispersion fitted by moments [Hauer]."""
+    expo = flow * g.seg_len / 1000 * 365 / days
+    cls = np.array([f"{h}|{int(s)}" for h, s in zip(g.seg_hw, sep)])
+    rate = np.full(g.nseg, nacc.sum() / years / expo.sum())
+    for c in np.unique(cls):
+        m = (cls == c) & (expo > 0)
+        if m.sum() < 20: continue
+        R = nacc[m].sum() / years / expo[m].sum(); rate[cls == c] = R
+        if R == 0: continue
+        mu = R * expo[m]; N = nacc[m] / years
+        theta = np.mean(mu) ** 2 / max(np.var(N) - np.mean(N), 1e-12)
+        w = 1 / (1 + mu / theta)
+        rate[np.where(m)[0]] = (w * mu + (1 - w) * N) / expo[m]
+    return rate
 
 
 def load_od(g, trips_dir):

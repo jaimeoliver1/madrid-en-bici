@@ -3,7 +3,7 @@
 **¿Es fácil moverse en bici por Madrid?** A public website that explains, with open data and plenty of maps, how BiciMAD (Madrid's public bike share) and the city's bike lanes are doing, and what would make Madrid easier to cycle in. It's in Spanish, with an English toggle.
 
 - **Live site:** https://madrid-en-bici.vercel.app
-- **What's on it:** a 24-hour animation of every BiciMAD bike, a report card against planning benchmarks, and sections on coverage, hills, bike lanes, safety and weather. It ends with six recommendations.
+- **What's on it:** a 24-hour animation of every BiciMAD bike, your barrio's coverage, sections on hills, bike lanes, safety and weather, and a **route planner** that runs Dijkstra's algorithm in the browser with weights you can change. For the City Council: a report card, six recommendations and a **costed plan for the next protected lanes**.
 - **Live data:** station availability comes straight from BiciMAD's public feed in the visitor's browser. Everything else is refreshed monthly by a GitHub Action.
 
 ## Repository layout
@@ -13,6 +13,8 @@ site/        the website: plain HTML + JS (d3), no build step
   index.html   page and styles
   app.js       charts, maps, texts (ES/EN), live strip (polls BiciMAD every minute)
   player.js    the 24-hour animation player
+  routing.js   route planner (Dijkstra in the browser) and the proposed lane plan
+  route-graph.json  generated compact bike network for the planner (pipeline/historical/16_route_graph.py)
   data.js      generated data bundle (pipeline/build_site.py)
   film-data.js generated animation data (pipeline/historical/)
   basemap.js   generated map context: main roads, river, parks, landmarks (pipeline/historical/13_basemap.py)
@@ -22,7 +24,9 @@ pipeline/
   build_site.py   data/ -> site/data.js
   historical/     one-off scripts behind the static 2023 analysis, routes and animation
 film/        source of the 24-hour animation as a standalone video (Claude Motion scenes)
-docs/        data sources and gaps, and the data request sent to EMT
+docs/        data sources and gaps, the data request sent to EMT, and the methods:
+  ROUTING.md       how routes are found (Dijkstra, rider weights, the planner)
+  METHOD_LANES.md  where to build protected lanes: euros, sources, results
 ```
 
 ## Run it locally

@@ -15,6 +15,7 @@
   // ---------- language ----------
   const T = {
     es: {
+      nav_ruta: "Tu ruta",
       theme_light: "Modo claro",
       theme_dark: "Modo oscuro",
       b_pick: "Elige tu barrio",
@@ -107,6 +108,7 @@
       fc_bicimad: "Se actualiza cada mes · datos hasta {dlast}", fc_barrios: "Bicis en directo · estaciones revisadas cada mes", fc_cuestas: "Mapa en directo · flujos de 2023", fc_carriles: "Carriles revisados cada mes · rutas de 2023", fc_seguridad: "Se actualiza cada mes · datos hasta {accend}", fc_tiempo: "Se actualiza cada mes",
     },
     en: {
+      nav_ruta: "Your route",
       theme_light: "Light mode",
       theme_dark: "Dark mode",
       b_pick: "Pick your barrio",
@@ -276,7 +278,8 @@
     const s = Math.min(W / (x1 - x0), h / (y1 - y0)), ox = (W - (x1 - x0) * s) / 2, oy = (h - (y1 - y0) * s) / 2;
     const P = (lon, lat) => [ox + (lon * k - x0) * s, h - oy - (lat - y0) * s];
     const path = str => "M" + str.split(" ").map(p => { const [a, b] = p.split(","); const q = P(+a, +b); return q[0].toFixed(1) + " " + q[1].toFixed(1); }).join("L");
-    return { h, P, path };
+    const inv = (x, y) => [((x - ox) / s + x0) / k, (h - oy - y) / s + y0];  // map point -> lon, lat
+    return { h, P, path, inv };
   }
   function mapBase(box, maxH) {
     const W = Math.max(280, box.clientWidth), F = mapFrame(W, 0.04, maxH);
@@ -691,7 +694,7 @@
     for (const f of parts) { try { f(); } catch (e) { console.error(f.name, e); } }
     document.querySelectorAll("main .chart[id], #score, #bicimad-nums, #lane-nums").forEach(b => onView(b, () => animate(b)));
     document.querySelectorAll(".stop").forEach(s => { if (!s.id) return; onView(s, () => {}); });
-    window.MCI = { t, nf, lang: () => L };
+    window.MCI = { t, nf, n1, pct, big, css, el, tip, mapBase, context, places, lang: () => L };
     window.dispatchEvent(new Event("mc-render"));
   }
   // ---------- data freshness: a chip per section and a table in the footer ----------

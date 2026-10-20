@@ -105,6 +105,17 @@ if os.path.exists(rp):
                    "hist": np.histogram(ra.share_exclusive, bins=[0, 10, 25, 50, 75, 101], weights=w)[0].astype(int).tolist(),
                    "paths": [[int(r.trips), r.share_exclusive, " ".join(",".join(f"{float(v):.4f}" for v in q.split(",")) for q in r.path.split(" "))] for _, r in rt.iterrows()]}
 
+# Proposed protected lanes (15_lane_network.py): build order, euros, geometry; and the comparison of the two plans
+lp = os.path.join(D, "lane_network_plan.csv")
+if os.path.exists(lp):
+    pl = R("lane_network_plan.csv")
+    summ = json.load(open(os.path.join(D, "lane_network_plans.json")))
+    B["plan"] = {"summary": summ,
+                 "steps": [[int(r.step), r.option, r.kind, float(r.km_new), int(r.build_eur), int(r.benefit_eur_yr), float(r.bcr), int(r.cum_build_eur),
+                            int(r.trips_day_before), int(r.trips_day_after),
+                            "|".join(" ".join(",".join(f"{float(v):.4f}" for v in q.split(",")) for q in part.split(" ")) for part in r.geometry.split("|"))]
+                           for _, r in pl.iterrows() if isinstance(r.geometry, str)]}
+
 # Headline numbers
 pop = int(dist.population.sum()); area = float(dist.area_km2.sum())
 meta = json.load(open(os.path.join(D, "refresh_meta.json"))) if os.path.exists(os.path.join(D, "refresh_meta.json")) else {}
