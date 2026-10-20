@@ -1,11 +1,13 @@
 """Route every station-to-station BiciMAD trip of Jan-Feb 2023 on the local OSM bike graph and
 measure how much of each route runs on Madrid's bike infrastructure.
 
-Usage: python3 pipeline/11_all_routes.py <Madrid.osm.pbf> <trips_dir_2023> <Infraestructura_Ciclista.shp> <out_dir>
+Usage: python3 pipeline/historical/11_all_routes.py <madrid.osm.pbf> <trips_dir_2023> <data_dir>
+Bike infrastructure is read from <data_dir>/madrid_bike_infrastructure.csv (the city's layer, kept in git by refresh.py).
+Inputs pinned in inputs.json.
 Writes <out_dir>/bicimad_2023_routes_all.csv.gz (one row per station pair) and
 <out_dir>/bicimad_2023_top_routes_routed.csv (geometry for the most used pairs, for the site map).
 """
-import sys, ast, math, heapq, numpy as np, pandas as pd, osmium, shapefile
+import sys, os, ast, math, heapq, numpy as np, pandas as pd, osmium
 from bike_costs import COST, factor
 from pyproj import Transformer
 from shapely.geometry import LineString
@@ -13,7 +15,7 @@ from shapely.ops import unary_union
 from shapely.prepared import prep
 from scipy.spatial import cKDTree
 
-PBF, RAW, SHP, OUT = sys.argv[1:5]
+PBF, RAW, OUT = sys.argv[1:4]
 BBOX = (40.37, 40.50, -3.76, -3.61)
 
 class H(osmium.SimpleHandler):
@@ -66,13 +68,12 @@ kd = cKDTree(np.array([xy[n] for n in cand]))
 PX, PY = fw.transform(pos.lon.values, pos.lat.values)
 snap = {sid: cand[kd.query([x, y])[1]] for sid, x, y in zip(pos.index, PX, PY)}
 
-r = shapefile.Reader(SHP, encoding="utf-8"); ex, an = [], []
-for sh, rec in zip(r.shapes(), r.records()):
-    for i0, i1 in zip(list(sh.parts), list(sh.parts[1:]) + [len(sh.points)]):
-        p = sh.points[i0:i1]
-        if len(p) < 2: continue
-        L = LineString(p); an.append(L)
-        if rec["d_COD_TIPO"].replace("ESCLUSIVA", "EXCLUSIVA") in ("VÍA EXCLUSIVA BICI", "ANILLO VERDE CICLISTA"): ex.append(L)
+infra = pd.read_csv(os.path.join(OUT, "madrid_bike_infrastructure.csv")); ex, an = [], []
+for kind, path in zip(infra.type, infra.path):
+    lo, la = zip(*(map(float, q.split(",")) for q in path.split()))
+    if len(lo) < 2: continue
+    L = LineString(zip(*fw.transform(lo, la))); an.append(L)
+    if kind in ("Exclusive bike lane", "Anillo Verde ring"): ex.append(L)  # refresh.py's EXCLUSIVE
 EXB = prep(unary_union([l.buffer(15) for l in ex])); ANB = prep(unary_union([l.buffer(15) for l in an]))
 # classify each graph edge once (midpoint test), then a route's share is a length-weighted sum
 from shapely.geometry import Point
@@ -118,7 +119,7 @@ for k, (src_id, grp) in enumerate(od.groupby("station_unlock")):
             rows[-1]["path"] = " ".join(f"{a:.5f},{b:.5f}" for a, b in keep)
     if k % 40 == 0: print("sources", k, flush=True)
 df = pd.DataFrame(rows)
-df.drop(columns="path").to_csv(f"{OUT}/bicimad_2023_routes_all.csv.gz", index=False)
+df.drop(columns="path").to_csv(f"{OUT}/bicimad_2023_routes_all.csv.gz", index=False, compression={"method": "gzip", "mtime": 0})  # no timestamp: same bytes every run
 df.dropna(subset=["path"]).sort_values("trips", ascending=False).head(300).to_csv(f"{OUT}/bicimad_2023_top_routes_routed.csv", index=False)
 w = df.trips
 print("routed pairs", len(df), "trips", int(w.sum()), "share exclusive", round((df.share_exclusive * w).sum() / w.sum(), 1),

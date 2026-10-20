@@ -10,14 +10,14 @@
 | Cycling infrastructure | Ayuntamiento geoportal (205107) | Latest layer | A few times a year | `refresh.py` |
 | Bike racks | datos.madrid.es (205099) | Latest | Daily | `refresh.py` |
 | Population by barrio | Padrón (300557) | Latest 1 January | Yearly | `refresh.py` |
-| Bike counters | datos.madrid.es (300321) | 2019 – Jun 2024 | Half-yearly files | manual (`pipeline/historical/`) |
-| District and barrio boundaries | Ayuntamiento geoportal | Current | Rarely | manual |
+| Bike counters | Ayuntamiento de Madrid, [Aforos de bicicletas (300321)](https://datos.madrid.es/dataset/300321-0-aforos-peatones-bicicletas), yearly files | 2019 – Jun 2024 | Yearly files | manual (`pipeline/historical/inputs.json`) |
+| District and barrio boundaries | Ayuntamiento de Madrid, [Límites administrativos](https://datos.madrid.es/dataset/900012-0-limites-administrativos-mapas) | Sep 2026 version, kept in `pipeline/historical/vendor/` | Rarely | manual (`pipeline/historical/inputs.json`) |
 | Street network for routing and the lane analysis | OpenStreetMap, [Geofabrik snapshot](https://download.geofabrik.de/europe/spain/madrid-260101.osm.pbf) | 1 Jan 2026 | Yearly snapshot kept online | manual (`pipeline/historical/inputs.json`) |
 | Bike shops, map background | OpenStreetMap (BBBike extract, Overpass) | Oct 2026 | Continuous | manual (`13_basemap.py`) |
 | Motor traffic per road section | Ayuntamiento de Madrid, [IMD (203962)](https://datos.madrid.es/dataset/203962-0-trafico-imd) | 2019 | Yearly | manual (`pipeline/historical/inputs.json`) |
 | Elevation for routing | [Copernicus DEM GLO-30](https://registry.opendata.aws/copernicus-dem/), tile N40 W004 | Static | Static | manual (`pipeline/historical/inputs.json`) |
 | Weather | NOAA GHCN-Daily, Madrid Retiro | Feb 2024 onwards | Daily | `refresh.py` |
-| Elevation | EU-DEM 25 m (OpenTopoData) | Stations | Static | new stations only, in `refresh.py` |
+| Elevation of stations | [EU-DEM v1.1](https://www.opentopodata.org/datasets/eudem/) 25 m (OpenTopoData API) | Today's stations; 2023 stations (kept in `pipeline/historical/vendor/`) | Static | new stations only, in `refresh.py`; `05_station_elevation.py` |
 | Benchmarks | ITDP, CRTM EDM 2018, Barcelona, Paris, Copenhagenize | — | Irregular | manual |
 
 ## Data gaps

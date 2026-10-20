@@ -1,7 +1,7 @@
 """Background map for the site's maps and the 24h player: main roads, the Manzanares, big parks and a few landmarks.
 
-Usage: python3 13_basemap.py <Madrid.osm.pbf> <site/basemap.js>
-The extract is BBBike's Madrid .osm.pbf (https://download.bbbike.org/osm/bbbike/Madrid/). Needs pyosmium.
+Usage: python3 pipeline/historical/13_basemap.py <madrid.osm.pbf> site/basemap.js
+The extract is Geofabrik's Madrid snapshot pinned in inputs.json. Needs pyosmium.
 Coordinates are written as "lon,lat lon,lat ..." like the other map layers in data.js.
 """
 import sys, json, math, osmium

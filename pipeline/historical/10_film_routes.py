@@ -5,7 +5,8 @@ computes the expected route for each station pair used on the film's day. Output
 module for the 24-hour animation: one line per pair, "a,b:" + points encoded 2 chars per
 coordinate in stage pixels (1920x1080), using the same projection as the film's map.json.
 
-Usage: python3 pipeline/historical/10_film_routes.py <Madrid.osm.pbf> <trips_dir_2023> <map.json> <out_dir>
+Usage: python3 pipeline/historical/10_film_routes.py <madrid.osm.pbf> <trips_dir_2023> <out_dir>/map.json <out_dir>
+Inputs pinned in inputs.json; map.json comes from film_01_day_data.py.
 """
 import sys, json, ast, math, heapq, numpy as np, pandas as pd, osmium
 from bike_costs import COST, factor
@@ -69,7 +70,7 @@ cand = [n for n in adj if n in inn]
 kd = cKDTree(np.array([[coord[n][0] * 0.76, coord[n][1]] for n in cand]))
 snap = [cand[kd.query([lo * 0.76, la])[1]] for lo, la in zip(pos.lon, pos.lat)]
 
-# same projection as film_data.py
+# same projection as film_01_day_data.py
 lat0 = pos.lat.mean(); k = math.cos(math.radians(lat0)); s = 1000 / (pos.lat.max() - pos.lat.min()); cx = (pos.lon.max() + pos.lon.min()) / 2
 P = lambda lo, la: (1250 + (lo - cx) * k * s, 40 + (pos.lat.max() - la) * s)
 def rdp(p, e):

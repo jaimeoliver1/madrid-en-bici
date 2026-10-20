@@ -1,6 +1,9 @@
-"""Barrio-level BiciMAD coverage: stations per km2 and residents served.
+"""Barrio outlines, areas and residents, with BiciMAD stations per km2.
 
 Usage: python3 pipeline/historical/08_barrios.py <BARRIOS.shp> <poblacion.csv> data
+Writes data/madrid_barrios_bicimad.csv. Inputs pinned in inputs.json (the outlines and the population file are kept in
+pipeline/historical/vendor/). refresh.py recounts stations and updates the population every month on these outlines,
+so after a refresh only those columns differ from what this script writes.
 """
 import sys, pandas as pd, numpy as np, shapefile
 from pyproj import Transformer

@@ -1,10 +1,15 @@
-"""Select the trips of Thursday 12 Jan 2023 and project stations and district outlines onto the 1920x1080 film frame.
+"""Select the trips of Thursday 12 Jan 2023 and project stations and barrio outlines onto the 1920x1080 film frame.
 
-Usage: python3 film_01_day_data.py <raw_dir> <out_dir>
+Usage: python3 pipeline/historical/film_01_day_data.py <trips_dir_2023> <BARRIOS.shp> <out_dir>
+Writes <out_dir>/map.json and trips.txt for 10_film_routes.py and 12_build_film_data.py. Inputs pinned in inputs.json.
 """
-import sys, json, ast, math, pandas as pd, numpy as np
-D, OUT = sys.argv[1], sys.argv[2]
-t = pd.concat([pd.read_csv(f"{D}/y2023/bicimad_2023/trips_23_0{m}.csv", sep=";", low_memory=False) for m in ["1_January","2_February"]], ignore_index=True).dropna(how="all")
+import sys, os, json, ast, math, pandas as pd, numpy as np, shapefile
+from pyproj import Transformer
+from shapely.geometry import shape
+import provenance as pv
+T, SHP, OUT = sys.argv[1], sys.argv[2], sys.argv[3]
+os.makedirs(OUT, exist_ok=True)
+t = pd.concat([pd.read_csv(f, sep=";", low_memory=False) for f in pv.trips_files(T)], ignore_index=True).dropna(how="all")
 t["unlock"]=pd.to_datetime(t.unlock_date); t["lock"]=pd.to_datetime(t.lock_date)
 same=t.station_unlock==t.station_lock
 v=t[(t.trip_minutes>=1)&(t.trip_minutes<=180)&~((t.trip_minutes<2)&same)].dropna(subset=["station_unlock","station_lock"]).copy()
@@ -55,7 +60,10 @@ stats={"date":"Thursday 12 January 2023","trips":int(len(day_all)),"bikes":int(d
  "medianMin":round(float(day_all.trip_minutes.median()),1)}
 print(stats)
 # basemap: barrios, projected, clipped by frame later with SVG
-g=json.load(open(f"{D}/geo/madrid_barrios.geojson"))
+to_ll=Transformer.from_crs(25830,4326,always_xy=True)
+r_=shapefile.Reader(SHP,encoding="utf-8")
+def exteriors(g):
+    for p in ([g] if g.geom_type=="Polygon" else list(g.geoms)): yield list(zip(*to_ll.transform(*p.exterior.xy)))
 def rdp(pts,eps):
     if len(pts)<3: return pts
     a,b=np.array(pts[0]),np.array(pts[-1]); ab=b-a; n=np.hypot(*ab)
@@ -65,10 +73,8 @@ def rdp(pts,eps):
     if d[i]>eps: return rdp(pts[:i+1],eps)[:-1]+rdp(pts[i:],eps)
     return [pts[0],pts[-1]]
 paths=[]
-for f in g["features"]:
-    geom=f["geometry"]; polys=geom["coordinates"] if geom["type"]=="MultiPolygon" else [geom["coordinates"]]
-    for poly in polys:
-        for ring in poly[:1]:
+for sh in r_.shapes():
+    for ring in exteriors(shape(sh.__geo_interface__)):
             pts=[P(x,y) for x,y in ring]
             xs=[p[0] for p in pts]; ys=[p[1] for p in pts]
             if max(xs)<-50 or min(xs)>1970 or max(ys)<-50 or min(ys)>1130: continue

@@ -68,7 +68,7 @@ For each route the planner shows length, time at 12.8 km/h (the BiciMAD median, 
 
 ## Rebuilding
 
-Every raw input is pinned to the exact file used (download link, dataset page, SHA-256, licence) in `pipeline/historical/inputs.json`; the rest are in git under `data/`. Package versions are in `pipeline/historical/requirements-lock.txt`.
+Every raw input is pinned to the exact file used (download link, dataset page, SHA-256, licence) in `pipeline/historical/inputs.json`; the rest are in git under `data/`. Package versions are in `pipeline/historical/requirements-lock.txt`. The lane analysis is below; `fetch_inputs.py` prints the commands for every historical script (see `pipeline/historical/README.md`).
 
 ```bash
 uv pip install -r pipeline/historical/requirements-lock.txt          # Python 3.12

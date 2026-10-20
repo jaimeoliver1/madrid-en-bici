@@ -1,5 +1,5 @@
 {
- "about": "Raw inputs of the lane analysis (14_lane_priority.py, 15_lane_network.py, 16_route_graph.py), pinned to the exact file used. fetch_inputs.py downloads each one, refuses any file whose SHA-256 differs, and unpacks it. The other inputs are in git under data/ (see 'in_git'), so the commit pins them.",
+ "about": "Raw inputs of every script in pipeline/historical/, pinned to the exact file used. 'downloads' are fetched from their publisher (the URL keeps serving that same file); 'vendored' are small files whose publisher replaces them in place, so a copy is kept in vendor/. fetch_inputs.py downloads, checks every SHA-256, unpacks, and prints the commands that rebuild every output. The other inputs are in git under data/ (see 'in_git'): refresh.py keeps them up to date and the commit pins them.",
  "downloads": {
   "osm": {
    "what": "OpenStreetMap extract of the Comunidad de Madrid, snapshot of 1 January 2026 (replication timestamp 2026-01-01T21:21:30Z)",
@@ -10,7 +10,15 @@
    "bytes": 80326549,
    "license": "ODbL 1.0 (https://www.openstreetmap.org/copyright)",
    "note": "Geofabrik keeps the 1 January snapshot of every year; daily and monthly files are removed after a while, and BBBike's extract is overwritten every week, so neither can be fetched again.",
-   "save_as": "madrid-260101.osm.pbf"
+   "save_as": "madrid-260101.osm.pbf",
+   "used_by": [
+    "10_film_routes.py",
+    "11_all_routes.py",
+    "13_basemap.py",
+    "14_lane_priority.py",
+    "15_lane_network.py",
+    "16_route_graph.py"
+   ]
   },
   "trips": {
    "what": "BiciMAD trip-by-trip records 2023 (1 January - 18 February 2023): trips_23_01_January.csv, trips_23_02_February.csv (each in its own zip inside the archive)",
@@ -21,7 +29,16 @@
    "bytes": 22573940,
    "license": "EMT Madrid open data terms, as linked from the datos.madrid.es entry (https://mobilitylabs.emtmadrid.es/sip/terms-of-use)",
    "save_as": "bicimad_2023.zip",
-   "unzip_to": "trips_2023"
+   "unzip_to": "trips_2023",
+   "used_by": [
+    "01_trips_2023.py",
+    "05_station_elevation.py",
+    "film_01_day_data.py",
+    "10_film_routes.py",
+    "11_all_routes.py",
+    "14_lane_priority.py",
+    "15_lane_network.py"
+   ]
   },
   "traffic": {
    "what": "Average daily motor traffic per road section, 2019 (IMD_2019.shp)",
@@ -32,7 +49,11 @@
    "bytes": 544618,
    "license": "CC BY 4.0",
    "save_as": "imd_2019.zip",
-   "unzip_to": "imd_2019"
+   "unzip_to": "imd_2019",
+   "used_by": [
+    "15_lane_network.py",
+    "16_route_graph.py"
+   ]
   },
   "dem": {
    "what": "Copernicus DEM GLO-30, tile N40 W004",
@@ -43,13 +64,154 @@
    "bytes": 40869620,
    "license": "Copernicus DEM licence (free use with attribution: 'produced using Copernicus WorldDEM-30 (c) DLR e.V. 2010-2014 and (c) Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA; all rights reserved')",
    "save_as": "copernicus_dem_N40_W004.tif",
-   "copy_to_cache": true
+   "copy_to_cache": true,
+   "used_by": [
+    "15_lane_network.py",
+    "16_route_graph.py"
+   ]
+  },
+  "counters_2019": {
+   "what": "Bike counters, hourly counts 2019",
+   "publisher": "Ayuntamiento de Madrid",
+   "page": "https://datos.madrid.es/dataset/300321-0-aforos-peatones-bicicletas",
+   "url": "https://datos.madrid.es/dataset/300321-0-aforos-peatones-bicicletas/resource/300321-25-aforos-peatones-bicicletas-csv/download/300321-25-aforos-peatones-bicicletas-csv.csv",
+   "sha256": "1015bc1dc87da5afc96b5c675da78484290c05faae257753d66a590cb1ee5ab3",
+   "bytes": 12674033,
+   "license": "CC BY 4.0",
+   "save_as": "counters/bikes_2019.csv",
+   "used_by": [
+    "06_districts_counters.py"
+   ]
+  },
+  "counters_2020": {
+   "what": "Bike counters, hourly counts 2020",
+   "publisher": "Ayuntamiento de Madrid",
+   "page": "https://datos.madrid.es/dataset/300321-0-aforos-peatones-bicicletas",
+   "url": "https://datos.madrid.es/dataset/300321-0-aforos-peatones-bicicletas/resource/300321-12-aforos-peatones-bicicletas-csv/download/300321-12-aforos-peatones-bicicletas-csv.csv",
+   "sha256": "e09b14e9f9294752ff70a45f049c70148630b0c66170431c82c1a191137cdb79",
+   "bytes": 40332097,
+   "license": "CC BY 4.0",
+   "save_as": "counters/bikes_2020.csv",
+   "used_by": [
+    "06_districts_counters.py"
+   ]
+  },
+  "counters_2021": {
+   "what": "Bike counters, hourly counts 2021",
+   "publisher": "Ayuntamiento de Madrid",
+   "page": "https://datos.madrid.es/dataset/300321-0-aforos-peatones-bicicletas",
+   "url": "https://datos.madrid.es/dataset/300321-0-aforos-peatones-bicicletas/resource/300321-13-aforos-peatones-bicicletas-csv/download/300321-13-aforos-peatones-bicicletas-csv.csv",
+   "sha256": "f959275e9def8d0063b64d9a5b5a4d32aaeef60e09c2b6b71773caa7a5ee4fe8",
+   "bytes": 20384833,
+   "license": "CC BY 4.0",
+   "save_as": "counters/bikes_2021.csv",
+   "used_by": [
+    "06_districts_counters.py"
+   ]
+  },
+  "counters_2022": {
+   "what": "Bike counters, hourly counts 2022",
+   "publisher": "Ayuntamiento de Madrid",
+   "page": "https://datos.madrid.es/dataset/300321-0-aforos-peatones-bicicletas",
+   "url": "https://datos.madrid.es/dataset/300321-0-aforos-peatones-bicicletas/resource/300321-24-aforos-peatones-bicicletas-csv/download/300321-24-aforos-peatones-bicicletas-csv.csv",
+   "sha256": "8392fc2dc2b83a19236550fb3431cbfc67416baa02f77b7e91dcddb857e7c52a",
+   "bytes": 14754984,
+   "license": "CC BY 4.0",
+   "save_as": "counters/bikes_2022.csv",
+   "used_by": [
+    "06_districts_counters.py"
+   ]
+  },
+  "counters_2023": {
+   "what": "Bike counters, hourly counts 2023",
+   "publisher": "Ayuntamiento de Madrid",
+   "page": "https://datos.madrid.es/dataset/300321-0-aforos-peatones-bicicletas",
+   "url": "https://datos.madrid.es/dataset/300321-0-aforos-peatones-bicicletas/resource/300321-11-aforos-peatones-bicicletas-csv/download/300321-11-aforos-peatones-bicicletas-csv.csv",
+   "sha256": "88ec46eb99fa836eea2b0ebcdf436c885bf21f9d66636b1fb569a28fdb419bb9",
+   "bytes": 57327055,
+   "license": "CC BY 4.0",
+   "save_as": "counters/bikes_2023.csv",
+   "used_by": [
+    "06_districts_counters.py"
+   ]
+  },
+  "counters_2024": {
+   "what": "Bike counters, hourly counts 2024 (January - June)",
+   "publisher": "Ayuntamiento de Madrid",
+   "page": "https://datos.madrid.es/dataset/300321-0-aforos-peatones-bicicletas",
+   "url": "https://datos.madrid.es/dataset/300321-0-aforos-peatones-bicicletas/resource/300321-10-aforos-peatones-bicicletas-csv/download/300321-10-aforos-peatones-bicicletas-csv.csv",
+   "sha256": "e695b4867d21b117f683d9c72c82acfc065bdf173a933fc34576afca1e480456",
+   "bytes": 34041821,
+   "license": "CC BY 4.0",
+   "save_as": "counters/bikes_2024.csv",
+   "used_by": [
+    "06_districts_counters.py"
+   ]
   }
  },
  "in_git": {
   "data/madrid_bike_accidents.csv": "Bicycle accidents, Policia Municipal (https://datos.madrid.es/dataset/300110-0-accidentes-bicicleta), written by pipeline/refresh.py",
   "data/refresh_meta.json": "Date of the latest accident in that file (accidents_latest), written by pipeline/refresh.py in the same commit",
-  "data/madrid_bike_infrastructure.csv": "Cycling infrastructure layer, Ayuntamiento geoportal (https://geoportal.madrid.es/fsdescargas/IDEAM_WBGEOPORTAL/OBRAS/BICI/Infraestructura_Ciclista.zip), written by pipeline/refresh.py",
-  "data/madrid_bike_counters.csv": "Bike counters, 2023 average daily bikes (https://datos.madrid.es/dataset/300321-0-aforos-peatones-bicicletas), written by pipeline/historical/06_districts_counters.py"
+  "data/madrid_bike_infrastructure.csv": "Cycling infrastructure layer, Ayuntamiento geoportal (https://geoportal.madrid.es/fsdescargas/IDEAM_WBGEOPORTAL/OBRAS/BICI/Infraestructura_Ciclista.zip), written by pipeline/refresh.py (also read by 11_all_routes.py and 14_lane_priority.py)",
+  "data/madrid_bike_counters.csv": "Bike counters with their 2023 average daily bikes, written by pipeline/historical/06_districts_counters.py from the pinned counter files",
+  "data/bicimad_station_context.csv": "Today's stations with their heights, written by pipeline/refresh.py (read by 08_barrios.py)"
+ },
+ "vendored": {
+  "districts": {
+   "what": "District boundaries (DISTRITOS.shp), as published in September 2026",
+   "publisher": "Ayuntamiento de Madrid",
+   "page": "https://datos.madrid.es/dataset/900012-0-limites-administrativos-mapas",
+   "url": "https://geoportal.madrid.es/fsdescargas/IDEAM_WBGEOPORTAL/LIMITES_ADMINISTRATIVOS/Distritos/Distritos.zip",
+   "file": "vendor/Distritos.zip",
+   "sha256": "7fbe3b59ce0dcb932759d4933099d8a2a1b98c9a2076ecbc47d46898d7ee58e9",
+   "bytes": 97479,
+   "license": "CC BY 4.0",
+   "unzip_to": "distritos",
+   "used_by": [
+    "06_districts_counters.py"
+   ]
+  },
+  "barrios": {
+   "what": "Barrio boundaries (BARRIOS.shp), as published in September 2026",
+   "publisher": "Ayuntamiento de Madrid",
+   "page": "https://datos.madrid.es/dataset/900012-0-limites-administrativos-mapas",
+   "url": "https://geoportal.madrid.es/fsdescargas/IDEAM_WBGEOPORTAL/LIMITES_ADMINISTRATIVOS/Barrios/Barrios.zip",
+   "file": "vendor/Barrios.zip",
+   "sha256": "97bf4432a49178b01f1b70a0ae12cc69a169e8e7d503bf0543cae25e58d89e2a",
+   "bytes": 159999,
+   "license": "CC BY 4.0",
+   "unzip_to": "barrios",
+   "used_by": [
+    "08_barrios.py",
+    "film_01_day_data.py"
+   ]
+  },
+  "population": {
+   "what": "Population by district and barrio on 1 January, 2018-2026 (08_barrios.py uses the latest year)",
+   "publisher": "Ayuntamiento de Madrid (Padrón)",
+   "page": "https://datos.madrid.es/dataset/300557-0-poblacion-distrito-barrio",
+   "url": "https://datos.madrid.es/dataset/300557-0-poblacion-distrito-barrio/resource/300557-0-poblacion-distrito-barrio-csv/download/300557-0-poblacion-distrito-barrio-csv.csv",
+   "file": "vendor/poblacion_1_enero.csv",
+   "sha256": "86370f0591d5cdad33e7b85b34c26eeac60b87387b8dad908ec63c21c9011835",
+   "bytes": 98652,
+   "license": "CC BY 4.0",
+   "used_by": [
+    "08_barrios.py"
+   ]
+  },
+  "station_heights": {
+   "what": "Height of each 2023 BiciMAD station: EU-DEM v1.1 (25 m) from the OpenTopoData API at the station's position",
+   "publisher": "European Environment Agency (EU-DEM), served by OpenTopoData",
+   "page": "https://www.opentopodata.org/datasets/eudem/",
+   "url": "https://api.opentopodata.org/v1/eudem25m",
+   "file": "vendor/station_heights_2023_eudem25m.csv",
+   "sha256": "60c93b962dc346ce4e54a7f49dd43c3b3b4f4017f757661974c1f3e57d3a9689",
+   "bytes": 7185,
+   "license": "Copernicus Land Monitoring Service data policy (free use with attribution)",
+   "note": "Written by 05_station_elevation.py from the API; the script only asks again for stations missing here.",
+   "used_by": [
+    "05_station_elevation.py"
+   ]
+  }
  }
 }
