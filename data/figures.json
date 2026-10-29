@@ -1,0 +1,323 @@
+[
+ {
+  "id": "cobertura",
+  "headline": 1,
+  "value": 4.6,
+  "es": "Solo el 4,6% de los madrileños vive en un barrio con la densidad de estaciones de BiciMAD que recomienda la guía de la ITDP (8 de 131 barrios).",
+  "en": "Only 4.6% of Madrid residents live in a barrio with the BiciMAD station density the ITDP guide recommends (8 of 131 barrios).",
+  "calc_es": "En data/madrid_barrios_bicimad.csv: suma `population` de los barrios con `stations_per_km2` ≥ 10 y divide entre la suma de `population` de los 131 barrios.",
+  "calc_en": "In data/madrid_barrios_bicimad.csv: sum `population` for barrios with `stations_per_km2` ≥ 10 and divide by the sum of `population` over all 131 barrios.",
+  "files": [
+   "data/madrid_barrios_bicimad.csv"
+  ],
+  "script": "pipeline/historical/08_barrios.py (contorno y primera cuenta) y pipeline/refresh.py (recuento mensual)",
+  "upstream": [
+   [
+    "BiciMAD · feed en tiempo real (GBFS)",
+    "https://madrid.publicbikesystem.net/customer/gbfs/v2/gbfs.json"
+   ],
+   [
+    "Ayuntamiento de Madrid · Padrón a 1 de enero (300557)",
+    "https://datos.madrid.es/dataset/300557-0-poblacion-distrito-barrio"
+   ],
+   [
+    "Ayuntamiento de Madrid · Límites administrativos (900012)",
+    "https://datos.madrid.es/dataset/900012-0-limites-administrativos-mapas"
+   ],
+   [
+    "ITDP · The Bikeshare Planning Guide",
+    "https://bikeshare.itdp.org/guide/goal-setting-initial-planning/examine-feasibility-choose-a-system-type/"
+   ]
+  ],
+  "caveat_es": "Estaciones en servicio dentro de cada barrio (las 32 de Pozuelo no cuentan). 10 estaciones/km² es el mínimo de la guía de la ITDP (10–16): es una densidad, no una distancia medida a pie.",
+  "caveat_en": "In-service stations inside each barrio (the 32 in Pozuelo are excluded). 10 stations/km² is the low end of the ITDP guide (10–16): a density, not a measured walking distance.",
+  "extra_n": 8,
+  "of": 131
+ },
+ {
+  "id": "crecimiento",
+  "headline": 1,
+  "value": 88,
+  "es": "BiciMAD casi se ha duplicado en dos años: 11,3 millones de viajes de febrero a septiembre de 2026, un 88% más que en 2024 (6,1 millones).",
+  "en": "BiciMAD has almost doubled in two years: 11.3 million trips from February to September 2026, 88% more than in 2024 (6.1 million).",
+  "calc_es": "En data/bicimad_daily_trips_weather.csv: suma `trips` entre el 1 de febrero y el 30 de septiembre de 2026 y de 2024; divide y resta 1.",
+  "calc_en": "In data/bicimad_daily_trips_weather.csv: sum `trips` from 1 February to 30 September of 2026 and of 2024; divide and subtract 1.",
+  "files": [
+   "data/bicimad_daily_trips_weather.csv"
+  ],
+  "script": "pipeline/refresh.py (función bicimad_daily)",
+  "upstream": [
+   [
+    "EMT Madrid · datos abiertos BiciMAD",
+    "https://datos.emtmadrid.es"
+   ]
+  ],
+  "caveat_es": "El sistema también creció: más estaciones y bicis eléctricas. Son viajes, no personas.",
+  "caveat_en": "The system also grew: more stations and e-bikes. These are trips, not people.",
+  "y0": 6050698,
+  "y1": 11345534
+ },
+ {
+  "id": "accidentes",
+  "headline": 1,
+  "value": 52,
+  "es": "Los accidentes con bicicleta atendidos por la Policía Municipal han subido un 52% desde 2019: de 785 a 1.191 al año.",
+  "en": "Bike crashes attended by the municipal police are up 52% since 2019: from 785 to 1,191 a year.",
+  "calc_es": "En data/madrid_bike_accidents_by_year.csv: `accidents` de 2025 entre `accidents` de 2019, menos 1.",
+  "calc_en": "In data/madrid_bike_accidents_by_year.csv: `accidents` for 2025 divided by `accidents` for 2019, minus 1.",
+  "files": [
+   "data/madrid_bike_accidents_by_year.csv",
+   "data/madrid_bike_accidents.csv"
+  ],
+  "script": "pipeline/refresh.py (función accidents)",
+  "upstream": [
+   [
+    "Policía Municipal · Accidentes con bicicleta (300110)",
+    "https://datos.madrid.es/dataset/300110-0-accidentes-bicicleta"
+   ]
+  ],
+  "caveat_es": "Cuentan todas las bicis, no solo BiciMAD, y no hay kilómetros recorridos: no se puede calcular el riesgo por viaje. Solo constan los accidentes atendidos por la policía. 2026 está incompleto.",
+  "caveat_en": "All bikes are counted, not just BiciMAD, and there is no distance ridden: risk per trip can't be calculated. Only police-attended crashes are recorded. 2026 is incomplete.",
+  "y0": 785,
+  "y1": 1191
+ },
+ {
+  "id": "sin_estacion",
+  "headline": 0,
+  "value": 1.4,
+  "es": "7 barrios no tienen ninguna estación de BiciMAD: 1,4% de la población.",
+  "en": "7 barrios have no BiciMAD station: 1.4% of the population.",
+  "calc_es": "En data/madrid_barrios_bicimad.csv: barrios con `stations` = 0; suma su `population` entre el total.",
+  "calc_en": "In data/madrid_barrios_bicimad.csv: barrios with `stations` = 0; sum their `population` over the total.",
+  "files": [
+   "data/madrid_barrios_bicimad.csv"
+  ],
+  "script": "pipeline/refresh.py (función barrios)",
+  "upstream": [
+   [
+    "BiciMAD · feed en tiempo real (GBFS)",
+    "https://madrid.publicbikesystem.net/customer/gbfs/v2/gbfs.json"
+   ],
+   [
+    "Ayuntamiento de Madrid · Padrón a 1 de enero (300557)",
+    "https://datos.madrid.es/dataset/300557-0-poblacion-distrito-barrio"
+   ],
+   [
+    "Ayuntamiento de Madrid · Límites administrativos (900012)",
+    "https://datos.madrid.es/dataset/900012-0-limites-administrativos-mapas"
+   ]
+  ],
+  "caveat_es": "",
+  "caveat_en": ""
+ },
+ {
+  "id": "viajes_12m",
+  "headline": 0,
+  "value": 16146211,
+  "es": "16.146.211 viajes en BiciMAD en los últimos 12 meses con datos.",
+  "en": "16,146,211 BiciMAD trips in the last 12 months of data.",
+  "calc_es": "En data/bicimad_daily_trips_weather.csv: suma `trips` de los 365 días anteriores a la última fecha.",
+  "calc_en": "In data/bicimad_daily_trips_weather.csv: sum `trips` over the 365 days before the last date.",
+  "files": [
+   "data/bicimad_daily_trips_weather.csv"
+  ],
+  "script": "pipeline/refresh.py (función bicimad_daily)",
+  "upstream": [
+   [
+    "EMT Madrid · datos abiertos BiciMAD",
+    "https://datos.emtmadrid.es"
+   ]
+  ],
+  "caveat_es": "",
+  "caveat_en": ""
+ },
+ {
+  "id": "record",
+  "headline": 0,
+  "value": 85882,
+  "es": "Récord de viajes en un día: 85.882 el 2026-09-08.",
+  "en": "Record day: 85,882 trips on 2026-09-08.",
+  "calc_es": "En data/bicimad_daily_trips_weather.csv: el máximo de `trips`.",
+  "calc_en": "In data/bicimad_daily_trips_weather.csv: the maximum of `trips`.",
+  "files": [
+   "data/bicimad_daily_trips_weather.csv"
+  ],
+  "script": "pipeline/refresh.py (función bicimad_daily)",
+  "upstream": [
+   [
+    "EMT Madrid · datos abiertos BiciMAD",
+    "https://datos.emtmadrid.es"
+   ]
+  ],
+  "caveat_es": "",
+  "caveat_en": ""
+ },
+ {
+  "id": "usuarios",
+  "headline": 0,
+  "value": 269393,
+  "es": "269.393 usuarios activos en 2026-09.",
+  "en": "269,393 active users in 2026-09.",
+  "calc_es": "En data/bicimad_active_users_monthly.csv: `active_users` del último mes.",
+  "calc_en": "In data/bicimad_active_users_monthly.csv: `active_users` for the last month.",
+  "files": [
+   "data/bicimad_active_users_monthly.csv"
+  ],
+  "script": "pipeline/refresh.py (función bicimad_users)",
+  "upstream": [
+   [
+    "EMT Madrid · datos abiertos BiciMAD",
+    "https://datos.emtmadrid.es"
+   ]
+  ],
+  "caveat_es": "",
+  "caveat_en": ""
+ },
+ {
+  "id": "viajes_por_bici",
+  "headline": 0,
+  "value": 4.7,
+  "es": "Cada bici de BiciMAD hace de media 4,7 viajes al día (la guía de la ITDP recomienda 4 a 8).",
+  "en": "Each BiciMAD bike makes 4.7 trips a day on average (the ITDP guide recommends 4 to 8).",
+  "calc_es": "En data/bicimad_daily_trips_weather.csv: media diaria de `trips` de los últimos 12 meses entre 9.421 bicis (data/refresh_meta.json, `fleet`).",
+  "calc_en": "In data/bicimad_daily_trips_weather.csv: last-12-month daily mean of `trips` divided by 9,421 bikes (data/refresh_meta.json, `fleet`).",
+  "files": [
+   "data/bicimad_daily_trips_weather.csv",
+   "data/refresh_meta.json"
+  ],
+  "script": "pipeline/build_site.py",
+  "upstream": [
+   [
+    "EMT Madrid · datos abiertos BiciMAD",
+    "https://datos.emtmadrid.es"
+   ],
+   [
+    "BiciMAD · feed en tiempo real (GBFS)",
+    "https://madrid.publicbikesystem.net/customer/gbfs/v2/gbfs.json"
+   ],
+   [
+    "ITDP · The Bikeshare Planning Guide",
+    "https://bikeshare.itdp.org/guide/goal-setting-initial-planning/examine-feasibility-choose-a-system-type/"
+   ]
+  ],
+  "caveat_es": "La flota viene del feed en tiempo real y no coincide con la de los informes municipales (unas 8.000).",
+  "caveat_en": "The fleet comes from the live feed and differs from the city's reports (about 8,000)."
+ },
+ {
+  "id": "km_carril",
+  "headline": 0,
+  "value": 412,
+  "es": "412 km de carril bici segregado en la ciudad, 11,8 por cada 100.000 habitantes.",
+  "en": "412 km of segregated bike lane in the city, 11.8 per 100,000 residents.",
+  "calc_es": "En data/madrid_districts_cycling.csv: suma `exclusive_km` de los 21 distritos.",
+  "calc_en": "In data/madrid_districts_cycling.csv: sum `exclusive_km` over the 21 districts.",
+  "files": [
+   "data/madrid_districts_cycling.csv",
+   "data/madrid_bike_infrastructure.csv"
+  ],
+  "script": "pipeline/refresh.py (funciones infrastructure y districts)",
+  "upstream": [
+   [
+    "Ayuntamiento de Madrid · Infraestructura ciclista (205107)",
+    "https://datos.madrid.es/dataset/205107-0-vias-ciclistas"
+   ]
+  ],
+  "caveat_es": "La prensa cuenta unos 292 km como segregados; el Ayuntamiento, unos 426. Aquí: la capa oficial de carril exclusivo, sin ciclocalles ni Anillo Verde.",
+  "caveat_en": "The press counts about 292 km as segregated; the city, about 426. Here: the official exclusive-lane layer, without shared streets or the Anillo Verde."
+ },
+ {
+  "id": "estaciones_carril",
+  "headline": 0,
+  "value": 17,
+  "es": "Solo el 17% de las estaciones de BiciMAD tiene un carril bici segregado a menos de 50 m.",
+  "en": "Only 17% of BiciMAD stations have a segregated bike lane within 50 m.",
+  "calc_es": "En data/bicimad_station_context.csv: porcentaje de estaciones `IN_SERVICE` con `m_to_exclusive_lane` ≤ 50.",
+  "calc_en": "In data/bicimad_station_context.csv: share of `IN_SERVICE` stations with `m_to_exclusive_lane` ≤ 50.",
+  "files": [
+   "data/bicimad_station_context.csv"
+  ],
+  "script": "pipeline/refresh.py (función stations)",
+  "upstream": [
+   [
+    "BiciMAD · feed en tiempo real (GBFS)",
+    "https://madrid.publicbikesystem.net/customer/gbfs/v2/gbfs.json"
+   ],
+   [
+    "Ayuntamiento de Madrid · Infraestructura ciclista (205107)",
+    "https://datos.madrid.es/dataset/205107-0-vias-ciclistas"
+   ]
+  ],
+  "caveat_es": "",
+  "caveat_en": ""
+ },
+ {
+  "id": "recorrido_protegido",
+  "headline": 0,
+  "value": 28.2,
+  "es": "Solo el 28,2% del recorrido de los viajes de BiciMAD (enero–febrero de 2023) va por carril separado del tráfico.",
+  "en": "Only 28.2% of the distance of BiciMAD trips (January–February 2023) runs on a lane separated from traffic.",
+  "calc_es": "En data/bicimad_2023_routes_all.csv.gz: media de `share_exclusive` ponderada por `trips`.",
+  "calc_en": "In data/bicimad_2023_routes_all.csv.gz: mean of `share_exclusive` weighted by `trips`.",
+  "files": [
+   "data/bicimad_2023_routes_all.csv.gz"
+  ],
+  "script": "pipeline/historical/11_all_routes.py (método en docs/ROUTING.md)",
+  "upstream": [
+   [
+    "EMT · Históricos de BiciMAD, viajes 2023 (900034)",
+    "https://datos.madrid.es/dataset/900034-0-bicimad-viajes-estaciones"
+   ],
+   [
+    "Ayuntamiento de Madrid · Infraestructura ciclista (205107)",
+    "https://datos.madrid.es/dataset/205107-0-vias-ciclistas"
+   ]
+  ],
+  "caveat_es": "Es un modelo: la ruta más probable sobre OpenStreetMap, no trazas GPS. Usa los últimos viajes publicados (49 días de 2023).",
+  "caveat_en": "A model: the most likely route on OpenStreetMap, not GPS tracks. Uses the last published trips (49 days of 2023)."
+ },
+ {
+  "id": "plan_carriles",
+  "headline": 0,
+  "value": 23.0,
+  "es": "El plan de carriles protegidos suma 23,0 km por 19,8 millones de euros y devuelve 2,64 € por cada euro (relación beneficio-coste).",
+  "en": "The protected-lane plan adds 23.0 km for €19.8 million and returns €2.64 per euro (benefit-cost ratio).",
+  "calc_es": "En data/lane_network_plans.json: `bestfirst` (`km`, `build_eur`, `bcr`).",
+  "calc_en": "In data/lane_network_plans.json: `bestfirst` (`km`, `build_eur`, `bcr`).",
+  "files": [
+   "data/lane_network_plans.json",
+   "data/lane_network_plan.csv"
+  ],
+  "script": "pipeline/historical/15_lane_network.py (método en docs/METHOD_LANES.md; entradas fijadas con SHA-256)",
+  "upstream": [
+   [
+    "EMT · Históricos de BiciMAD, viajes 2023 (900034)",
+    "https://datos.madrid.es/dataset/900034-0-bicimad-viajes-estaciones"
+   ],
+   [
+    "Ayuntamiento de Madrid · Infraestructura ciclista (205107)",
+    "https://datos.madrid.es/dataset/205107-0-vias-ciclistas"
+   ]
+  ],
+  "caveat_es": "Es una estimación con parámetros publicados (HEATCO, Broach et al.), no un presupuesto. Los supuestos y la sensibilidad están en docs/METHOD_LANES.md.",
+  "caveat_en": "An estimate with published parameters (HEATCO, Broach et al.), not a budget. Assumptions and sensitivity are in docs/METHOD_LANES.md."
+ },
+ {
+  "id": "reparto_modal",
+  "headline": 0,
+  "value": 0.5,
+  "es": "La bici es el 0,5% de los viajes en Madrid (Barcelona 3,8%, París 11,2%, Copenhague 21%).",
+  "en": "Bikes are 0.5% of trips in Madrid (Barcelona 3.8%, Paris 11.2%, Copenhagen 21%).",
+  "calc_es": "Cifra citada tal cual de la fuente; no se calcula aquí.",
+  "calc_en": "Quoted as published; not calculated here.",
+  "files": [],
+  "script": "site/app.js (constante BENCH.modal)",
+  "upstream": [
+   [
+    "CRTM · Encuesta Domiciliaria de Movilidad 2018",
+    "https://crtm.es/media/ml2ertro/jornada_presentacion_edm2018_resultados.pdf"
+   ]
+  ],
+  "caveat_es": "Último dato comparable (encuesta de 2018). Las cifras municipales más recientes usan datos de móviles y no son comparables.",
+  "caveat_en": "Last comparable figure (2018 survey). More recent city figures use mobile-phone data and are not comparable."
+ }
+]

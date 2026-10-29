@@ -8,6 +8,10 @@
 <meta property="og:title" content="Madrid en bici">
 <meta property="og:description" content="¿Habrá bici? ¿Hay carril? ¿Es seguro? La bici en Madrid, contada con datos abiertos y en directo.">
 <meta property="og:type" content="website">
+<meta property="og:url" content="https://madrid-en-bici.vercel.app/">
+<meta property="og:image" content="https://madrid-en-bici.vercel.app/og.png">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%232B4FC9'/%3E%3Cg fill='none' stroke='%23FBF7F0' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='10' cy='20' r='4.5'/%3E%3Ccircle cx='22' cy='20' r='4.5'/%3E%3Cpath d='M10 20 L14 12 H20 L22 20 M14 12 L17 20 H10'/%3E%3C/g%3E%3C/svg%3E">
 <title>Madrid en bici</title>
 <meta name="description" content="La bici en Madrid para quien la usa: bicis en directo, tu barrio, cuestas, carriles y seguridad, con datos abiertos.">
@@ -259,6 +263,20 @@ body.noscroll { overflow: hidden }
 .city-intro { display: grid; gap: 8px }
 .subh { font-size: clamp(1.4rem, 2.6vw, 1.8rem); margin-top: 56px }
 
+/* three headlines, the register of figures, and the share row of the barrio card */
+.tile.hl .v { font-size: clamp(2.6rem, 6vw, 3.4rem); color: var(--brick) }
+.tile.hl .u { font-size: 1rem; color: var(--ink); line-height: 1.45 }
+.hl-how { font-weight: 600; font-size: .92rem; color: var(--sky); text-decoration: none; margin-top: auto }
+.hl-how:hover { text-decoration: underline }
+.fg { background: var(--card); border-radius: 14px; margin-top: 8px; box-shadow: inset 0 0 0 1px var(--line) }
+.fg summary { cursor: pointer; padding: 12px 16px; font-weight: 600; line-height: 1.4 }
+.fg:target { box-shadow: inset 0 0 0 2px var(--sky) }
+.fg-row { padding: 6px 16px; font-size: .9rem; line-height: 1.5; display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 12px; overflow-wrap: anywhere }
+.fg-row b { color: var(--muted); font-weight: 600 }
+.fg > :last-child { padding-bottom: 12px }
+@media (max-width: 560px) { .fg-row { grid-template-columns: 1fr; gap: 2px } }
+.sharerow { display: flex; flex-wrap: wrap; align-items: center; gap: 12px }
+
 /* jump links under a tab's opening */
 .jump { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 24px }
 a.btn { text-decoration: none }
@@ -344,6 +362,15 @@ footer li { margin-bottom: 4px }
         <div><span class="v" id="lv-full">–</span><span class="l" data-i18n="lv_full"></span></div>
         <div><span class="v" id="lv-out">–</span><span class="l" data-i18n-html="lv_out"></span></div>
       </div>
+    </div>
+  </section>
+
+  <section class="stop" id="titulares">
+    <div class="wrap">
+      <div class="kicker"><i></i><span data-i18n="hl_k">Lo esencial</span></div>
+      <h2 data-i18n="hl_h">Tres cosas que hay que saber</h2>
+      <p class="lede" data-i18n="hl_lede"></p>
+      <div class="score" id="headlines"></div>
     </div>
   </section>
 
@@ -637,6 +664,9 @@ footer li { margin-bottom: 4px }
   <div class="wrap">
     <h3 id="datos" data-i18n="fr_h">¿Cada cuánto se actualizan los datos?</h3>
     <div id="fresh"></div>
+    <h3 style="margin-top:28px" id="cifras-h" data-i18n="fg_h">Cada cifra, con su fuente</h3>
+    <p class="small muted" data-i18n="fg_lede"></p>
+    <div id="cifras"></div>
     <h3 style="margin-top:28px" data-i18n="m_h">Cómo lo hemos calculado</h3>
     <div class="method" id="method" style="margin-top:12px"></div>
     <h3 style="margin-top:28px" data-i18n="src_h">Fuentes</h3>
@@ -649,6 +679,7 @@ footer li { margin-bottom: 4px }
 <script src="basemap.js"></script>
 <script src="film-data.js"></script>
 <script src="app.js"></script>
+<script src="share.js"></script>
 <script src="player.js"></script>
 <script src="routing.js"></script>
 </body>

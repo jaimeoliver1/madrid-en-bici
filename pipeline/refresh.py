@@ -305,6 +305,7 @@ def main():
 
     json.dump(report, open(D("refresh_meta.json"), "w"), indent=1)
     subprocess.run([sys.executable, os.path.join(here, "pipeline", "build_site.py"), a.data, a.site], check=True)
+    subprocess.run([sys.executable, os.path.join(here, "pipeline", "figures.py"), a.data, os.path.join(here, "docs", "CIFRAS.md")], check=True)
     log("done:", json.dumps(report, ensure_ascii=False))
 
 

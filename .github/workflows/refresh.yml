@@ -24,9 +24,9 @@ jobs:
       - run: python3 pipeline/refresh.py
       - name: Commit refreshed data
         run: |
-          if git diff --quiet -- data site; then echo "No changes"; exit 0; fi
+          if git diff --quiet -- data site docs README.es.md; then echo "No changes"; exit 0; fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data site
+          git add data site docs README.es.md
           git commit -m "Monthly data refresh $(date -u +%Y-%m)"
           git push

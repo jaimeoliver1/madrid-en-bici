@@ -1,5 +1,7 @@
 # Madrid en bici
 
+🇪🇸 [Léeme en español](README.es.md)
+
 **¿Es fácil moverse en bici por Madrid?** A public website that explains, with open data and plenty of maps, how BiciMAD (Madrid's public bike share) and the city's bike lanes are doing, and what would make Madrid easier to cycle in. It's in Spanish, with an English toggle.
 
 - **Live site:** https://madrid-en-bici.vercel.app
@@ -15,6 +17,7 @@ site/        the website: plain HTML + JS (d3), no build step
   player.js    the 24-hour animation player
   routing.js   route planner (Dijkstra in the browser) and the proposed lane plan
   route-graph.json  generated compact bike network for the planner (pipeline/historical/16_route_graph.py)
+  share.js     draws the shareable "nota de mi barrio" image in the browser
   data.js      generated data bundle (pipeline/build_site.py)
   film-data.js generated animation data (pipeline/historical/)
   basemap.js   generated map context: main roads, river, parks, landmarks (pipeline/historical/13_basemap.py)
@@ -22,12 +25,18 @@ data/        processed open data, small CSVs, the single source for data.js
 pipeline/
   refresh.py      monthly refresh: download sources -> data/ -> site/data.js
   build_site.py   data/ -> site/data.js
+  figures.py      the register of every quoted figure -> data/figures.json, docs/CIFRAS.md
   historical/     one-off scripts behind the static 2023 analysis, routes and animation
 film/        source of the 24-hour animation as a standalone video (Claude Motion scenes)
 docs/        data sources and gaps, the data request sent to EMT, and the methods:
+  CIFRAS.md        every figure we quote: formula, data file, code, original source
   ROUTING.md       how routes are found (Dijkstra, rider weights, the planner)
   METHOD_LANES.md  where to build protected lanes: euros, sources, results
 ```
+
+## Check a number
+
+Every figure the site, the social posts and the press quote is listed in [`docs/CIFRAS.md`](docs/CIFRAS.md) (also at the bottom of the site, under *Cada cifra, con su fuente*). Each row gives a formula you can repeat in a spreadsheet, the file in `data/`, the script that built it and the publisher's original page. Found a mistake? [Open an issue](https://github.com/jaimeoliver1/madrid-en-bici/issues/new?template=dato-incorrecto.yml).
 
 ## Run it locally
 
@@ -57,7 +66,7 @@ The site is static: Vercel serves `site/` as is (see `vercel.json`). Any static 
 
 ## Contributing
 
-Ideas, fixes and new analyses are welcome. Read [CONTRIBUTING.md](CONTRIBUTING.md) first.
+Ideas, fixes and new analyses are welcome. Read [CONTRIBUTING.md](CONTRIBUTING.md) first, then pick an issue labelled [good first issue](https://github.com/jaimeoliver1/madrid-en-bici/labels/good%20first%20issue).
 
 ## Licence and attribution
 

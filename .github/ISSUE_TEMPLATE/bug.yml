@@ -1,0 +1,20 @@
+name: Algo no funciona en la web / Something is broken
+description: Un error, algo que se ve mal o un mapa que no carga.
+labels: ["bug"]
+body:
+  - type: textarea
+    id: que
+    attributes:
+      label: ¿Qué ha pasado?
+      description: Qué esperabas y qué ha ocurrido. Una captura ayuda mucho.
+    validations: { required: true }
+  - type: input
+    id: donde
+    attributes:
+      label: Dónde
+      description: Enlace a la sección (por ejemplo `https://madrid-en-bici.vercel.app/#ruta`).
+  - type: input
+    id: entorno
+    attributes:
+      label: Navegador y dispositivo
+      placeholder: Safari en iPhone, Chrome en Windows…

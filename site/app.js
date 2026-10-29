@@ -42,6 +42,11 @@
       pl_h: "Así se mueve Madrid en bici en 24 horas",
       pl_k: "Un día cualquiera",
       tab_ir: "Ir en bici", tab_mejorar: "Mejorar Madrid",
+      hl_k: "Lo esencial", hl_h: "Tres cosas que hay que saber", hl_lede: "Tres cifras con su fuente. Cada una lleva su cálculo, el fichero de datos y la página original del dato.", hl_how: "Cómo lo sabemos →",
+      hl_cobertura: "Cobertura", hl_crecimiento: "Uso", hl_accidentes: "Seguridad",
+      fg_h: "Cada cifra, con su fuente", fg_lede: "Cada número que citamos, con la fórmula para repetirlo en una hoja de cálculo, el fichero de datos, el código y la página original.", fg_calc: "Cómo se calcula", fg_files: "Datos", fg_script: "Código", fg_src: "Fuente original", fg_caveat: "Ojo", fg_all: "Registro completo en GitHub", fg_err: "¿Ves un error? Abre un issue",
+      sh_btn: "Compartir la nota de mi barrio", sh_kicker: "La nota de mi barrio", sh_rank: "Puesto {r} de {n} barrios en estaciones BiciMAD por km²", sh_st: "estaciones BiciMAD", sh_dens: "estaciones por km² · ideal 10–16", sh_lane: "al carril protegido más cercano", sh_acc: "accidentes con bici desde 2019",
+      sh_foot: "Datos abiertos: EMT Madrid · Ayuntamiento de Madrid · OpenStreetMap", sh_text: "{b} es el barrio {r} de {n} en estaciones de BiciMAD por km². ¿Y el tuyo?", sh_saved: "Imagen guardada y texto copiado: pégalo donde quieras compartirla.", sh_err: "No hemos podido crear la imagen.",
       j_ruta: "Planea tu ruta", j_barrio: "¿Hay BiciMAD cerca?", j_tips: "Antes de salir",
       tips_k: "Antes de salir", tips_h: "Cuatro cosas que conviene saber", tips_lede: "Lo esencial de los datos, en corto. Abre cada tarjeta si quieres ver los gráficos.",
       more_data: "Ver datos", less_data: "Ocultar datos",
@@ -146,6 +151,11 @@
       pl_h: "How Madrid moves by bike in 24 hours",
       pl_k: "An ordinary day",
       tab_ir: "Ride", tab_mejorar: "Improve Madrid",
+      hl_k: "The essentials", hl_h: "Three things worth knowing", hl_lede: "Three figures with their sources. Each links to its calculation, the data file and the original publisher's page.", hl_how: "How we know →",
+      hl_cobertura: "Coverage", hl_crecimiento: "Use", hl_accidentes: "Safety",
+      fg_h: "Every figure, with its source", fg_lede: "Every number we quote, with a formula to repeat it in a spreadsheet, the data file, the code and the original page.", fg_calc: "How it's calculated", fg_files: "Data", fg_script: "Code", fg_src: "Original source", fg_caveat: "Mind the gap", fg_all: "Full register on GitHub", fg_err: "Spotted a mistake? Open an issue",
+      sh_btn: "Share my barrio's score", sh_kicker: "My barrio's score", sh_rank: "Number {r} of {n} barrios for BiciMAD stations per km²", sh_st: "BiciMAD stations", sh_dens: "stations per km² · ideal 10–16", sh_lane: "to the nearest protected lane", sh_acc: "bike accidents since 2019",
+      sh_foot: "Open data: EMT Madrid · Madrid City Council · OpenStreetMap", sh_text: "{b} ranks {r} of {n} barrios for BiciMAD stations per km². What about yours?", sh_saved: "Image saved and text copied: paste it wherever you share it.", sh_err: "We couldn't create the image.",
       j_ruta: "Plan your route", j_barrio: "BiciMAD near you", j_tips: "Before you ride",
       tips_k: "Before you ride", tips_h: "Four things worth knowing", tips_lede: "The gist of the data, in short. Open a card if you want to see the charts.",
       more_data: "Show the data", less_data: "Hide the data",
@@ -405,6 +415,7 @@
   function pickBarrio(name) {
     if (!RINGS.has(name)) return;
     myBarrio = name; try { localStorage.setItem("mc-barrio", name); } catch (e) {}
+    try { history.replaceState(null, "", "?barrio=" + encodeURIComponent(name) + location.hash); } catch (e) {}  // the address bar is the link to share
     const sel = document.getElementById("b-select"); if (sel.value !== name) sel.value = name;
     document.getElementById("b-msg").textContent = "";
     barrioCard();
@@ -421,6 +432,7 @@
       const { longitude: lon, latitude: lat } = pos.coords, hit = M.barrios.find(b => within(b[0], lon, lat));
       if (hit) pickBarrio(hit[0]); else document.getElementById("b-msg").textContent = t("b_far");
     }, () => { document.getElementById("b-msg").textContent = t("b_noloc"); }, { timeout: 10000, maximumAge: 300000 });
+    const asked = new URLSearchParams(location.search).get("barrio"); if (asked && RINGS.has(asked)) myBarrio = asked;  // a shared link wins over the saved choice
     if (!myBarrio || !RINGS.has(myBarrio)) myBarrio = RINGS.has("Sol") ? "Sol" : M.barrios[0][0];
     sel.value = myBarrio;
     barrioCard();
@@ -439,10 +451,66 @@
       fact(st.length ? nf(bikes) : "–", t("f_bikes")), fact(st.length ? nf(empty) : "–", t("f_empty"), empty ? "warn" : null),
       fact(lane == null ? "–" : (lane < 1000 ? nf(Math.round(lane / 10) * 10) + " m" : n1(lane / 1000) + " km"), t("f_lane"), lane != null && lane <= 300 ? "ok" : "warn"),
       fact(nf(accBy.get(b[0])), t("f_acc")));
-    box.replaceChildren(h, v, f);
+    const sh = el("div", "sharerow"), btn = el("button", "btn", t("sh_btn")); btn.type = "button";
+    const note = el("span", "small muted"); note.id = "b-share-msg"; note.setAttribute("role", "status");
+    btn.onclick = () => shareBarrio(b, st, lane, dens, note);
+    sh.append(btn, note);
+    box.replaceChildren(h, v, f, sh);
     if (covMap) covMap.g.select("path.sel").attr("d", ringsPath(covMap.F, b[5])).raise();
     if (covMap) covMap.g.select("g.places").raise();
   }
+
+  // the shareable image: rank among the barrios, the four facts and the outline with its stations (drawn by share.js)
+  const SITE = /^(localhost|127\.|\[::1\])/.test(location.hostname) || location.protocol === "file:" ? "https://madrid-en-bici.vercel.app" : location.origin;
+  async function shareBarrio(b, st, lane, dens, note) {
+    note.textContent = "";
+    try {
+      const rank = 1 + M.barrios.filter(x => x[4] / x[3] > dens).length, n = M.barrios.length;
+      const link = SITE + "/?barrio=" + encodeURIComponent(b[0]) + "#barrio", text = t("sh_text", { b: b[0], r: rank, n }) + " " + link;
+      const cv = await window.MCShare.barrio({
+        name: b[0], district: b[1], pop: t("b_sub", { d: "", p: nf(b[2]) }).replace(/^ · /, ""), rings: b[5], pts: st.map(s => [s[1], s[0]]), stations: b[4], dens, lane, acc: accBy.get(b[0]), verdict: t("v_none").replace(/<[^>]+>/g, ""),
+        url: SITE.replace(/^https?:\/\//, ""), nf, n1,
+        t: { kicker: t("sh_kicker"), rank: t("sh_rank", { r: rank, n }), st: t("sh_st"), dens: t("sh_dens"), lane: t("sh_lane"), acc: t("sh_acc"), foot: t("sh_foot") },
+      });
+      const bl = await window.MCShare.blob(cv), slug = b[0].normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+      const file = new File([bl], `madrid-en-bici-${slug}.png`, { type: "image/png" });
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        try { await navigator.share({ files: [file], text }); return; } catch (e) { if (e.name === "AbortError") return; }
+      }
+      const a = el("a"); a.href = URL.createObjectURL(bl); a.download = file.name; document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+      try { await navigator.clipboard.writeText(text); } catch (e) {}
+      note.textContent = t("sh_saved");
+    } catch (e) { console.error("share", e); note.textContent = t("sh_err"); }
+  }
+
+  // ---------- three headlines and the register of figures (data.js "figures", built by pipeline/figures.py; the same list is docs/CIFRAS.md) ----------
+  const REPO = "https://github.com/jaimeoliver1/madrid-en-bici/";
+  function headlines() {
+    const box = document.getElementById("headlines"); if (!box) return; box.replaceChildren();
+    for (const f of M.figures.filter(x => x.headline)) {
+      const a = el("a", "hl-how", t("hl_how")); a.href = "#cifra-" + f.id;
+      const d = el("article", "tile hl"); d.append(el("div", "q", t("hl_" + f.id)), el("div", "v", (f.id === "cobertura" ? "" : "+") + pct(f.value)), el("p", "u", f[L]), a);
+      box.append(d);
+    }
+  }
+  function cifras() {
+    const box = document.getElementById("cifras"); if (!box) return; box.replaceChildren();
+    const link = (txt, href) => { const a = el("a", null, txt); a.href = href; a.target = "_blank"; a.rel = "noopener"; return a; };
+    const row = (k, ...nodes) => { const d = el("div", "fg-row"); d.append(el("b", null, t(k)), ...nodes); return d; };
+    const list = els => { const s = el("span"); els.forEach((e, i) => { if (i) s.append("; "); s.append(e); }); return s; };
+    for (const f of M.figures) {
+      const d = el("details", "fg"); d.id = "cifra-" + f.id;
+      const sm = el("summary"); sm.append(el("span", null, f[L])); d.append(sm);
+      d.append(row("fg_calc", el("span", null, f["calc_" + L])), row("fg_files", f.files.length ? list(f.files.map(p => link(p, REPO + "blob/main/" + p))) : el("span", null, "–")),
+        row("fg_script", el("span", null, f.script)), row("fg_src", list(f.upstream.map(([n, u]) => link(n, u)))));
+      if (f["caveat_" + L]) d.append(row("fg_caveat", el("span", null, f["caveat_" + L])));
+      box.append(d);
+    }
+    const foot = el("p", "small"); foot.append(link(t("fg_all"), REPO + "blob/main/docs/CIFRAS.md"), " · ", link(t("fg_err"), REPO + "issues/new?template=dato-incorrecto.yml"));
+    box.append(foot);
+  }
+  function openFigure() { const e = location.hash.startsWith("#cifra-") ? document.getElementById(decodeURIComponent(location.hash.slice(1))) : null; if (e && e.tagName === "DETAILS") e.open = true; }
+  window.addEventListener("hashchange", openFigure);
 
   // ---------- 0 · report card ----------
   function scorecard() {
@@ -741,7 +809,7 @@
   }
   function render() {
     texts();
-    const parts = [scorecard, bicimad, coverage, barrio, hills, lanes, safety, weather, fixes, method];
+    const parts = [headlines, cifras, scorecard, bicimad, coverage, barrio, hills, lanes, safety, weather, fixes, method];
     for (const f of parts) { try { f(); } catch (e) { console.error(f.name, e); } }
     document.querySelectorAll("main .chart[id], #score, #bicimad-nums, #lane-nums").forEach(b => onView(b, () => animate(b)));
     document.querySelectorAll(".stop").forEach(s => { if (!s.id) return; onView(s, () => {}); });
@@ -854,6 +922,7 @@
     if (d.open && f) { try { f(); } catch (e) { console.error(f.name, e); } }
   }));
   const first = paneFor(location.hash);
+  setTimeout(openFigure, 0);
   showPane(first.pane || PANES[0]);
   render();
   if (first.target) goTo(first.target, first.pane);

@@ -1,0 +1,14 @@
+name: Idea o análisis nuevo / New idea or analysis
+description: Un dato, un gráfico o una pregunta que la web debería responder.
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: pregunta
+    attributes:
+      label: ¿Qué pregunta debería responder la web?
+    validations: { required: true }
+  - type: textarea
+    id: datos
+    attributes:
+      label: ¿Con qué datos?
+      description: Si conoces el conjunto de datos abiertos, enlázalo. Si no, no pasa nada.

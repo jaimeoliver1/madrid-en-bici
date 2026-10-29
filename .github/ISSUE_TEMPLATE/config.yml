@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Preguntas y ideas / Questions and ideas
+    url: https://github.com/jaimeoliver1/madrid-en-bici/discussions
+    about: Para conversar sin que sea una tarea concreta.

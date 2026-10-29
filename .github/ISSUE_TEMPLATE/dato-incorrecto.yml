@@ -1,0 +1,20 @@
+name: Una cifra parece incorrecta / A figure looks wrong
+description: Has comprobado una cifra de la web y no te cuadra. Corregimos primero y explicamos después.
+labels: ["data", "needs-triage"]
+body:
+  - type: input
+    id: cifra
+    attributes:
+      label: ¿Qué cifra?
+      description: La frase tal cual aparece en la web o en docs/CIFRAS.md, o el enlace a su fila (por ejemplo `#cifra-cobertura`).
+    validations: { required: true }
+  - type: textarea
+    id: calculo
+    attributes:
+      label: ¿Qué has comprobado y qué te sale?
+      description: Fichero de `data/`, la fórmula que has aplicado y tu resultado. Si usas otra fuente, enlázala.
+    validations: { required: true }
+  - type: textarea
+    id: extra
+    attributes:
+      label: Algo más

@@ -4,6 +4,8 @@ Usage: python3 pipeline/build_site.py [data] [site/data.js]
 """
 import sys, json, os
 import numpy as np, pandas as pd
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import figures
 
 D = sys.argv[1] if len(sys.argv) > 1 else os.path.join(os.path.dirname(__file__), "..", "data")
 OUT = sys.argv[2] if len(sys.argv) > 2 else os.path.join(os.path.dirname(__file__), "..", "site", "data.js")
@@ -134,6 +136,12 @@ B["k"] = {
     "daily_first": daily.date.min().strftime("%Y-%m-%d"), "daily_last": daily.date.max().strftime("%Y-%m-%d"),
     "racks": int(len(R("madrid_bike_parking.csv"))), "users_last": int(users.active_users.iloc[-1]), "users_last_month": users.month.iloc[-1],
 }
+# The register of quoted figures (pipeline/figures.py); the site shows it and docs/CIFRAS.md lists it. Guard against drift from the numbers above.
+B["figures"] = figures.compute(D)
+fig = {f["id"]: f["value"] for f in B["figures"]}
+assert fig["viajes_12m"] == B["k"]["trips_last12"] and fig["usuarios"] == B["k"]["users_last"] and fig["km_carril"] == B["k"]["excl_km"] \
+    and fig["estaciones_carril"] == B["k"]["stations_near_excl_pct"] and fig["viajes_por_bici"] == B["k"]["trips_per_bike_day"] \
+    and fig["recorrido_protegido"] == B["routes"]["share_excl"], "figures.py disagrees with build_site.py"
 with open(OUT, "w") as f:
     f.write("window.MC = " + json.dumps(B, ensure_ascii=False, separators=(",", ":")) + ";\n")
 print(OUT, os.path.getsize(OUT), json.dumps(B["k"], ensure_ascii=False))
