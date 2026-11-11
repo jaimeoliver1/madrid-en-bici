@@ -8,7 +8,7 @@ trip-level analysis and routes, elevation, bike counters, benchmarks, the 24-hou
 Usage: python3 pipeline/refresh.py [--data data] [--cache .cache] [--site site/data.js]
 Needs: pandas numpy pyproj pyshp shapely scipy (same as the rest of the pipeline).
 """
-import argparse, datetime, io, json, os, subprocess, sys, time, urllib.parse, urllib.request, zipfile
+import argparse, datetime, io, json, os, re, subprocess, sys, time, urllib.parse, urllib.request, zipfile
 import numpy as np, pandas as pd, shapefile
 from pyproj import Transformer
 from shapely.geometry import LineString, Point, Polygon
@@ -202,8 +202,14 @@ def accidents(cache, excl):
 
 def parking(cache):
     pkg = package(AYTO, "205099-0-aparca-bicis")
-    csvs = [r for r in pkg["resources"] if r.get("format", "").upper() == "CSV" and "205099_" in r["url"]]
-    r = max(csvs, key=lambda r: r["url"])  # the daily file is named 205099_YYYYMMDD_hhmmss.csv
+    # The daily snapshot ends in _YYYYMMDD_hhmmss.csv (205099_YYYYMMDD_hhmmss.csv until Oct 2026, then
+    # 205099-0-aparca-bicis_11_20261111_064452.csv). The numbered 205099-NN-aparca-bicis-csv.csv files are
+    # old snapshots with a different schema, so match the stamp, not the prefix.
+    stamp = lambda r: re.search(r"_(\d{8}_\d{6})\.csv$", r["url"])
+    csvs = [r for r in pkg["resources"] if r.get("format", "").upper() == "CSV" and stamp(r)]
+    if not csvs:
+        raise RuntimeError("no dated CSV in 205099-0-aparca-bicis; resources: " + ", ".join(os.path.basename(r["url"]) for r in pkg["resources"]))
+    r = max(csvs, key=lambda r: stamp(r).group(1))
     d = read_csv(cached(cache, f"racks_{os.path.basename(r['url'])}", r["url"]))
     d = d[d.ESTADO.eq("OPERATIVO")]
     x = pd.to_numeric(d.COORD_GIS_X, errors="coerce"); y = pd.to_numeric(d.COORD_GIS_Y, errors="coerce"); ok = x.notna() & y.notna()
