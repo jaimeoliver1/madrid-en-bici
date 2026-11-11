@@ -179,8 +179,8 @@
   "value": 4.7,
   "es": "Cada bici de BiciMAD hace de media 4,7 viajes al día (la guía de la ITDP recomienda 4 a 8).",
   "en": "Each BiciMAD bike makes 4.7 trips a day on average (the ITDP guide recommends 4 to 8).",
-  "calc_es": "En data/bicimad_daily_trips_weather.csv: media diaria de `trips` de los últimos 12 meses entre 9.421 bicis (data/refresh_meta.json, `fleet`).",
-  "calc_en": "In data/bicimad_daily_trips_weather.csv: last-12-month daily mean of `trips` divided by 9,421 bikes (data/refresh_meta.json, `fleet`).",
+  "calc_es": "En data/bicimad_daily_trips_weather.csv: media diaria de `trips` de los últimos 12 meses entre 9.430 bicis (data/refresh_meta.json, `fleet`).",
+  "calc_en": "In data/bicimad_daily_trips_weather.csv: last-12-month daily mean of `trips` divided by 9,430 bikes (data/refresh_meta.json, `fleet`).",
   "files": [
    "data/bicimad_daily_trips_weather.csv",
    "data/refresh_meta.json"

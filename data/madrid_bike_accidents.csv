@@ -6986,4 +6986,142 @@ expediente,year,hour,lat,lon,type,weather,serious,killed,n_slight,n_serious,n_ki
 2026S106454,2026,15,40.46101,-3.71889,Caída,Despejado,0,0,1,0,0,0,"Call. Antonio Machado, 4"
 2026S106513,2026,19,40.44789,-3.62908,Otro,Despejado,0,0,1,0,0,1,"Call. Juan Ignacio Luca De Tena, 17"
 2026S106541,2026,23,40.40346,-3.66234,Alcance,Despejado,0,0,0,0,0,0,"Call. Doctor Lozano, 8"
+2026S106646,2026,8,40.38836,-3.64208,Caída,Despejado,0,0,1,0,0,1,"Avda. Albufera, 321"
 2026S106715,2026,21,40.38007,-3.72901,Caída,Despejado,0,0,1,0,0,0,"Avda. Abrantes, 62"
+2026S106723,2026,14,40.47268,-3.58617,Colisión fronto-lateral,Despejado,0,0,0,0,0,0,Call. Timon / Call. Gran Poder
+2026S106911,2026,21,40.37717,-3.73241,Caída,Despejado,0,0,1,0,0,0,"Avda. Abrantes, 145"
+2026S107048,2026,5,40.4191,-3.617,Caída,Despejado,0,0,1,0,0,1,"Call. Aquitania, 31"
+2026S107050,2026,6,40.4587,-3.68089,Alcance,Despejado,0,0,1,0,0,0,"Avda. Alberto Alcocer, 41"
+2026S107104,2026,9,40.43123,-3.6611,Colisión frontal,Despejado,0,0,1,0,0,0,Call. Alcala / Autov. M-30
+2026S107167,2026,12,40.4418,-3.71372,Colisión lateral,Despejado,0,0,0,0,0,0,"Paseo. San Francisco De Sales, 34"
+2026S107269,2026,17,40.45604,-3.78461,Alcance,,0,0,0,0,0,0,"Avda. Galaxia, 46"
+2026S107312,2026,18,40.45636,-3.61488,Caída,Despejado,1,0,0,1,0,1,Call. Añil / Call. Boj
+2026S107424,2026,22,40.41375,-3.70854,Alcance,Despejado,0,0,1,0,0,0,Call. San Justo / Plaza. Puerta Cerrada
+2026S107566,2026,9,40.37098,-3.70045,Colisión frontal,Despejado,0,0,1,0,0,0,Avda. Orcasur / Avda. Poblados
+2026S108028,2026,8,40.41306,-3.67632,Caída,Despejado,0,0,1,0,0,0,"Call. Pio Baroja, 10"
+2026S108053,2026,11,40.39089,-3.64811,Caída,Despejado,0,0,0,0,0,0,"Avda. Albufera, 234"
+2026S108078,2026,12,40.43261,-3.70472,Colisión frontal,Despejado,0,0,1,0,0,0,"Call. San Bernardo, 113"
+2026S108081,2026,13,40.4614,-3.70599,Alcance,,0,0,0,0,0,0,"Call. Sauco, 8"
+2026S108120,2026,19,40.37826,-3.73151,Colisión fronto-lateral,Despejado,0,0,1,0,0,0,Avda. Abrantes / Plaza. Las Meninas
+2026S108198,2026,21,40.39734,-3.66761,Caída,Se desconoce,0,0,1,0,0,0,Avda. Monte Igueldo / Avda. Albufera
+2026S108207,2026,21,40.47692,-3.66569,Alcance,Despejado,1,0,0,1,0,0,"Call. Golfo De Salonica, 16"
+2026S108342,2026,22,40.47011,-3.65001,Caída,Despejado,0,0,1,0,0,0,Call. Biosca / Call. Angel Luis De La Herran
+2026S108749,2026,17,40.43187,-3.66165,Colisión fronto-lateral,Despejado,0,0,1,0,0,0,Call. Alcala / Call. Roberto Domingo
+2026S108755,2026,18,40.39766,-3.70814,Otro,Despejado,0,0,1,0,0,0,"Paseo. Yeserias, 6"
+2026S108761,2026,18,40.40696,-3.67164,Colisión lateral,Despejado,0,0,0,0,0,0,"Avda. Mediterraneo, 37"
+2026S108768,2026,20,40.39652,-3.7574,Colisión lateral,Despejado,0,0,1,0,0,1,"Call. Valmojado, 49"
+2026S108775,2026,20,40.38319,-3.62659,Colisión frontal,Despejado,0,0,1,0,0,1,"Ctra. Vicalvaro A Vallecas, 10"
+2026S108826,2026,20,40.46847,-3.70581,Caída,Despejado,0,0,1,0,0,0,Call. Pando / Call. Sorgo
+2026S109055,2026,17,40.45458,-3.68984,Caída,Despejado,0,0,1,0,0,1,Paseo. Castellana / Call. Rafael Salgado
+2026S109069,2026,19,40.41111,-3.72243,Caída,Despejado,0,0,1,0,0,1,"Pque. Madrid Rio, +00300I"
+2026S109083,2026,19,40.47498,-3.64587,Alcance,Despejado,0,0,0,0,0,0,Call. Mar De Las Antillas / Call. Azagra
+2026S109094,2026,19,40.44621,-3.67472,Caída,Despejado,0,0,0,0,0,0,Call. Eugenio Salazar / Call. Garcia Luna
+2026S109184,2026,0,40.38467,-3.73895,Caída,Despejado,0,0,1,0,0,1,"Call. General Ricardos, 218"
+2026S109218,2026,9,40.4013,-3.69943,Colisión fronto-lateral,Despejado,0,0,0,0,0,1,Gta. Santa Maria De La Cabeza / Call. Embajadores
+2026S109282,2026,12,40.44353,-3.71607,Colisión fronto-lateral,Despejado,0,0,1,0,0,0,"Call. Amapolas, 8"
+2026S109361,2026,19,40.49014,-3.66442,Caída,Despejado,0,0,1,0,0,0,"Call. Infanta Maria, 9"
+2026S109479,2026,9,40.42479,-3.67493,Colisión fronto-lateral,Despejado,0,0,0,0,0,0,"Call. Goya, 91"
+2026S109526,2026,10,40.40315,-3.67291,Colisión fronto-lateral,Despejado,0,0,1,0,0,1,Call. Doctor Esquerdo / Call. Valderribas
+2026S109586,2026,17,40.41152,-3.66996,Caída,Despejado,0,0,0,0,0,0,Call. Doctor Esquerdo / Avda. Nazaret
+2026S109615,2026,18,40.38923,-3.75565,Atropello a persona,Despejado,0,0,1,0,0,0,"Call. Camarena, 191"
+2026S109628,2026,15,40.38645,-3.66513,Atropello a persona,Despejado,0,0,2,0,0,1,Call. Puerto De La Bonaigua / Call. Santa Alicia
+2026S109636,2026,17,40.45538,-3.70247,Choque contra obstáculo fijo,Despejado,0,0,0,0,0,0,"Call. Bravo Murillo, 194"
+2026S109947,2026,15,40.42904,-3.66669,Alcance,Despejado,0,0,0,0,0,0,"Call. Alcala, 168"
+2026S109995,2026,18,40.50458,-3.6537,Caída,Despejado,0,0,1,0,0,0,Call. Padres Dominicos / Call. Manuel Pombo Angulo
+2026S110216,2026,17,40.36851,-3.60212,Caída,Despejado,0,0,1,0,0,0,"Avda. Las Suertes, 26"
+2026S110418,2026,3,40.4318,-3.71374,Caída,Despejado,0,0,1,0,0,0,"Call. Rodriguez San Pedro, 47"
+2026S110511,2026,11,40.48184,-3.61877,Colisión múltiple,Despejado,0,0,0,0,0,0,Avda. Las Fuerzas Armadas / Gta. Antonio Perpiña
+2026S110560,2026,11,40.43989,-3.74058,Colisión frontal,Despejado,0,0,2,0,0,1,"Anillo Ciclista Pk 48,36"
+2026S110584,2026,19,40.46264,-3.62708,Colisión lateral,Despejado,0,0,1,0,0,0,"Call. Silvano, 147"
+2026S110602,2026,20,40.39226,-3.64445,Atropello a persona,Despejado,0,0,1,0,0,0,"Call. La Escala, 11"
+2026S110610,2026,18,40.36461,-3.68339,Caída,Despejado,0,0,1,0,0,1,Avda. Los Rosales / Cmno. Perales
+2026S110614,2026,5,40.39646,-3.71831,Alcance,Despejado,0,0,1,0,0,0,"Call. General Ricardos, 18"
+2026S110690,2026,3,40.40582,-3.60928,Choque contra obstáculo fijo,Despejado,0,0,1,0,0,0,"Paseo. Artilleros, 31"
+2026S110742,2026,13,40.37796,-3.6064,Caída,Despejado,0,0,1,0,0,1,"Call. Poza De La Sal, 21"
+2026S110800,2026,10,40.46225,-3.69336,Alcance,Despejado,0,0,1,0,0,0,"Call. Rosario Pino, 18"
+2026S110814,2026,13,40.37492,-3.68938,Alcance,Despejado,0,0,1,0,0,0,"Cmno. Perales, 102"
+2026S110818,2026,15,40.41824,-3.64936,Alcance,Despejado,1,0,0,1,0,1,"Avda. Trece Rosas, 2"
+2026S110831,2026,18,40.3934,-3.66803,Colisión fronto-lateral,Despejado,0,0,1,0,0,0,Call. Puerto Alto / Call. Monte Perdido
+2026S110836,2026,20,40.44487,-3.7148,Colisión fronto-lateral,Despejado,0,0,1,0,0,0,Call. Poeta Angela Figuera / Avda. Valle
+2026S111043,2026,6,40.38576,-3.70635,Colisión fronto-lateral,Despejado,0,0,0,0,0,0,Call. Nicolas Sanchez / Call. Dolores Barranco
+2026S111075,2026,8,40.38045,-3.74121,Caída,Despejado,0,0,1,0,0,0,"Plaza. Carabanchel, 1"
+2026S111168,2026,12,40.37346,-3.74058,Caída,Despejado,0,0,1,0,0,1,Call. Dobla / Avda. Poblados
+2026S111655,2026,15,40.39614,-3.61777,Colisión fronto-lateral,Despejado,0,0,0,0,0,0,Bulev. Jose Prat / Avda. Democracia
+2026S111747,2026,15,40.43337,-3.65247,Colisión lateral,,0,0,0,0,0,0,"Call. Florencio Llorente, 7"
+2026S111755,2026,19,40.38495,-3.6444,Colisión fronto-lateral,Despejado,0,0,1,0,0,0,Call. Gerardo Diego / Call. Extremeños
+2026S111825,2026,20,40.38635,-3.75486,Colisión fronto-lateral,Despejado,0,0,1,0,0,0,"Call. Ocaña, 97"
+2026S112319,2026,22,40.40895,-3.6063,Caída,Despejado,0,0,1,0,0,0,"Call. Anillo Verde, 27"
+2026S112703,2026,19,40.37798,-3.76635,Colisión fronto-lateral,Despejado,0,0,0,0,0,0,Call. General Millan Astray / Call. Blas Cabrera
+2026S112728,2026,19,40.35166,-3.69164,Alcance,Despejado,0,0,1,0,0,0,Call. Juan Jose Martinez Seco / Call. Maria Martinez Oviol
+2026S112811,2026,1,40.42036,-3.70822,Alcance,Despejado,0,0,1,0,0,0,Plaza. Santo Domingo / Call. Silva
+2026S112839,2026,22,40.39206,-3.67803,Caída,Despejado,0,0,1,0,0,0,Call. Titan / Call. Eros
+2026S112906,2026,9,40.46026,-3.66122,Alcance,Despejado,0,0,1,0,0,0,Call. Arturo Soria / Call. Navarro Amandi
+2026S112965,2026,14,40.48569,-3.70699,Colisión fronto-lateral,Despejado,0,0,1,0,0,0,Call. Alfredo Marquerie / Call. Alfredo Marquerie
+2026S113001,2026,18,40.45823,-3.64491,Caída,Despejado,0,0,1,0,0,0,Call. Ulises / Call. Puentecillo
+2026S113032,2026,17,40.40173,-3.60069,Colisión fronto-lateral,Despejado,0,0,0,0,0,0,Call. Minerva / Call. Titanio
+2026S113039,2026,19,40.42911,-3.72218,Atropello a persona,Despejado,0,0,1,0,0,0,"Paseo. Pintor Rosales, 48"
+2026S113043,2026,21,40.48844,-3.66848,Caída,Despejado,0,0,1,0,0,0,"Avda. Manoteras, 20A"
+2026S113045,2026,22,40.44492,-3.73825,Colisión lateral,Despejado,0,0,1,0,0,0,"Avda. Puerta De Hierro, 1"
+2026S113057,2026,0,40.43247,-3.67266,Caída,Despejado,0,0,1,0,0,0,Call. Francisco Silvela / Juan Bravo
+2026S113097,2026,1,40.41002,-3.67004,Caída,Despejado,0,0,1,0,0,0,"Call. Doctor Esquerdo, 102"
+2026S113231,2026,10,40.40796,-3.67864,Caída,Despejado,0,0,0,0,0,0,"Plaza. Mariano De Cavia, 2"
+2026S113264,2026,14,40.41302,-3.74016,Caída,Despejado,0,0,1,0,0,0,"Calle Cuesta Nueva, 2"
+2026S113332,2026,0,40.43,-3.67824,Colisión frontal,Despejado,0,0,0,0,0,0,Call. Jose Ortega Y Gasset / Call. General Pardiñas
+2026S113371,2026,1,40.4287,-3.70603,Colisión lateral,Despejado,0,0,1,0,0,0,"Call. San Bernardo, 86"
+2026S113512,2026,12,40.4761,-3.72165,Colisión fronto-lateral,Despejado,0,0,1,0,0,0,Call. Isla De Tabarca / Gta. Mariano Salvador Maella
+2026S113550,2026,16,40.47094,-3.7203,Colisión lateral,Despejado,0,0,1,0,0,0,Call. Valle De Mena / San Antonio
+2026S113562,2026,17,40.41779,-3.65334,Caída,Despejado,0,0,1,0,0,1,Call. Felix Rodriguez De La Fuente / Call. Santa Irene
+2026S113582,2026,18,40.40608,-3.65715,Caída,Despejado,0,0,1,0,0,1,"Avda. Moratalaz, 42"
+2026S113593,2026,22,40.39247,-3.72332,Alcance,Despejado,0,0,1,0,0,0,"Call. Radio, 9"
+2026S113743,2026,9,40.45371,-3.7089,Caída,Despejado,0,0,1,0,0,0,Call. Leñeros / Call. Maria Pedraza
+2026S113788,2026,12,40.41869,-3.68891,Otro,Despejado,0,0,1,0,0,0,"Call. Alfonso Xii, 6"
+2026S113906,2026,14,40.45563,-3.71437,Colisión fronto-lateral,Despejado,0,0,1,0,0,0,"Avda. Doctor Federico Rubio Y Gali, 67"
+2026S114226,2026,12,40.39024,-3.63865,Colisión fronto-lateral,Despejado,0,0,1,0,0,0,Avda. Rafael Alberti / Call. Andaluces
+2026S114253,2026,19,40.38205,-3.70754,Otro,Despejado,0,0,0,0,0,0,"Call. Isabelita Usera, 49"
+2026S114367,2026,18,40.38224,-3.73311,Choque contra obstáculo fijo,Se desconoce,0,0,1,0,0,0,Call. Clara Campoamor / Call. Oropendola
+2026S114486,2026,21,40.42916,-3.7034,Caída,Despejado,0,0,1,0,0,1,"Call. Carranza, 9"
+2026S114488,2026,22,40.39579,-3.71947,Colisión lateral,Despejado,0,0,1,0,0,0,Call. General Ricardos / Call. Invencibles
+2026S114727,2026,10,40.40884,-3.71327,Caída,Despejado,0,0,1,0,0,0,"Avda. Gran Via De San Francisco, 11"
+2026S114743,2026,12,40.36936,-3.70102,Colisión frontal,Despejado,0,0,0,0,0,0,Avda. Orcasur / Call. Sacromonte
+2026S114777,2026,16,40.37342,-3.72275,Colisión fronto-lateral,Despejado,0,0,1,0,0,1,Call. Cazalegas / Avda. Poblados
+2026S114799,2026,17,40.39851,-3.67246,Alcance,Despejado,0,0,1,0,0,0,"Call. Seco, 12"
+2026S114926,2026,19,40.43293,-3.69262,Alcance,Despejado,0,0,1,0,0,0,"Paseo. Eduardo Dato, 19"
+2026S115065,2026,7,40.45766,-3.71152,Caída,Despejado,0,0,1,0,0,0,"Gta. Rocio Durcal, Calle. Sánchez Preciado."
+2026S115520,2026,7,40.38421,-3.75996,Colisión fronto-lateral,Despejado,1,0,0,1,0,1,"Avda. Poblados, 64"
+2026S115558,2026,9,40.42155,-3.72336,Caída,Despejado,0,0,1,0,0,1,"Pque. Madrid Rio, +00200E"
+2026S115642,2026,13,40.40954,-3.69093,Caída,Despejado,0,0,1,0,0,1,"Call. Claudio Moyano, 2"
+2026S115689,2026,18,40.40668,-3.60939,Alcance,Despejado,0,0,1,0,0,0,"Paseo. Artilleros, 23"
+2026S115694,2026,14,40.43534,-3.71017,Colisión lateral,Despejado,0,0,0,0,0,0,"Call. Galileo, 68"
+2026S115706,2026,16,40.40363,-3.70777,Colisión lateral,Despejado,0,0,1,0,0,0,Paseo. Acacias / Call. Gasometro
+2026S115716,2026,19,40.38571,-3.69444,Caída,Despejado,0,0,1,0,0,0,"Call. Antonio Lopez, 157"
+2026S115726,2026,21,40.40434,-3.69627,Alcance,Despejado,0,0,0,0,0,0,"Paseo. Santa Maria De La Cabeza, 36"
+2026S115774,2026,22,40.47367,-3.64698,Colisión fronto-lateral,Despejado,0,0,1,0,0,0,"Call. Mar Caspio, 11"
+2026S116027,2026,22,40.40006,-3.71474,Colisión frontal,Despejado,0,0,1,0,0,1,"Psrl. Sur Del Puente De Toledo, 0"
+2026S116110,2026,11,40.39447,-3.72074,Caída,Despejado,0,0,1,0,0,0,"Call. Mercedes Arteaga, 7"
+2026S116117,2026,11,40.37068,-3.69464,Colisión lateral,Despejado,0,0,1,0,0,1,Avda. San Fermin / Avda. Andalucia
+2026S116123,2026,13,40.41966,-3.62502,Colisión fronto-lateral,Despejado,0,0,1,0,0,1,Call. Hermanos Garcia Noblejas / Call. Idioma Esperanto
+2026S116229,2026,23,40.43454,-3.67946,Alcance,Despejado,0,0,1,0,0,0,"Call. Principe De Vergara, 71"
+2026S116298,2026,4,40.44722,-3.66478,Caída,Despejado,0,0,1,0,0,0,"Call. Luis De Salazar, 14"
+2026S116308,2026,5,40.41362,-3.69899,Colisión lateral,Despejado,0,0,1,0,0,0,Call. Huertas / Call. Leon
+2026S116373,2026,15,40.42085,-3.68516,Alcance,Despejado,0,0,1,0,0,0,"Call. Alcala, 89"
+2026S116374,2026,15,40.43228,-3.65546,Colisión fronto-lateral,,0,0,0,0,0,0,Call. Alcalde Lopez Casero / Call. Alcala
+2026S116399,2026,18,40.40046,-3.71654,Caída,Despejado,0,0,1,0,0,1,"Pque. Madrid Rio, +00320I"
+2026S116412,2026,21,40.4151,-3.69446,Colisión fronto-lateral,Despejado,0,0,1,0,0,0,Paseo. Prado / Plaza. Cortes
+2026S116413,2026,15,40.43252,-3.72526,Caída,Despejado,0,0,1,0,0,1,Paseo. Moret / Paseo. Pintor Rosales
+2026S116560,2026,10,40.41324,-3.6529,Colisión lateral,Despejado,0,0,1,0,0,1,Call. Arroyo De La Media Legua / Call. Alcalde Garrido Juaristi
+2026S116657,2026,16,40.38334,-3.66278,Caída,Lluvia débil,0,0,1,0,0,0,Call. Candilejas / Call. La Diligencia
+2026S116715,2026,17,40.4029,-3.69221,Colisión lateral,Lluvia débil,0,0,1,0,0,0,Call. Ancora / Call. Rafael De Riego
+2026S116730,2026,14,40.47328,-3.69027,Caída,Lluvia débil,0,0,1,0,0,0,"Call. Luis Esteban, 25"
+2026S116745,2026,15,40.4003,-3.72507,Caída,Lluvia débil,0,0,1,0,0,0,Paseo. Quince De Mayo / Paseo. Ermita Del Santo
+2026S116750,2026,15,40.41126,-3.71397,Caída,Lluvia débil,0,0,1,0,0,0,"Call. Bailen, 26"
+2026S116752,2026,19,40.41517,-3.71591,Caída,Nublado,0,0,1,0,0,0,"Cuesta De La Vega, 3"
+2026S116772,2026,19,40.46799,-3.69277,Caída,Lluvia débil,0,0,1,0,0,0,Avda. Asturias / Call. Magnolias
+2026S116800,2026,21,40.45583,-3.59051,Colisión fronto-lateral,Lluvia débil,0,0,1,0,0,1,Call. Carabela / Call. La Rioja
+2026S116806,2026,23,40.37302,-3.71265,Caída,Lluvia débil,0,0,1,0,0,1,"Call. Tolosa, 22"
+2026S116938,2026,8,40.39773,-3.73585,Colisión lateral,Despejado,0,0,1,0,0,0,"Call. Via Carpetana, 178"
+2026S116958,2026,8,40.40096,-3.64844,Otro,Nublado,0,0,1,0,0,0,"Call. Arroyo Fontarron, 81"
+2026S117046,2026,14,40.36993,-3.70087,Otro,Despejado,0,0,1,0,0,0,"Avda. Orcasur, 17"
+2026S117544,2026,15,40.44411,-3.69887,Colisión fronto-lateral,Despejado,0,0,1,0,0,0,Call. Ponzano / Call. Maria De Guzman
+2026S117568,2026,15,40.40894,-3.69157,Alcance,Despejado,0,0,1,0,0,0,Paseo. Infanta Isabel / Plaza. Emperador Carlos V
+2026S117625,2026,19,40.37959,-3.61955,Colisión frontal,Despejado,0,0,1,0,0,0,Call. Real De Arganda / Call. Gavia Seca
+2026S117689,2026,22,40.4123,-3.65401,Colisión frontal,Despejado,0,0,1,0,0,0,Avda. Doctor Garcia Tapia / Call. Arroyo De La Media Legua

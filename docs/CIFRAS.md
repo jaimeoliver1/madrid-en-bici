@@ -1,6 +1,6 @@
 # Cifras y cómo comprobarlas
 
-Cada número que citamos en la web, en las redes y en la prensa está aquí, con la fórmula para repetirlo en una hoja de cálculo, el fichero de `data/` de donde sale, el script que lo construyó y la página del organismo que publicó el dato original. Los valores de esta página los calcula `pipeline/figures.py` desde `data/` (actualizado 2026-10-19); no se escriben a mano.
+Cada número que citamos en la web, en las redes y en la prensa está aquí, con la fórmula para repetirlo en una hoja de cálculo, el fichero de `data/` de donde sale, el script que lo construyó y la página del organismo que publicó el dato original. Los valores de esta página los calcula `pipeline/figures.py` desde `data/` (actualizado 2026-11-11); no se escriben a mano.
 
 **Comprobar una cifra en dos clics:** de la cifra en la web a su fila aquí (1), y de la fila al fichero o a la fuente original (2).
 
@@ -64,7 +64,7 @@ Si encuentras un error, [abre un issue](https://github.com/jaimeoliver1/madrid-e
 
 ### <a id="viajes_por_bici"></a>Cada bici de BiciMAD hace de media 4,7 viajes al día (la guía de la ITDP recomienda 4 a 8).
 
-- **Cómo se calcula:** En data/bicimad_daily_trips_weather.csv: media diaria de `trips` de los últimos 12 meses entre 9.421 bicis (data/refresh_meta.json, `fleet`).
+- **Cómo se calcula:** En data/bicimad_daily_trips_weather.csv: media diaria de `trips` de los últimos 12 meses entre 9.430 bicis (data/refresh_meta.json, `fleet`).
 - **Fichero:** [`data/bicimad_daily_trips_weather.csv`](https://github.com/jaimeoliver1/madrid-en-bici/blob/main/data/bicimad_daily_trips_weather.csv), [`data/refresh_meta.json`](https://github.com/jaimeoliver1/madrid-en-bici/blob/main/data/refresh_meta.json)
 - **Script:** pipeline/build_site.py
 - **Fuente original:** [EMT Madrid · datos abiertos BiciMAD](https://datos.emtmadrid.es); [BiciMAD · feed en tiempo real (GBFS)](https://madrid.publicbikesystem.net/customer/gbfs/v2/gbfs.json); [ITDP · The Bikeshare Planning Guide](https://bikeshare.itdp.org/guide/goal-setting-initial-planning/examine-feasibility-choose-a-system-type/)
