@@ -113,9 +113,9 @@
  {
   "id": "viajes_12m",
   "headline": 0,
-  "value": 16146211,
-  "es": "16.146.211 viajes en BiciMAD en los últimos 12 meses con datos.",
-  "en": "16,146,211 BiciMAD trips in the last 12 months of data.",
+  "value": 16246259,
+  "es": "16.246.259 viajes en BiciMAD en los últimos 12 meses con datos.",
+  "en": "16,246,259 BiciMAD trips in the last 12 months of data.",
   "calc_es": "En data/bicimad_daily_trips_weather.csv: suma `trips` de los 365 días anteriores a la última fecha.",
   "calc_en": "In data/bicimad_daily_trips_weather.csv: sum `trips` over the 365 days before the last date.",
   "files": [
@@ -155,9 +155,9 @@
  {
   "id": "usuarios",
   "headline": 0,
-  "value": 269393,
-  "es": "269.393 usuarios activos en 2026-09.",
-  "en": "269,393 active users in 2026-09.",
+  "value": 283627,
+  "es": "283.627 usuarios activos en 2026-10.",
+  "en": "283,627 active users in 2026-10.",
   "calc_es": "En data/bicimad_active_users_monthly.csv: `active_users` del último mes.",
   "calc_en": "In data/bicimad_active_users_monthly.csv: `active_users` for the last month.",
   "files": [

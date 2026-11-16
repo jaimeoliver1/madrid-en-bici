@@ -1,6 +1,6 @@
 # Cifras y cómo comprobarlas
 
-Cada número que citamos en la web, en las redes y en la prensa está aquí, con la fórmula para repetirlo en una hoja de cálculo, el fichero de `data/` de donde sale, el script que lo construyó y la página del organismo que publicó el dato original. Los valores de esta página los calcula `pipeline/figures.py` desde `data/` (actualizado 2026-11-11); no se escriben a mano.
+Cada número que citamos en la web, en las redes y en la prensa está aquí, con la fórmula para repetirlo en una hoja de cálculo, el fichero de `data/` de donde sale, el script que lo construyó y la página del organismo que publicó el dato original. Los valores de esta página los calcula `pipeline/figures.py` desde `data/` (actualizado 2026-11-16); no se escriben a mano.
 
 **Comprobar una cifra en dos clics:** de la cifra en la web a su fila aquí (1), y de la fila al fichero o a la fuente original (2).
 
@@ -41,7 +41,7 @@ Si encuentras un error, [abre un issue](https://github.com/jaimeoliver1/madrid-e
 - **Script:** pipeline/refresh.py (función barrios)
 - **Fuente original:** [BiciMAD · feed en tiempo real (GBFS)](https://madrid.publicbikesystem.net/customer/gbfs/v2/gbfs.json); [Ayuntamiento de Madrid · Padrón a 1 de enero (300557)](https://datos.madrid.es/dataset/300557-0-poblacion-distrito-barrio); [Ayuntamiento de Madrid · Límites administrativos (900012)](https://datos.madrid.es/dataset/900012-0-limites-administrativos-mapas)
 
-### <a id="viajes_12m"></a>16.146.211 viajes en BiciMAD en los últimos 12 meses con datos.
+### <a id="viajes_12m"></a>16.246.259 viajes en BiciMAD en los últimos 12 meses con datos.
 
 - **Cómo se calcula:** En data/bicimad_daily_trips_weather.csv: suma `trips` de los 365 días anteriores a la última fecha.
 - **Fichero:** [`data/bicimad_daily_trips_weather.csv`](https://github.com/jaimeoliver1/madrid-en-bici/blob/main/data/bicimad_daily_trips_weather.csv)
@@ -55,7 +55,7 @@ Si encuentras un error, [abre un issue](https://github.com/jaimeoliver1/madrid-e
 - **Script:** pipeline/refresh.py (función bicimad_daily)
 - **Fuente original:** [EMT Madrid · datos abiertos BiciMAD](https://datos.emtmadrid.es)
 
-### <a id="usuarios"></a>269.393 usuarios activos en 2026-09.
+### <a id="usuarios"></a>283.627 usuarios activos en 2026-10.
 
 - **Cómo se calcula:** En data/bicimad_active_users_monthly.csv: `active_users` del último mes.
 - **Fichero:** [`data/bicimad_active_users_monthly.csv`](https://github.com/jaimeoliver1/madrid-en-bici/blob/main/data/bicimad_active_users_monthly.csv)
