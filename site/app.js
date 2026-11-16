@@ -93,6 +93,7 @@
       ln_x: "km de carril bici separado", ln_v: "km del Anillo Verde, en el borde de la ciudad", ln_s: "km de ciclocarril compartido con coches",
       s4_c1: "La red ciclista de Madrid", lane_x: "Carril separado", lane_v: "Anillo Verde", lane_p: "Calle preferente bici", lane_s: "Ciclocarril (compartido)", lane_st: "Estación BiciMAD",
       s4_c2: "¿Cuánto de tu viaje va protegido?", s4_c2n: "Calculamos la ruta en bici más probable de cada viaje de BiciMAD. El mapa muestra los 300 trayectos más repetidos, coloreados según la parte que va por carril separado.",
+      s4_strava: "Son rutas estimadas y solo de BiciMAD. Para ver por dónde van quienes graban sus salidas con su propia bici, abre el <a href=\"{strava}\" target=\"_blank\" rel=\"noopener\">mapa de calor de Strava</a>: muestra sobre todo salidas deportivas y puede pedirte entrar con una cuenta de Strava.",
       routes_pending: "Calculando rutas…", route_share_h: "Viajes según la parte del camino que va protegida",
       s5_k: "Seguridad", s5_h: "¿Es seguro ir en bici?",
       s5_lede: "Casi todos los viajes acaban sin problema, pero la Policía Municipal registró <b id=\"acc-total\">{n}</b> accidentes con bici entre 2019 y {accend}. Se concentran en unos pocos cruces: conviene conocerlos.",
@@ -202,6 +203,7 @@
       ln_x: "km of separated bike lane", ln_v: "km of the Anillo Verde ring, at the city's edge", ln_s: "km of shared lane with cars",
       s4_c1: "Madrid's cycling network", lane_x: "Separated lane", lane_v: "Anillo Verde ring", lane_p: "Bike-priority street", lane_s: "Shared lane", lane_st: "BiciMAD station",
       s4_c2: "How much of your ride is protected?", s4_c2n: "We worked out the most likely bike route of every BiciMAD trip. The map shows the 300 most common trips, coloured by how much of the way runs on a separated lane.",
+      s4_strava: "These are estimated routes, and BiciMAD only. To see where people who record their rides on their own bikes go, open <a href=\"{strava}\" target=\"_blank\" rel=\"noopener\">Strava's heatmap</a>: it shows mostly sport rides and may ask you to sign in with a Strava account.",
       routes_pending: "Routing trips…", route_share_h: "Trips by how much of the route is protected",
       s5_k: "Safety", s5_h: "Is it safe to ride?",
       s5_lede: "Almost every ride ends fine, but the municipal police recorded <b id=\"acc-total\">{n}</b> bike accidents between 2019 and {accend}. They cluster at a few junctions worth knowing.",
@@ -245,6 +247,8 @@
   const fmonth = s => new Date(s + "-15T12:00:00Z").toLocaleDateString(L === "es" ? "es-ES" : "en-GB", { month: "long", year: "numeric" });
   const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
   const el = (tag, cls, txt) => { const e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; };
+  // Strava's Global Heatmap (cycling), centred on a point. Only linked: its terms forbid downloading or reusing it (docs/DATA_SOURCES.md)
+  const stravaMap = (lon = -3.7, lat = 40.42, z = 12) => `https://www.strava.com/maps/global-heatmap?sport=Ride&style=dark&poi=false#${z}/${lat.toFixed(4)}/${lon.toFixed(4)}`;
 
   // ---------- shared chart helpers ----------
   function svgIn(box, h) {
@@ -737,7 +741,12 @@
       `Hills: each station's elevation from the EU-DEM 25 m model. Lanes: the city's official cycling layer; "separated" includes bike lanes, bike pavements, tracks and paths, with the Anillo Verde ring shown separately.`,
       `Routes: we worked out the most likely bike route of all ${nf(M.routes ? M.routes.trips : 0)} station-to-station trips of January and February 2023 on OpenStreetMap streets (preferring bike lanes and quiet streets, respecting one-way streets), and measured how much runs within 15 m of a separated lane. Accidents: municipal police records involving bicycles. Weather: El Retiro station (NOAA GHCN-Daily).`,
     ];
-    const m = document.getElementById("method"); m.replaceChildren(...ps.map(p => el("p", null, p)));
+    // Strava: linked, not used as data (docs/DATA_SOURCES.md); the Strava Metro request is in docs/solicitud-strava-metro.md
+    const sp = el("p", null, es
+      ? "Strava: su mapa de calor muestra por dónde van quienes graban sus salidas, también con bici propia, y lo enlazamos bajo el mapa de rutas y en el planificador. No usamos sus datos: sus condiciones no permiten descargarlos ni reutilizarlos. La vía para tenerlos es Strava Metro, gratis para organizaciones, y lo estamos pidiendo con una asociación ciclista. "
+      : "Strava: its heatmap shows where people who record their rides go, own bikes included, and we link to it under the routes map and from the route planner. We don't use its data: its terms don't allow downloading or reusing it. The way to get it is Strava Metro, free for organisations, and we're requesting it with a cycling association. ");
+    const sa = el("a", null, es ? "Cómo lo pedimos" : "How we're requesting it"); sa.href = REPO + "blob/main/docs/solicitud-strava-metro.md"; sa.target = "_blank"; sa.rel = "noopener"; sp.append(sa, ".");
+    const m = document.getElementById("method"); m.replaceChildren(...ps.map(p => el("p", null, p)), sp);
     const src = [
       ["EMT Madrid · datos abiertos (BiciMAD)", "https://datos.emtmadrid.es"],
       ["Ayuntamiento de Madrid · Portal de datos abiertos (accidentes, infraestructura ciclista, aforos, aparcabicis, padrón, límites)", "https://datos.madrid.es"],
@@ -751,6 +760,7 @@
       ["OpenStreetMap · routing.openstreetmap.de (bike)", "https://routing.openstreetmap.de"],
       ["NOAA GHCN-Daily · Madrid Retiro", "https://www.ncei.noaa.gov/products/land-based-station/global-historical-climatology-network-daily"],
       ["EU-DEM 25 m via OpenTopoData", "https://www.opentopodata.org/datasets/eudem/"],
+      [es ? "Strava · mapa de calor (solo enlazado; no usamos sus datos)" : "Strava · Global Heatmap (linked only; its data is not used)", stravaMap()],
     ];
     const ul = document.getElementById("sources"); ul.replaceChildren(...src.map(([n, u]) => { const li = el("li"); const a = el("a", null, n); a.href = u; a.target = "_blank"; a.rel = "noopener"; li.append(a); return li; }));
   }
@@ -764,7 +774,7 @@
       n: nf(M.acc_points.length),
       snap: snapD.toLocaleString(loc_, { weekday: "long", day: "numeric", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit" }),
       accend: fmonth(K.acc_last.slice(0, 7)),
-      dlast: fdate(K.daily_last), ctop: nf(M.counters[0][1]), refreshed: K.refreshed ? fdate(K.refreshed) : "", fleet: nf(K.fleet),
+      dlast: fdate(K.daily_last), ctop: nf(M.counters[0][1]), refreshed: K.refreshed ? fdate(K.refreshed) : "", fleet: nf(K.fleet), strava: stravaMap(),
       partial: part ? (L === "es" ? `${part[0]} solo incluye enero a ${new Date(K.acc_last + "T12:00:00Z").toLocaleDateString(loc_, { month: "long" })}.` : `${part[0]} covers January to ${new Date(K.acc_last + "T12:00:00Z").toLocaleDateString(loc_, { month: "long" })} only.`) : "",
     };
     document.querySelectorAll("[data-i18n]").forEach(e => { e.textContent = t(e.dataset.i18n, V); });
@@ -813,7 +823,7 @@
     for (const f of parts) { try { f(); } catch (e) { console.error(f.name, e); } }
     document.querySelectorAll("main .chart[id], #score, #bicimad-nums, #lane-nums").forEach(b => onView(b, () => animate(b)));
     document.querySelectorAll(".stop").forEach(s => { if (!s.id) return; onView(s, () => {}); });
-    window.MCI = { t, nf, n1, pct, big, css, el, tip, mapBase, context, places, fullButton, lang: () => L };
+    window.MCI = { t, nf, n1, pct, big, css, el, tip, mapBase, context, places, fullButton, stravaMap, lang: () => L };
     window.dispatchEvent(new Event("mc-render"));
   }
   // ---------- data freshness: a chip per section and a table in the footer ----------

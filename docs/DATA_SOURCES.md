@@ -45,11 +45,12 @@
 - **2010–2018 records use another layout** and are left out.
 
 ### Routes
-- **Modelled on OpenStreetMap, not GPS tracks.** Real riders may take other streets.
+- **Modelled on OpenStreetMap, not GPS tracks.** Real riders may take other streets. Strava Metro's counts per street would show where people actually ride, private bikes included (see [`solicitud-strava-metro.md`](solicitud-strava-metro.md)).
 
 ### Context
 - **Madrid's cycling modal share is out of date.** The last comparable figure is 0.5% from the 2018 regional travel survey (CRTM EDM 2018). Newer city figures use mobile-phone data and aren't comparable with other cities.
 - **Weather comes from one station** (El Retiro).
 - **Google Maps is not used.** Its API is paid and its terms restrict storing results.
+- **Strava is linked, not used as data.** Its [Global Heatmap](https://www.strava.com/maps/global-heatmap?sport=Ride) can't be downloaded or reused: the [terms](https://www.strava.com/legal/terms) forbid automated collection, and the [API](https://www.strava.com/legal/api) forbids displaying other riders' data or analysing it in aggregate. The site links to the heatmap under the routes map, from the route planner and in its sources list, and explains why in its method notes. The legitimate source is [Strava Metro](https://metro.strava.com), which is free for organisations that Strava approves. Only an organisation's own staff may hold access, so the plan is to request it through a Madrid cycling association (see [`solicitud-strava-metro.md`](solicitud-strava-metro.md)). Strava over-represents sport rides, so it would complement the city's counters, not replace them.
 
 See `docs/solicitud-datos-bicimad.md` for a draft request to EMT for the missing trip data.

@@ -18,7 +18,7 @@
       climb: "de subida", acc: "accidentes registrados en el camino (2019–2026)", via: "Por", same: "Coinciden: la ruta más corta ya es la recomendada.",
       vs: "{d} km más que la más corta · {p} por carril protegido (la más corta: {q}).", vs2: "Igual de larga que la más corta, por calles más cómodas.",
       lg_route: "Ruta recomendada", lg_short: "Más corta", lg_lane: "Carril separado actual", lg_plan: "Carril propuesto",
-      rt_more: "Cómo funciona", far: "Ese punto está fuera de la zona con datos.",
+      rt_more: "Cómo funciona", rt_strava: "Por dónde va en esta zona quien graba sus salidas: mapa de calor de Strava", far: "Ese punto está fuera de la zona con datos.",
       // plan
       pl_h: "¿Dónde poner los próximos carriles protegidos?",
       pl_lede: "Calculamos qué calles conviene proteger primero: para cada opción rehacemos la ruta de todos los viajes y sumamos en euros el tiempo y la comodidad que ganan los ciclistas y los heridos que se evitan, frente a lo que cuesta construirla. Todas las cifras vienen de fuentes publicadas o de datos de Madrid.",
@@ -45,7 +45,7 @@
       climb: "uphill", acc: "recorded accidents along the way (2019–2026)", via: "Via", same: "They match: the shortest route is already the recommended one.",
       vs: "{d} km longer than the shortest · {p} on protected lanes (shortest: {q}).", vs2: "As long as the shortest, on more comfortable streets.",
       lg_route: "Recommended route", lg_short: "Shortest", lg_lane: "Existing separated lane", lg_plan: "Proposed lane",
-      rt_more: "How it works", far: "That point is outside the area we have data for.",
+      rt_more: "How it works", rt_strava: "Where people who record their rides go around here: Strava's heatmap", far: "That point is outside the area we have data for.",
       pl_h: "Where should the next protected lanes go?",
       pl_lede: "We worked out which streets to protect first: for each option we re-route every trip and add up, in euros, the time and comfort cyclists gain and the injuries avoided, against what it costs to build. Every number comes from a published source or from Madrid's data.",
       pl_km: "km of new protected lane", pl_cost: "of investment", pl_bcr: "euros back for every euro", pl_net: "net benefit a year",
@@ -256,6 +256,8 @@
     tg.append(cb, I.el("span", null, tt("plan_on"))); c.append(tg, pn);
     const res = I.el("div", "rt-results"); res.id = "rt-results"; c.append(res);
     const more = I.el("p", "note"), a = I.el("a", null, tt("rt_more")); a.href = DOCS + "ROUTING.md"; a.target = "_blank"; a.rel = "noopener"; more.append(a); c.append(more);
+    const sp = I.el("p", "note"), sa = I.el("a", null, tt("rt_strava")); sa.id = "rt-strava"; sa.target = "_blank"; sa.rel = "noopener"; sp.append(sa); c.append(sp);
+    stravaLink();
     const lg = document.getElementById("lg-route"); lg.replaceChildren();
     [[I.css("--sky"), "lg_route", ""], [I.css("--muted"), "lg_short", "dash"], [I.css("--lane"), "lg_lane", ""], [I.css("--brick"), "lg_plan", "dash"]].forEach(([col, key, cls]) => {
       const s = I.el("span"), i = I.el("i", "sw"); i.style.background = cls ? `repeating-linear-gradient(90deg, ${col} 0 5px, transparent 5px 9px)` : col;
@@ -309,7 +311,18 @@
     const t = d3.zoomIdentity.translate(W / 2 - k * (x0 + x1) / 2, H / 2 - k * (y0 + y1) / 2).scale(k);
     svg.transition().duration(650).call(z.transform, t);
   }
+  // the Strava heatmap link follows the chosen points: centred between them, zoomed so both fit
+  function stravaLink() {
+    const a = document.getElementById("rt-strava"), G = RT.G; if (!a) return;
+    const vs = G ? [RT.a, RT.b].filter(v => v != null) : [];
+    if (!vs.length) { a.href = I.stravaMap(); return; }
+    const lo = vs.map(v => G.lon[v]), la = vs.map(v => G.lat[v]);
+    const lon = (Math.min(...lo) + Math.max(...lo)) / 2, lat = (Math.min(...la) + Math.max(...la)) / 2;
+    const span = Math.max(Math.max(...la) - Math.min(...la), (Math.max(...lo) - Math.min(...lo)) * Math.cos(lat * Math.PI / 180));
+    a.href = I.stravaMap(lon, lat, span > 0 ? Math.max(12, Math.min(16, Math.floor(Math.log2(360 / span)) + 1)) : 15);
+  }
   function update(fit) {
+    stravaLink();
     if (!mapRef) return;
     const { F, gp, gr, gm } = mapRef, G = RT.G;
     const line = pts => "M" + pts.map(([lo, la]) => F.P(lo, la).map(v => v.toFixed(1)).join(" ")).join("L");

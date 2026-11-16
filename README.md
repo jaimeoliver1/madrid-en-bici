@@ -28,7 +28,7 @@ pipeline/
   figures.py      the register of every quoted figure -> data/figures.json, docs/CIFRAS.md
   historical/     one-off scripts behind the static 2023 analysis, routes and animation
 film/        source of the 24-hour animation as a standalone video (Claude Motion scenes)
-docs/        data sources and gaps, the data request sent to EMT, and the methods:
+docs/        data sources and gaps, the data requests to EMT and Strava Metro, and the methods:
   CIFRAS.md        every figure we quote: formula, data file, code, original source
   ROUTING.md       how routes are found (Dijkstra, rider weights, the planner)
   METHOD_LANES.md  where to build protected lanes: euros, sources, results
